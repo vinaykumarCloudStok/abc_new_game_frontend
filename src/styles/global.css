@@ -90,12 +90,14 @@ html, body {
   color: var(--color-on-background);
   min-height: 100vh;
   overflow-x: hidden;
+ 
 }
 
 body {
   padding-bottom: 128px;
   max-width: 430px;
   margin: 0 auto;
+
 }
 
 /* Scrollbar */

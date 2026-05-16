@@ -1,3 +1,5 @@
+/* BetRow.module.css */
+
 .card {
   background: rgba(60, 46, 79, 0.4);
   backdrop-filter: blur(20px);
@@ -82,14 +84,12 @@
 .titleRow {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 .betName {
   font-family: var(--font-inter);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   color: var(--color-secondary);
   margin: 0;
@@ -97,17 +97,9 @@
 
 .multiplier {
   font-family: var(--font-inter);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--color-on-surface-variant);
-  margin: 0;
-}
-
-.category {
-  font-family: var(--font-inter);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--color-tertiary);
   margin: 0;
 }
 

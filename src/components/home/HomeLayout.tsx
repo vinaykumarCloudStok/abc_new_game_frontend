@@ -13,10 +13,10 @@ import { getSocket } from '../../socket/socket'
 import { initSocketListeners } from '../../socket/socketListner'
    const mainStyle: React.CSSProperties = {
   marginTop: '80px',
-  padding: '0 20px',
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
+
 };
 const HomeLayout = () => {
    const dispatch = useDispatch<AppDispatch>();

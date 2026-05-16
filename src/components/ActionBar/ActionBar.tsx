@@ -1,5 +1,4 @@
-// ActionBar.tsx
-import React from "react";
+import React, { useState } from "react";
 import styles from "./ActionBar.module.css";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +13,8 @@ import { getSocket } from "../../socket/socket";
 
 const ActionBar: React.FC = () => {
   const dispatch = useDispatch();
+
+  const [showBets, setShowBets] = useState(false);
 
   const bets = useSelector(
     (state: RootState) => state.betSlip.bets
@@ -35,8 +36,7 @@ const ActionBar: React.FC = () => {
   const handlePlaceBet = () => {
     if (!activeLobby) return;
 
-    const payload = [
-      "bet",
+    const payload = 
       {
         lobbyId: activeLobby.lobby_uuid,
         bets: bets.map((bet) => ({
@@ -44,16 +44,17 @@ const ActionBar: React.FC = () => {
           chip: bet.chip,
           amt: bet.amt,
         })),
-      },
-    ];
+      } ;
 
     console.log("BET PAYLOAD:", payload);
 
     const socket = getSocket();
 
-    socket?.emit("message", payload);
+    socket?.emit("bet", payload);
 
     dispatch(clearBets());
+
+    setShowBets(false);
   };
 
   const handleUndo = () => {
@@ -62,8 +63,53 @@ const ActionBar: React.FC = () => {
 
   return (
     <div className={styles.bar}>
+      {showBets && bets.length > 0 && (
+        <div className={styles.betDropdown}>
+      <div className={styles.betHeader}>
+  <span>Current Bets</span>
+
+  <button
+    className={styles.closeBtn}
+    onClick={() => setShowBets(false)}
+  >
+    <span className="material-symbols-outlined">
+      close
+    </span>
+  </button>
+</div>
+
+          <div className={styles.betList}>
+            {bets.map((bet, index) => (
+              <div
+                key={index}
+                className={styles.betItem}
+              >
+                <div>
+                  <p className={styles.betNumber}>
+                    {bet.cat}
+                  </p>
+
+                  <span className={styles.betChip}>
+                    Chip: ₹{bet.chip}
+                  </span>
+                </div>
+
+                <div className={styles.betAmount}>
+                  ₹ {bet.amt}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className={styles.inner}>
-        <div className={styles.cartLeft}>
+        <div
+          className={styles.cartLeft}
+          onClick={() =>
+            setShowBets((prev) => !prev)
+          }
+        >
           <div className={styles.cartIconWrapper}>
             <span
               className={`material-symbols-outlined ${styles.cartIcon}`}
@@ -71,12 +117,16 @@ const ActionBar: React.FC = () => {
               shopping_cart
             </span>
 
-            {totalBets}
+            {totalBets > 0 && (
+              <div className={styles.badge}>
+                {totalBets}
+              </div>
+            )}
           </div>
 
           <div className={styles.cartInfo}>
             <p className={styles.cartLabel}>
-              Total Bets: {totalBets}
+              Total Bets
             </p>
 
             <p className={styles.cartTotal}>

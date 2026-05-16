@@ -10,7 +10,7 @@ const initialState: SocketState = {
         operator_id: "",
         balance: "0.00",
     },
-      isRulesModalOpen: false,
+    isRulesModalOpen: false,
     lobbies: [],
 };
 
@@ -36,19 +36,57 @@ const socketSlice = createSlice({
         setInfo(state, action: PayloadAction<InfoData>) {
             state.info = action.payload;
         },
-          toggleRulesModal(state) {
-      state.isRulesModalOpen = !state.isRulesModalOpen;
-    },
-      setLobbies(state, action: PayloadAction<Lobby[]>) {
+        toggleRulesModal(state) {
+            state.isRulesModalOpen = !state.isRulesModalOpen;
+        },
+       setLobbies: (state, action: PayloadAction<Lobby[]>) => {
       state.lobbies = action.payload;
+    },
+
+    // -----------------------------------------------------------------------
+    // UPDATE SINGLE LOBBY
+    // -----------------------------------------------------------------------
+  updateLobby: (state, action: PayloadAction<Lobby>) => {
+  const updatedLobby = action.payload;
+
+  const index = state.lobbies.findIndex(
+    (lobby) => lobby.lobby_uuid === updatedLobby.lobby_uuid
+  );
+
+  if (index !== -1) {
+    state.lobbies[index] = {
+      ...state.lobbies[index],
+      ...updatedLobby,
+    };
+  } else {
+    state.lobbies.unshift(updatedLobby);
+  }
+},
+
+    // -----------------------------------------------------------------------
+    // ADD NEW LOBBY
+    // -----------------------------------------------------------------------
+    addLobby: (state, action: PayloadAction<Lobby[]>) => {
+      const newLobbies = action.payload;
+
+      // prevent duplicate
+      const filtered = newLobbies.filter(
+        (newLobby) =>
+          !state.lobbies.some(
+            (existing) =>
+              existing.lobby_uuid === newLobby.lobby_uuid
+          )
+      );
+
+      state.lobbies = [...filtered, ...state.lobbies];
     },
     },
 });
 
 export const {
-    socketConnected,
-    socketDisconnected,setLobbies,
-    setInfo,toggleRulesModal,
+    socketConnected,updateLobby,addLobby,
+    socketDisconnected, setLobbies,
+    setInfo, toggleRulesModal,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

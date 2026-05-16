@@ -19,10 +19,25 @@
   font-weight: 700;
   font-size: 14px;
   transition: all 200ms ease;
+  text-transform: uppercase;
 }
 
 .chip:active {
   transform: scale(0.95);
+}
+
+
+.chipActive {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.chipDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+  color: white;
+  filter: grayscale(1);
 }
 
 .chipActive {

@@ -63,49 +63,39 @@ const BetRow: React.FC<BetOption> = ({
   return (
     <div className={styles.card}>
       {/* TOP */}
-    <div className={styles.topRow}>
-  <div className={styles.leftInfo}>
-    <div className={styles.badgeGroup}>
-      {digits.map((digit) => (
-        <div
-          key={digit}
-          className={styles.badge}
-        >
-          {digit}
+      <div className={styles.topRow}>
+        <div className={styles.leftInfo}>
+          <div className={styles.badgeGroup}>
+            {digits.map((digit) => (
+              <div
+                key={digit}
+                className={styles.badge}
+              >
+                {digit}
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.textContent}>
+            <div className={styles.titleRow}>
+              <p className={styles.betName}>
+                {label}
+              </p>
+            </div>
+
+            <p className={styles.multiplier}>
+              Win {multiplier}X / per bet
+            </p>
+          </div>
         </div>
-      ))}
-    </div>
 
-    <div className={styles.textContent}>
-      <div className={styles.titleRow}>
-        <p className={styles.betName}>
-          {label}
-        </p>
-
-        <p className={styles.multiplier}>
-          Win {multiplier}X / per bet
+        <p className={styles.price}>
+          ₹ {pricePerTicket}.00
         </p>
       </div>
 
-      <p className={styles.category}>
-        {cat === 1
-          ? "Single Digit"
-          : cat === 2
-          ? "Double Digit"
-          : "Triple Digit"}
-      </p>
-    </div>
-  </div>
-
-  <p className={styles.price}>
-    ₹ {pricePerTicket}.00
-  </p>
-</div>
-
       {/* BOTTOM */}
       <div className={styles.bottomRow}>
-        {/* LEFT INPUT */}
-        {/* LEFT INPUTS */}
         <div className={styles.guessBox}>
           {digits.map((digit, index) => (
             <input

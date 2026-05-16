@@ -5,6 +5,8 @@ import {
   socketDisconnected,
   setInfo,
   setLobbies,
+  updateLobby,
+  addLobby,
 } from "../store/slices/socketSlice";
 
 import { createSocket, connectSocket } from "./socket";
@@ -19,10 +21,14 @@ export const initSocketListeners = (
 ) => {
   const socket = createSocket(token, gameId);
 
-  socket?.removeAllListeners();
+  if (!socket) return;
 
-  // ---- Connection lifecycle -----------------------------------------------
-  socket?.on("connect", () => {
+  socket.removeAllListeners();
+
+  // -------------------------------------------------------------------------
+  // CONNECTION EVENTS
+  // -------------------------------------------------------------------------
+  socket.on("connect", () => {
     dispatch(socketConnected());
 
     if (import.meta.env.DEV) {
@@ -30,7 +36,7 @@ export const initSocketListeners = (
     }
   });
 
-  socket?.on("disconnect", (reason) => {
+  socket.on("disconnect", (reason) => {
     dispatch(socketDisconnected());
 
     if (import.meta.env.DEV) {
@@ -38,34 +44,59 @@ export const initSocketListeners = (
     }
   });
 
-  socket?.on("connect_error", (err) => {
+  socket.on("connect_error", (err) => {
     if (import.meta.env.DEV) {
       console.error("Socket connect error:", err.message);
     }
   });
 
-  // ----------------------------------------------------------------
-  // INFO EVENT
-  // ----------------------------------------------------------------
-  socket?.on("message", (response) => {
-  console.log("SOCKET MESSAGE:", response);
+  // -------------------------------------------------------------------------
+  // MAIN MESSAGE EVENT
+  // -------------------------------------------------------------------------
+  socket.on("message", (response) => {
+    console.log("SOCKET RESPONSE:", response);
 
-  const { eventName, data } = response;
+    if (!response) return;
 
-  switch (eventName) {
-    case "info":
-      dispatch(setInfo(data));
-      break;
+    const { eventName, data } = response;
 
-    case "lobby":
-      dispatch(setLobbies(data));
-      break;
+    switch (eventName) {
+      // ---------------------------------------------------------------------
+      // INFO
+      // ---------------------------------------------------------------------
+      case "info":
+        dispatch(setInfo(data));
+        break;
 
-    default:
-      break;
-  }
-});
+      // ---------------------------------------------------------------------
+      // INITIAL LOBBY LIST
+      // ---------------------------------------------------------------------
+      case "lobby":
+        dispatch(setLobbies(data));
+        break;
 
-  // ---- Connect -------------------------------------------------------------
+      // ---------------------------------------------------------------------
+      // UPDATE SINGLE LOBBY
+      // ---------------------------------------------------------------------
+      case "lobby_updated":
+        dispatch(updateLobby(data));
+        break;
+
+      // ---------------------------------------------------------------------
+      // CREATE NEW LOBBY
+      // ---------------------------------------------------------------------
+      case "lobby_created":
+        dispatch(addLobby(data));
+        break;
+
+      default:
+        console.log("Unhandled socket event:", eventName);
+        break;
+    }
+  });
+
+  // -------------------------------------------------------------------------
+  // CONNECT
+  // -------------------------------------------------------------------------
   connectSocket();
 };
