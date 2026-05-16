@@ -1,13 +1,5 @@
 export type BetType = 'A' | 'B' | 'C' | 'AB' | 'AC' | 'BC' | 'ABC';
 
-export interface BetOption {
-  type: BetType;
-  betType: BetType;
-  label: string;
-  multiplier: number;
-  pricePerTicket: number;
-  digits: string[];
-}
 
 export interface CartItem {
   id: string;
@@ -54,4 +46,14 @@ export interface Lobby {
   bet_close_at: string;
   status: string;
   result: string | null;
+}
+// types.ts
+export interface BetOption {
+  type: string;
+  betType: string;
+  label: string;
+  multiplier: number;
+  pricePerTicket: number;
+  digits: string[];
+  cat: number;
 }

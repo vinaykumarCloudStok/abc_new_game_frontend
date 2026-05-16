@@ -1,61 +1,166 @@
-import React from 'react';
-import styles from './BetRow.module.css';
+// BetRow.tsx
+import React, { useState } from "react";
+import styles from "./BetRow.module.css";
+import type { BetOption } from "../../types";
 
+import { useDispatch } from "react-redux";
+import { addBet } from "../../store/slices/betSlipSlice";
 
+const BetRow: React.FC<BetOption> = ({
+  label,
+  multiplier,
+  pricePerTicket,
+  digits,
+  cat,
+}) => {
+  const dispatch = useDispatch();
 
-const BetRow: React.FC = () => {
+  const [qty, setQty] = useState(0);
 
+  // input value for A/B/C/AB/ABC
+  const [inputValue, setInputValue] = useState("");
+
+  const handleIncrease = () => {
+    setQty((prev) => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    setQty((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  const handleAdd = () => {
+    if (!qty) return;
+    if (!inputValue.trim()) return;
+
+    dispatch(
+      addBet({
+        id: crypto.randomUUID(),
+
+        // 1 = single
+        // 2 = double
+        // 3 = triple
+        cat,
+
+        // backend format
+        // 1:A
+        // 2:AB
+        // 3:ABC
+        chip: `${cat}:${inputValue}`,
+
+        qty,
+
+        amt: qty * pricePerTicket,
+
+        label,
+      })
+    );
+
+    // reset after add
+    setQty(0);
+    setInputValue("");
+  };
 
   return (
     <div className={styles.card}>
-      <div className={styles.topRow}>
-        <div className={styles.leftInfo}>
-          <div className={styles.badgeGroup}>
-            
-              <div  className={styles.badge}>
-               1
-              </div>
-          
-          </div>
-          <div>
-            <p className={styles.betName}>1</p>
-            <p className={styles.multiplier}>Win 1.90X</p>
-          </div>
+      {/* TOP */}
+    <div className={styles.topRow}>
+  <div className={styles.leftInfo}>
+    <div className={styles.badgeGroup}>
+      {digits.map((digit) => (
+        <div
+          key={digit}
+          className={styles.badge}
+        >
+          {digit}
         </div>
-        <p className={styles.price}>20 / tkt</p>
+      ))}
+    </div>
+
+    <div className={styles.textContent}>
+      <div className={styles.titleRow}>
+        <p className={styles.betName}>
+          {label}
+        </p>
+
+        <p className={styles.multiplier}>
+          Win {multiplier}X / per bet
+        </p>
       </div>
 
+      <p className={styles.category}>
+        {cat === 1
+          ? "Single Digit"
+          : cat === 2
+          ? "Double Digit"
+          : "Triple Digit"}
+      </p>
+    </div>
+  </div>
+
+  <p className={styles.price}>
+    ₹ {pricePerTicket}.00
+  </p>
+</div>
+
+      {/* BOTTOM */}
       <div className={styles.bottomRow}>
-        <div className={styles.stepper}>
+        {/* LEFT INPUT */}
+        {/* LEFT INPUTS */}
+        <div className={styles.guessBox}>
+          {digits.map((digit, index) => (
+            <input
+              key={digit}
+              type="text"
+              maxLength={1}
+              value={inputValue[index] || ""}
+              placeholder={digit}
+              className={styles.guessInput}
+              onChange={(e) => {
+                const value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^0-9]/g, "");
+
+                const updated = inputValue.split("");
+
+                updated[index] = value;
+
+                setInputValue(updated.join(""));
+              }}
+            />
+          ))}
+        </div>
+
+        {/* RIGHT CONTROLS */}
+        <div className={styles.actionSection}>
+          <div className={styles.stepper}>
+            <button
+              className={styles.stepBtn}
+              onClick={handleDecrease}
+            >
+              -
+            </button>
+
+            <input
+              className={styles.qtyInput}
+              readOnly
+              value={qty}
+            />
+
+            <button
+              className={styles.stepBtn}
+              onClick={handleIncrease}
+            >
+              +
+            </button>
+          </div>
+
           <button
-            className={styles.stepBtn}
-     
-            aria-label="Decrease quantity"
+            className={styles.addBtn}
+            onClick={handleAdd}
           >
-            <span className="material-symbols-outlined">remove</span>
-          </button>
-          <input
-            className={styles.qtyInput}
-            type="number"
-            readOnly
-            value={1}
-            aria-label="Quantity"
-          />
-          <button
-            className={styles.stepBtn}
-         
-            aria-label="Increase quantity"
-          >
-            <span className="material-symbols-outlined">add</span>
+            ADD
           </button>
         </div>
-        <button
-          className={styles.addBtn}
-          
-          
-        >
-          ADD
-        </button>
       </div>
     </div>
   );
