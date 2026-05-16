@@ -8,7 +8,6 @@ import { addBet } from "../../store/slices/betSlipSlice";
 
 const BetRow: React.FC<BetOption> = ({
   label,
-  multiplier,
   pricePerTicket,
   digits,
   cat,
@@ -25,27 +24,28 @@ const BetRow: React.FC<BetOption> = ({
   };
 
   const handleDecrease = () => {
-    setQty((prev) => (prev > 0 ? prev - 1 : 0));
+    setQty((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
   const handleAdd = () => {
     if (!qty) return;
     if (!inputValue.trim()) return;
 
+    const values = inputValue.split("");
+
+    // generate backend chip format
+    const chipValue = values
+      .map((val, index) => `${index + 1}:${val}`)
+      .join("-");
+
     dispatch(
       addBet({
         id: crypto.randomUUID(),
 
-        // 1 = single
-        // 2 = double
-        // 3 = triple
         cat,
 
         // backend format
-        // 1:A
-        // 2:AB
-        // 3:ABC
-        chip: `${cat}:${inputValue}`,
+        chip: chipValue,
 
         qty,
 
@@ -55,7 +55,6 @@ const BetRow: React.FC<BetOption> = ({
       })
     );
 
-    // reset after add
     setQty(0);
     setInputValue("");
   };
@@ -67,90 +66,77 @@ const BetRow: React.FC<BetOption> = ({
         <div className={styles.leftInfo}>
           <div className={styles.badgeGroup}>
             {digits.map((digit) => (
-              <div
-                key={digit}
-                className={styles.badge}
-              >
+              <div key={digit} className={styles.badge}>
                 {digit}
               </div>
             ))}
           </div>
-
-          <div className={styles.textContent}>
-            <div className={styles.titleRow}>
-              <p className={styles.betName}>
-                {label}
-              </p>
-            </div>
-
-            <p className={styles.multiplier}>
-              Win {multiplier}X / per bet
-            </p>
-          </div>
         </div>
 
-        <p className={styles.price}>
-          ₹ {pricePerTicket}.00
-        </p>
-      </div>
-
-      {/* BOTTOM */}
-      <div className={styles.bottomRow}>
         <div className={styles.guessBox}>
           {digits.map((digit, index) => (
             <input
               key={digit}
               type="text"
+              inputMode="numeric"
               maxLength={1}
               value={inputValue[index] || ""}
               placeholder={digit}
               className={styles.guessInput}
               onChange={(e) => {
-                const value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^0-9]/g, "");
+                // only allow 0-9
+                const value = e.target.value.replace(/[^0-9]/g, "");
 
                 const updated = inputValue.split("");
 
                 updated[index] = value;
 
-                setInputValue(updated.join(""));
+                const finalValue = updated.join("");
+
+                setInputValue(finalValue);
+
+                // when typing starts -> default qty 1
+                if (finalValue.replace(/\s/g, "").length > 0) {
+                  setQty((prev) => (prev === 0 ? 1 : prev));
+                } else {
+                  setQty(0);
+                }
               }}
             />
           ))}
         </div>
+      </div>
 
-        {/* RIGHT CONTROLS */}
-        <div className={styles.actionSection}>
-          <div className={styles.stepper}>
-            <button
-              className={styles.stepBtn}
-              onClick={handleDecrease}
-            >
-              -
-            </button>
+      <div className={styles.actionSection}>
+        <div className={styles.stepper}>
+          <button
+            className={styles.stepBtn}
+            onClick={handleDecrease}
+            disabled={qty <= 1}
+          >
+            -
+          </button>
 
-            <input
-              className={styles.qtyInput}
-              readOnly
-              value={qty}
-            />
-
-            <button
-              className={styles.stepBtn}
-              onClick={handleIncrease}
-            >
-              +
-            </button>
-          </div>
+          <input
+            className={styles.qtyInput}
+            readOnly
+            value={qty}
+          />
 
           <button
-            className={styles.addBtn}
-            onClick={handleAdd}
+            className={styles.stepBtn}
+            onClick={handleIncrease}
           >
-            ADD
+            +
           </button>
         </div>
+
+        <button
+          className={styles.addBtn}
+          onClick={handleAdd}
+        >
+          ADD
+        </button>
       </div>
     </div>
   );

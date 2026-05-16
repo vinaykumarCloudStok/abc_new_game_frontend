@@ -7,7 +7,7 @@
   border-radius: var(--radius-xl);
   padding: var(--spacing-sm);
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   gap: var(--spacing-sm);
 }
 
@@ -15,7 +15,7 @@
 
 .topRow {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
   gap: 12px;
 }
@@ -118,8 +118,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
+  justify-content:space-between;
   margin-top: var(--spacing-xs);
-  flex-wrap: wrap;
 }
 
 /* INPUTS */
@@ -128,7 +128,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1;
 }
 
 .guessInput {
@@ -171,7 +170,7 @@
 .stepper {
   display: flex;
   align-items: center;
-
+  min-width: 140px;
   background: rgba(60, 46, 79, 0.4);
   backdrop-filter: blur(20px);
 
@@ -245,12 +244,12 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-direction: column;
 }
 
 .addBtn {
-  min-width: 110px;
+  min-width: 147px;
   height: 48px;
-
   padding: 0 18px;
 
   background-color: var(--color-secondary-container);
@@ -291,16 +290,8 @@
     align-items: stretch;
   }
 
-  .actionSection {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .addBtn {
-    flex: 1;
-  }
 
   .guessBox {
-    width: 100%;
+    flex-wrap: wrap;
   }
 }

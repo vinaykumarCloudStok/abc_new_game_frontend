@@ -131,3 +131,7 @@ body {
   line-height: 1;
   user-select: none;
 }
+
+.icons{
+  font-size: 1.5rem;
+}

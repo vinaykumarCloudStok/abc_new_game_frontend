@@ -8,14 +8,29 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+  justify-content: space-between;
   padding: 0 4px;
   margin-top: var(--spacing-md);
 }
-
+.sectionWin {
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+}
 .sectionHeader:first-child {
   margin-top: 0;
 }
-
+.sectionMeta{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2px;
+}
+.sectionPrice{
+  font-size: 14px;
+  font-weight: 600;
+}
 .accent {
   width: 4px;
   height: 16px;

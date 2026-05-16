@@ -39,6 +39,7 @@ export interface SocketState {
   info:InfoData;
   isRulesModalOpen: boolean;
   lobbies: Lobby[],
+ selectedLobby: string | null;
 }
 export interface Lobby {
   lobby_uuid: string;

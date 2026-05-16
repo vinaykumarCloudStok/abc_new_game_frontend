@@ -12,6 +12,7 @@ const initialState: SocketState = {
     },
     isRulesModalOpen: false,
     lobbies: [],
+     selectedLobby: null,
 };
 
 const socketSlice = createSlice({
@@ -39,9 +40,18 @@ const socketSlice = createSlice({
         toggleRulesModal(state) {
             state.isRulesModalOpen = !state.isRulesModalOpen;
         },
-       setLobbies: (state, action: PayloadAction<Lobby[]>) => {
-      state.lobbies = action.payload;
-    },
+     setLobbies: (state, action: PayloadAction<Lobby[]>) => {
+  state.lobbies = action.payload;
+
+  // auto select first lobby
+  if (
+    action.payload.length > 0 &&
+    !state.selectedLobby
+  ) {
+    state.selectedLobby =
+      action.payload[0].lobby_uuid;
+  }
+},
 
     // -----------------------------------------------------------------------
     // UPDATE SINGLE LOBBY
@@ -80,13 +90,16 @@ const socketSlice = createSlice({
 
       state.lobbies = [...filtered, ...state.lobbies];
     },
+    selectLobby: (state, action: PayloadAction<string>) => {
+  state.selectedLobby = action.payload;
+},
     },
 });
 
 export const {
     socketConnected,updateLobby,addLobby,
     socketDisconnected, setLobbies,
-    setInfo, toggleRulesModal,
+    setInfo, toggleRulesModal,selectLobby,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

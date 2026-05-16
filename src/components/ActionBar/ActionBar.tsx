@@ -24,7 +24,15 @@ const ActionBar: React.FC = () => {
     (state: RootState) => state.socketSlice.lobbies
   );
 
-  const activeLobby = lobbies?.[0];
+ const selectedLobby = useSelector(
+  (state: RootState) =>
+    state.socketSlice.selectedLobby
+);
+
+const activeLobby = lobbies.find(
+  (lobby) =>
+    lobby.lobby_uuid === selectedLobby
+);
 
   const totalBets = bets.length;
 
@@ -90,12 +98,12 @@ const ActionBar: React.FC = () => {
                   </p>
 
                   <span className={styles.betChip}>
-                    Chip: ₹{bet.chip}
+                    Chip: {bet.chip}
                   </span>
                 </div>
 
                 <div className={styles.betAmount}>
-                  ₹ {bet.amt}
+                  {bet.amt}
                 </div>
               </div>
             ))}
@@ -130,7 +138,7 @@ const ActionBar: React.FC = () => {
             </p>
 
             <p className={styles.cartTotal}>
-              ₹ {totalAmount}
+              {totalAmount}
             </p>
           </div>
         </div>

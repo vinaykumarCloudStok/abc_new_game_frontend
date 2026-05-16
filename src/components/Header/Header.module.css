@@ -8,13 +8,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 var(--spacing-margin-mobile);
+  /* padding: 0 var(--spacing-margin-mobile); */
   height: 64px;
-  background: rgba(26, 12, 44, 0.4);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(26, 12, 44, 1);
+  
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 1px 24px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 24px rgba(0,0,0,1);
 }
 
 .left {

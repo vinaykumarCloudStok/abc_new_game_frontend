@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './InfoCard.module.css';
 import { toggleRulesModal } from '../../store/slices/socketSlice';
 import { useAppDispatch } from '../../hooks/redux';
+import { BiInfoCircle } from 'react-icons/bi';
 
 
 const InfoCard: React.FC = () => {
@@ -9,7 +10,9 @@ const InfoCard: React.FC = () => {
 
   return (
     <section className={styles.card}>
+
       <div className={styles.glow} />
+      
       <div>
         <p className={styles.label}>Last Draw Result</p>
         <div className={styles.digits}>
@@ -23,9 +26,9 @@ const InfoCard: React.FC = () => {
       <button
         className={styles.helpBtn}
         onClick={() => dispatch(toggleRulesModal())}
-        aria-label="Show rules"
+       
       >
-        <span className="material-symbols-outlined">help</span>
+       <BiInfoCircle className='icons'/>
       </button>
     </section>
   );
