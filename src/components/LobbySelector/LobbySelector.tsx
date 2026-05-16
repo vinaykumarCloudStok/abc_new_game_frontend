@@ -5,7 +5,6 @@ import type { RootState } from "../../store";
 import styles from "./LobbySelector.module.css";
 import { selectLobby } from "../../store/slices/socketSlice";
 
-
 const LobbySelector: React.FC = () => {
   const dispatch = useDispatch();
 
@@ -14,8 +13,7 @@ const LobbySelector: React.FC = () => {
   );
 
   const selectedLobby = useSelector(
-    (state: RootState) =>
-      state.socketSlice.selectedLobby
+    (state: RootState) => state.socketSlice.selectedLobby
   );
 
   const formatTime = (dateString: string) => {
@@ -38,62 +36,87 @@ const LobbySelector: React.FC = () => {
       hour12: true,
     });
 
-    return isTomorrow
-      ? `Tomorrow ${time}`
-      : time;
+    return isTomorrow ? `Tomorrow ${time}` : time;
   };
 
- return (
-  <section className={styles.section}>
-    <div className={`${styles.scroll} no-scrollbar`}>
-      {lobbies?.map((lobby) => {
-        const isClosed =
-          lobby.status === "bet_closed";
-const isOpen =
-          lobby.status === "betting_open";
-        const isActive =
-          selectedLobby === lobby.lobby_uuid;
+  // betting_open lobbies first
+  const sortedLobbies = [...(lobbies || [])].sort((a, b) => {
+    if (
+      a.status === "betting_open" &&
+      b.status !== "betting_open"
+    ) {
+      return -1;
+    }
 
-        return (
-          <button
-            key={lobby.lobby_uuid}
-            disabled={isClosed}
-            onClick={() =>
-              dispatch(
-                selectLobby(lobby.lobby_uuid)
-              )
-            }
-            className={`
-              ${styles.chip}
-              ${
-                isClosed
-                  ? styles.chipDisabled
-                  : isActive
-                  ? styles.chipSelected
-                  : styles.chipActive
+    if (
+      a.status !== "betting_open" &&
+      b.status === "betting_open"
+    ) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+  return (
+    <section className={styles.section}>
+      <div className={`${styles.scroll} no-scrollbar`}>
+        {sortedLobbies.map((lobby) => {
+          const isClosed =
+            lobby.status === "bet_closed";
+
+          const isOpen =
+            lobby.status === "betting_open";
+const isResulted = lobby.status === "resulted";
+          const isActive =
+            selectedLobby === lobby.lobby_uuid;
+
+          return (
+            <button
+              key={lobby.lobby_uuid}
+           disabled={isClosed || isResulted}
+              onClick={() =>
+                dispatch(
+                  selectLobby(lobby.lobby_uuid)
+                )
               }
-            `}
-          >
-            <span>
-              {formatTime(lobby.result_at)}
-            </span>
+              className={`
+                ${styles.chip}
+                ${
+                  isClosed
+                    ? styles.chipDisabled
+                    : isActive
+                    ? styles.chipSelected
+                    : styles.chipActive
+                }
+              `}
+            >
+              <span>
+                {formatTime(lobby.result_at)}
+              </span>
 
-            {isClosed && (
-              <span className={styles.closedBadge}>
-                CLOSED
-              </span>
-            )}
-             {isOpen && (
-              <span className={styles.openBadge}>
-                Open
-              </span>
-            )}
-          </button>
-        );
-      })}
-    </div>
-  </section>
-);
+              {isClosed && (
+                <span className={styles.closedBadge}>
+                  CLOSED
+                </span>
+              )}
+
+              {isOpen && (
+                <span className={styles.openBadge}>
+                  Open
+                </span>
+              )}
+              {isResulted && (
+  <span className={styles.resultBadge}>
+    Resulted
+  </span>
+)}
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
 };
 
 export default LobbySelector;

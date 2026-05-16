@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { InfoData, Lobby, SocketState } from "../../types";
+import type { InfoData, Lobby, LobbyResult, SocketState } from "../../types";
 
 
 const initialState: SocketState = {
@@ -13,6 +13,7 @@ const initialState: SocketState = {
     isRulesModalOpen: false,
     lobbies: [],
      selectedLobby: null,
+     latestResult: null,
 };
 
 const socketSlice = createSlice({
@@ -56,7 +57,10 @@ const socketSlice = createSlice({
     // -----------------------------------------------------------------------
     // UPDATE SINGLE LOBBY
     // -----------------------------------------------------------------------
-  updateLobby: (state, action: PayloadAction<Lobby>) => {
+updateLobby: (
+  state,
+  action: PayloadAction<Partial<Lobby> & { lobby_uuid: string }>
+) => {
   const updatedLobby = action.payload;
 
   const index = state.lobbies.findIndex(
@@ -68,8 +72,6 @@ const socketSlice = createSlice({
       ...state.lobbies[index],
       ...updatedLobby,
     };
-  } else {
-    state.lobbies.unshift(updatedLobby);
   }
 },
 
@@ -93,13 +95,37 @@ const socketSlice = createSlice({
     selectLobby: (state, action: PayloadAction<string>) => {
   state.selectedLobby = action.payload;
 },
+setLobbyResult: (
+  state,
+  action: PayloadAction<LobbyResult>
+) => {
+  state.latestResult = action.payload;
+},
+removeLobby: (state, action: PayloadAction<string>) => {
+  state.lobbies = state.lobbies.filter(
+    (lobby) => lobby.lobby_uuid !== action.payload
+  );
+
+  // if selected removed -> select first available
+  if (state.selectedLobby === action.payload) {
+    state.selectedLobby =
+      state.lobbies.length > 0
+        ? state.lobbies[0].lobby_uuid
+        : null;
+  }
+},
+
+clearLatestResult: (state) => {
+  state.latestResult = null;
+},
     },
 });
 
 export const {
     socketConnected,updateLobby,addLobby,
-    socketDisconnected, setLobbies,
-    setInfo, toggleRulesModal,selectLobby,
+    socketDisconnected, setLobbies,  setLobbyResult,
+    setInfo, toggleRulesModal,selectLobby, removeLobby,
+  clearLatestResult,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

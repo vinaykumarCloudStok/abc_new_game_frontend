@@ -1,0 +1,43 @@
+.popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+
+  min-width: 250px;
+  max-width: 350px;
+
+  padding: 14px 18px;
+  border-radius: 12px;
+
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+
+  animation: slideIn 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.success {
+  background: #22c55e;
+}
+
+.error {
+  background: #ef4444;
+}
+
+.info {
+  background: #3b82f6;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(120%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

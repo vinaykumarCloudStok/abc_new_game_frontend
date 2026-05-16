@@ -11,6 +11,7 @@ import type { AppDispatch } from '../../store'
 import { getQueryParams } from '../../utils/helper'
 import { getSocket } from '../../socket/socket'
 import { initSocketListeners } from '../../socket/socketListner'
+import CommonPopup from '../modal/CommonPopup'
    const mainStyle: React.CSSProperties = {
   marginTop: '80px',
   display: 'flex',
@@ -31,6 +32,7 @@ const HomeLayout = () => {
   }, [token, dispatch, gameId]);
   return (
     <>
+      <CommonPopup />
       <RulesModal />
       <Header />
       <main style={mainStyle}>

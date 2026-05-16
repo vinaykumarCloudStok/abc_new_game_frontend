@@ -33,6 +33,14 @@ export interface InfoData {
   operator_id: string;
   balance: string;
 }
+export interface LobbyResult {
+  lobby_uuid: string;
+  result: {
+    a: number;
+    b: number;
+    c: number;
+  };
+}
 export interface SocketState {
   connected: boolean;
   loading: boolean;
@@ -40,6 +48,7 @@ export interface SocketState {
   isRulesModalOpen: boolean;
   lobbies: Lobby[],
  selectedLobby: string | null;
+  latestResult: LobbyResult | null;
 }
 export interface Lobby {
   lobby_uuid: string;
