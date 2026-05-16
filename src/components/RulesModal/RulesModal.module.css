@@ -1,0 +1,119 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 200ms ease;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 12, 44, 0.8);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+.modal {
+  background: rgba(60, 46, 79, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(214, 186, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  z-index: 10;
+  animation: slideUp 250ms ease;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.modalTitle {
+  font-family: var(--font-montserrat);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: var(--radius-full);
+  transition: background 150ms, color 150ms;
+}
+
+.closeBtn:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--color-on-surface);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  overflow-y: auto;
+  max-height: 60vh;
+  padding-right: 4px;
+  font-family: var(--font-inter);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-on-surface);
+}
+
+.ruleKey {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 4px;
+  padding-top: var(--spacing-sm);
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.gotItBtn {
+  width: 100%;
+  margin-top: var(--spacing-md);
+  padding: 14px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: transform 100ms ease, opacity 150ms;
+}
+
+.gotItBtn:active {
+  transform: scale(0.97);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}

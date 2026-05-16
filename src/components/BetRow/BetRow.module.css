@@ -1,0 +1,165 @@
+.card {
+  background: rgba(60, 46, 79, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.leftInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.badgeGroup {
+  display: flex;
+}
+
+.badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-primary-container);
+  border: 2px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.badge + .badge {
+  margin-left: -16px;
+}
+
+.badge:first-child {
+  z-index: 2;
+}
+
+.badge:nth-child(2) {
+  z-index: 1;
+}
+
+.badge:last-child {
+  z-index: 0;
+}
+
+.betName {
+  font-family: var(--font-inter);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+  color: var(--color-secondary);
+}
+
+.multiplier {
+  font-family: var(--font-inter);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+}
+
+.price {
+  font-family: var(--font-inter);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-tertiary);
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  background: rgba(60, 46, 79, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.stepBtn {
+  width: 48px;
+  height: 48px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-surface);
+  transition: background 150ms ease, transform 100ms ease;
+}
+
+.stepBtn:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.stepBtn:active {
+  transform: scale(0.9);
+  background: rgba(255,255,255,0.08);
+}
+
+.qtyInput {
+  width: 56px;
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  font-family: var(--font-montserrat);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-secondary);
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.qtyInput::-webkit-outer-spin-button,
+.qtyInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.addBtn {
+  flex: 1;
+  height: 48px;
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 4px 0 #3c4d00;
+  transition: transform 100ms ease, box-shadow 100ms ease;
+}
+
+.addBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #3c4d00;
+}
+
+.addBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -1,0 +1,106 @@
+.bar {
+  position: fixed;
+  bottom: 24px;
+  left: var(--spacing-margin-mobile);
+  right: var(--spacing-margin-mobile);
+  z-index: 40;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.inner {
+  background: rgba(65, 51, 84, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(214, 186, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 0 15px rgba(214, 186, 255, 0.15), 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.cartLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.cartIconWrapper {
+  position: relative;
+}
+
+.cartIcon {
+  font-size: 28px !important;
+  color: var(--color-secondary);
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-tertiary);
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--font-montserrat);
+  color: var(--color-on-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cartInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cartLabel {
+  font-family: var(--font-inter);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+}
+
+.cartTotal {
+  font-family: var(--font-montserrat);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-secondary);
+}
+
+.placeBtn {
+  padding: 0 var(--spacing-lg);
+  height: 48px;
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+  font-family: var(--font-montserrat);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(195, 244, 0, 0.35);
+  transition: transform 100ms ease, box-shadow 100ms ease, opacity 200ms;
+}
+
+.placeBtn:hover {
+  box-shadow: 0 0 28px rgba(195, 244, 0, 0.5);
+}
+
+.placeBtn:active {
+  transform: scale(0.95);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.placeBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}

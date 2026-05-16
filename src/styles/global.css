@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+:root {
+  /* Color System */
+  --color-background: #1a0c2c;
+  --color-surface: #1a0c2c;
+  --color-surface-dim: #1a0c2c;
+  --color-surface-bright: #413354;
+  --color-surface-container: #261939;
+  --color-surface-container-low: #221534;
+  --color-surface-container-high: #312344;
+  --color-surface-container-highest: #3c2e4f;
+  --color-surface-variant: #3c2e4f;
+
+  --color-primary: #d6baff;
+  --color-primary-container: #2d0b5a;
+  --color-primary-fixed: #ecdcff;
+  --color-primary-fixed-dim: #d6baff;
+  --color-on-primary: #3d1f6a;
+  --color-on-primary-container: #987aca;
+  --color-on-primary-fixed: #270254;
+
+  --color-secondary: #ffffff;
+  --color-secondary-container: #c3f400;
+  --color-secondary-fixed: #c3f400;
+  --color-secondary-fixed-dim: #abd600;
+  --color-on-secondary: #283500;
+  --color-on-secondary-container: #3c4d00;
+  --color-on-secondary-fixed: #161e00;
+  --color-on-secondary-fixed-variant: #3c4d00;
+
+  --color-tertiary: #e9c400;
+  --color-tertiary-container: #c9a900;
+  --color-tertiary-fixed: #ffe16d;
+  --color-tertiary-fixed-dim: #e9c400;
+  --color-on-tertiary: #3a3000;
+  --color-on-tertiary-container: #4c3f00;
+  --color-on-tertiary-fixed: #221b00;
+  --color-on-tertiary-fixed-variant: #544600;
+
+  --color-on-background: #eddcff;
+  --color-on-surface: #eddcff;
+  --color-on-surface-variant: #ccc4d1;
+  --color-outline: #958e9b;
+  --color-outline-variant: #4a4550;
+
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-on-error: #690005;
+  --color-on-error-container: #ffdad6;
+
+  --color-inverse-surface: #eddcff;
+  --color-inverse-on-surface: #382a4b;
+  --color-inverse-primary: #6d4f9c;
+  --color-surface-tint: #d6baff;
+
+  /* Typography */
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+
+  /* Spacing */
+  --spacing-base: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+  --spacing-gutter: 16px;
+  --spacing-margin-mobile: 20px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-inter);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  padding-bottom: 128px;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-style: normal;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  user-select: none;
+}
