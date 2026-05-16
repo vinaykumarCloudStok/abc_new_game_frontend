@@ -106,13 +106,17 @@ removeLobby: (state, action: PayloadAction<string>) => {
     (lobby) => lobby.lobby_uuid !== action.payload
   );
 
-  // if selected removed -> select first available
-  if (state.selectedLobby === action.payload) {
-    state.selectedLobby =
-      state.lobbies.length > 0
-        ? state.lobbies[0].lobby_uuid
-        : null;
-  }
+ if (state.selectedLobby === action.payload) {
+  const openLobby = state.lobbies.find(
+    (lobby) => lobby.status === "betting_open"
+  );
+
+  state.selectedLobby = openLobby
+    ? openLobby.lobby_uuid
+    : state.lobbies.length > 0
+    ? state.lobbies[0].lobby_uuid
+    : null;
+}
 },
 
 clearLatestResult: (state) => {

@@ -82,41 +82,52 @@ export const initSocketListeners = (
       // ---------------------------------------------------------------------
       // UPDATE SINGLE LOBBY
       // ---------------------------------------------------------------------
-      case "lobby_updated":
-        dispatch(updateLobby(data));
-        break;
-case "lobby_result":
-  dispatch(setLobbyResult(data));
+     case "lobby_updated":
+  dispatch(updateLobby(data));
 
-  // mark lobby resulted
-  dispatch(
-    updateLobby({
-      lobby_uuid: data.lobby_uuid,
-      status: "resulted",
-    })
-  );
-
-  // remove after 2 sec
-  setTimeout(() => {
-    dispatch(removeLobby(data.lobby_uuid));
-    dispatch(clearLatestResult());
-  }, 2000);
+  // SHOW ROLLBACK POPUP
+  if (data.status === "cancelled") {
+    dispatch(
+      showPopup({
+        type: "error",
+        message: "Lobby cancelled. Your bets have been rolled back.",
+      })
+    );
+  }
 
   break;
+      case "lobby_result":
+        dispatch(setLobbyResult(data));
+
+        // mark lobby resulted
+        dispatch(
+          updateLobby({
+            lobby_uuid: data.lobby_uuid,
+            status: "resulted",
+          })
+        );
+
+        // remove after 2 sec
+        setTimeout(() => {
+          dispatch(removeLobby(data.lobby_uuid));
+          dispatch(clearLatestResult());
+        }, 7000);
+
+        break;
       // ---------------------------------------------------------------------
       // CREATE NEW LOBBY
       // ---------------------------------------------------------------------
       case "lobby_created":
         dispatch(addLobby(data));
         break;
-  case "bet":
-    dispatch(
-      showPopup({
-        type: "success",
-        message: data.message,
-      })
-    );
-    break;
+      case "bet":
+        dispatch(
+          showPopup({
+            type: "success",
+            message: data.message,
+          })
+        );
+        break;
       default:
         console.log("Unhandled socket event:", eventName);
         break;

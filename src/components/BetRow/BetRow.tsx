@@ -1,10 +1,11 @@
 // BetRow.tsx
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./BetRow.module.css";
 import type { BetOption } from "../../types";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addBet } from "../../store/slices/betSlipSlice";
+import type { RootState } from "../../store";
 
 const BetRow: React.FC<BetOption> = ({
   label,
@@ -19,15 +20,41 @@ const BetRow: React.FC<BetOption> = ({
   // input value for A/B/C/AB/ABC
   const [inputValue, setInputValue] = useState("");
 
+  // ----------------------------------------------------------------
+  // GET SELECTED LOBBY
+  // ----------------------------------------------------------------
+  const { lobbies, selectedLobby } = useSelector(
+    (state: RootState) => state.socketSlice
+  );
+
+  const currentLobby = useMemo(() => {
+    return lobbies.find(
+      (item) => item.lobby_uuid === selectedLobby
+    );
+  }, [lobbies, selectedLobby]);
+
+  // ----------------------------------------------------------------
+  // DISABLE CONDITION
+  // ----------------------------------------------------------------
+const isBetDisabled =
+  !currentLobby || 
+  currentLobby?.status === "bet_closed" ||currentLobby?.status==="cancelled"||
+  currentLobby?.status === "resulted"
   const handleIncrease = () => {
+    if (isBetDisabled) return;
+
     setQty((prev) => prev + 1);
   };
 
   const handleDecrease = () => {
+    if (isBetDisabled) return;
+
     setQty((prev) => (prev > 1 ? prev - 1 : 1));
   };
 
   const handleAdd = () => {
+    if (isBetDisabled) return;
+
     if (!qty) return;
     if (!inputValue.trim()) return;
 
@@ -41,16 +68,10 @@ const BetRow: React.FC<BetOption> = ({
     dispatch(
       addBet({
         id: crypto.randomUUID(),
-
         cat,
-
-        // backend format
         chip: chipValue,
-
         qty,
-
         amt: qty * pricePerTicket,
-
         label,
       })
     );
@@ -60,7 +81,11 @@ const BetRow: React.FC<BetOption> = ({
   };
 
   return (
-    <div className={styles.card}>
+    <div
+      className={`${styles.card} ${
+        isBetDisabled ? styles.disabledCard : ""
+      }`}
+    >
       {/* TOP */}
       <div className={styles.topRow}>
         <div className={styles.leftInfo}>
@@ -83,9 +108,15 @@ const BetRow: React.FC<BetOption> = ({
               value={inputValue[index] || ""}
               placeholder={digit}
               className={styles.guessInput}
+              disabled={isBetDisabled}
               onChange={(e) => {
+                if (isBetDisabled) return;
+
                 // only allow 0-9
-                const value = e.target.value.replace(/[^0-9]/g, "");
+                const value = e.target.value.replace(
+                  /[^0-9]/g,
+                  ""
+                );
 
                 const updated = inputValue.split("");
 
@@ -96,8 +127,12 @@ const BetRow: React.FC<BetOption> = ({
                 setInputValue(finalValue);
 
                 // when typing starts -> default qty 1
-                if (finalValue.replace(/\s/g, "").length > 0) {
-                  setQty((prev) => (prev === 0 ? 1 : prev));
+                if (
+                  finalValue.replace(/\s/g, "").length > 0
+                ) {
+                  setQty((prev) =>
+                    prev === 0 ? 1 : prev
+                  );
                 } else {
                   setQty(0);
                 }
@@ -112,7 +147,7 @@ const BetRow: React.FC<BetOption> = ({
           <button
             className={styles.stepBtn}
             onClick={handleDecrease}
-            disabled={qty <= 1}
+            disabled={qty <= 1 || isBetDisabled}
           >
             -
           </button>
@@ -121,11 +156,13 @@ const BetRow: React.FC<BetOption> = ({
             className={styles.qtyInput}
             readOnly
             value={qty}
+            disabled={isBetDisabled}
           />
 
           <button
             className={styles.stepBtn}
             onClick={handleIncrease}
+            disabled={isBetDisabled}
           >
             +
           </button>
@@ -134,8 +171,9 @@ const BetRow: React.FC<BetOption> = ({
         <button
           className={styles.addBtn}
           onClick={handleAdd}
+          disabled={isBetDisabled}
         >
-          ADD
+          {isBetDisabled ? "BET CLOSED" : "ADD"}
         </button>
       </div>
     </div>

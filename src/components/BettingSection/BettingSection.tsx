@@ -79,22 +79,22 @@ const BettingSection: React.FC = () => {
   return (
     <section className={styles.section}>
       {/* Single */}
-    {/* Single */}
-<div className={styles.sectionHeader}>
+      {/* Single */}
+      <div className={styles.sectionHeader}>
 
-    <h2 className={styles.sectionTitle}>Single Digit</h2>
+        <h2 className={styles.sectionTitle}>Single Digit</h2>
 
-    <div className={styles.sectionMeta}>
-      <p className={styles.sectionWin}>
-        Win {BET_OPTIONS[0].multiplier}X / per bet
-      </p>
+        <div className={styles.sectionMeta}>
+          <p className={styles.sectionWin}>
+            Win {BET_OPTIONS[0].multiplier}X / per bet
+          </p>
 
-      <p className={styles.sectionPrice}>
-        {BET_OPTIONS[0].pricePerTicket}.00/per ticket
-      </p>
-    </div>
+          <p className={styles.sectionPrice}>
+            {BET_OPTIONS[0].pricePerTicket}.00/per ticket
+          </p>
+        </div>
 
-</div>
+      </div>
 
       <div className={styles.grid}>
         {BET_OPTIONS.map((opt) => (
@@ -103,21 +103,21 @@ const BettingSection: React.FC = () => {
       </div>
 
       {/* Double */}
-   {/* Double */}
-<div className={styles.sectionHeader}>
-    <h2 className={styles.sectionTitle}>Double Digit</h2>
+      {/* Double */}
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>Double Digit</h2>
 
-    <div className={styles.sectionMeta}>
-      <p className={styles.sectionWin}>
-        Win {DOUBLE_OPTIONS[0].multiplier}X / per bet
-      </p>
+        <div className={styles.sectionMeta}>
+          <p className={styles.sectionWin}>
+            Win {DOUBLE_OPTIONS[0].multiplier}X / per bet
+          </p>
 
-      <p className={styles.sectionPrice}>
-        ₹ {DOUBLE_OPTIONS[0].pricePerTicket}.00
-      </p>
-    </div>
- 
-</div>
+          <p className={styles.sectionPrice}>
+            ₹ {DOUBLE_OPTIONS[0].pricePerTicket}.00
+          </p>
+        </div>
+
+      </div>
 
       <div className={styles.grid}>
         {DOUBLE_OPTIONS.map((opt) => (
@@ -126,21 +126,21 @@ const BettingSection: React.FC = () => {
       </div>
 
       {/* Triple */}
-     {/* Triple */}
-<div className={styles.sectionHeader}>
-    <h2 className={styles.sectionTitle}>Triple Digit</h2>
+      {/* Triple */}
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>Triple Digit</h2>
 
-    <div className={styles.sectionMeta}>
-      <p className={styles.sectionWin}>
-        Win {TRIPLE_OPTIONS[0].multiplier}X / per bet
-      </p>
+        <div className={styles.sectionMeta}>
+          <p className={styles.sectionWin}>
+            Win {TRIPLE_OPTIONS[0].multiplier}X / per bet
+          </p>
 
-      <p className={styles.sectionPrice}>
-        ₹ {TRIPLE_OPTIONS[0].pricePerTicket}.00
-      </p>
-    </div>
+          <p className={styles.sectionPrice}>
+            ₹ {TRIPLE_OPTIONS[0].pricePerTicket}.00
+          </p>
+        </div>
 
-</div>
+      </div>
 
       <div className={styles.grid}>
         {TRIPLE_OPTIONS.map((opt) => (
