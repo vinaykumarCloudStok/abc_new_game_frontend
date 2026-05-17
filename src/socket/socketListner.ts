@@ -78,7 +78,14 @@ export const initSocketListeners = (
       case "lobby":
         dispatch(setLobbies(data));
         break;
-
+case "settlement":
+  dispatch(
+    showPopup({
+      type: data.totalWinAmount > 0 ? "success" : "error",
+      message: `${data.message} Bet: ₹${data.totalBetAmount} | Win: ₹${data.totalWinAmount}`,
+    })
+  );
+  break;
       // ---------------------------------------------------------------------
       // UPDATE SINGLE LOBBY
       // ---------------------------------------------------------------------

@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Header.module.css';
 import { useAppSelector } from '../../hooks/redux';
 import logo from '../../assets/screen.png'
+import { formatBalance } from '../../utils/helper';
 const Header: React.FC = () => {
   const info = useAppSelector((s) => s.socketSlice.info);
 console.log(info)
@@ -24,7 +25,7 @@ console.log(info)
           account_balance_wallet
         </span>
         <span className={styles.walletAmount}>
-        {info.balance}
+        {formatBalance(Number(info.balance))}
         </span>
        </div>
       </div>

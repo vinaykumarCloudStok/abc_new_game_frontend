@@ -46,39 +46,39 @@ const isBetDisabled =
     setQty((prev) => prev + 1);
   };
 
-  const handleDecrease = () => {
-    if (isBetDisabled) return;
+const handleDecrease = () => {
+  if (isBetDisabled) return;
 
-    setQty((prev) => (prev > 1 ? prev - 1 : 1));
-  };
+  setQty((prev) => (prev > 0 ? prev - 1 : 0));
+};
 
-  const handleAdd = () => {
-    if (isBetDisabled) return;
+const handleAdd = () => {
+  if (isBetDisabled) return;
 
-    if (!qty) return;
-    if (!inputValue.trim()) return;
+  if (!qty) return;
 
-    const values = inputValue.split("");
+  // generate backend chip format
+  // Single  -> 1:A
+  // Double  -> 1:A-2:B
+  // Triple  -> 1:A-2:B-3:C
+  const chipValue = digits
+    .map((digit, index) => `${index + 1}:${digit}`)
+    .join("-");
 
-    // generate backend chip format
-    const chipValue = values
-      .map((val, index) => `${index + 1}:${val}`)
-      .join("-");
+  dispatch(
+    addBet({
+      id: crypto.randomUUID(),
+      cat,
+      chip: chipValue,
+      qty,
+      amt: qty * pricePerTicket,
+      label,
+    })
+  );
 
-    dispatch(
-      addBet({
-        id: crypto.randomUUID(),
-        cat,
-        chip: chipValue,
-        qty,
-        amt: qty * pricePerTicket,
-        label,
-      })
-    );
-
-    setQty(0);
-    setInputValue("");
-  };
+  setQty(0);
+  setInputValue("");
+};
 
   return (
     <div
