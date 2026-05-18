@@ -16,9 +16,9 @@
 .tabBtn {
   flex: 1;
   height: 46px;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(18px);
   color: var(--color-on-surface-variant);
   font-family: var(--font-montserrat);
@@ -28,8 +28,6 @@
   transition: all 180ms ease;
 }
 
-
-
 .activeTab {
   background: linear-gradient(
     135deg,
@@ -37,10 +35,10 @@
     rgba(255, 208, 77, 1)
   );
   color: #111;
-  border-color: rgba(255,255,255,0.12);
+  border-color: rgba(255, 255, 255, 0.12);
   box-shadow:
     0 6px 18px rgba(255, 184, 0, 0.22),
-    inset 0 1px 0 rgba(255,255,255,0.35);
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 /* =========================================================
@@ -50,23 +48,16 @@
 .emptyOrder {
   background: rgba(40, 32, 58, 0.72);
   backdrop-filter: blur(22px);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 22px;
-  padding: 42px 20px;
-  text-align: center;
-}
-
-.emptyIcon {
-  font-size: 56px !important;
-  color: rgba(255,255,255,0.16);
-  margin-bottom: 10px;
-}
-
-.emptyText {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   color: var(--color-on-surface-variant);
   font-size: 14px;
   font-family: var(--font-inter);
-  letter-spacing: 0.02em;
 }
 
 /* =========================================================
@@ -77,6 +68,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  width: 100%;
 }
 
 /* =========================================================
@@ -89,33 +81,27 @@
   background:
     linear-gradient(
       180deg,
-      rgba(255,255,255,0.04),
-      rgba(255,255,255,0.015)
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.015)
     ),
     rgba(44, 34, 62, 0.92);
-
   backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 22px;
-
   padding: 16px;
-
   box-shadow:
-    0 10px 30px rgba(0,0,0,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.04);
-
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease;
+    0 10px 30px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: transform 180ms ease, border-color 180ms ease;
+  animation: cardFade 240ms ease;
+  will-change: transform, opacity;
 }
 
 .orderItem:hover {
   transform: translateY(-2px);
-  border-color: rgba(255,255,255,0.1);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* top glow */
 .orderItem::before {
   content: "";
   position: absolute;
@@ -124,7 +110,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255,255,255,0.22),
+    rgba(255, 255, 255, 0.22),
     transparent
   );
 }
@@ -134,17 +120,19 @@
 ========================================================= */
 
 .orderHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   margin-bottom: 14px;
-  gap: 12px;
 }
 
 .orderMeta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
+}
+
+.orderTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .orderType {
@@ -156,67 +144,53 @@
 }
 
 .orderId {
-  color: rgba(255,255,255,0.42);
+  color: rgba(255, 255, 255, 0.35);
   font-size: 11px;
   font-family: var(--font-inter);
   word-break: break-all;
 }
 
 .orderDate {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: rgba(255,255,255,0.55);
-  font-size: 12px;
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 11px;
+  font-family: var(--font-inter);
 }
 
 /* =========================================================
    STATUS BADGES
 ========================================================= */
 
-.statusBadge {
-  min-width: 92px;
-  height: 34px;
-  padding: 0 14px;
-
-  border-radius: 999px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: capitalize;
-
-  border: 1px solid transparent;
-}
-
 .statusWin {
   background: rgba(52, 211, 153, 0.12);
   color: #34d399;
-  border-color: rgba(52, 211, 153, 0.18);
-  font-size: 12px;
-  padding: 4px;
-  border-radius: 4px;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
 }
 
 .statusLoss {
   background: rgba(239, 68, 68, 0.12);
   color: #ef4444;
-  border-color: rgba(239, 68, 68, 0.18);
-  font-size: 12px;
-  padding: 4px;
-  border-radius: 4px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
 }
 
 .statusRollback {
   background: rgba(96, 165, 250, 0.12);
   color: #60a5fa;
-  border-color: rgba(96, 165, 250, 0.18);
-  font-size: 12px;
-  padding: 4px;
-  border-radius: 4px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.06em;
 }
 
 /* =========================================================
@@ -231,15 +205,15 @@
 }
 
 .amountCard {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   padding: 12px;
 }
 
 .amountLabel {
   font-size: 11px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.45);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -252,164 +226,223 @@
   color: #fff;
 }
 
+.amountWin {
+  color: #34d399;
+}
+
 /* =========================================================
-   RESULT BALLS
+   RESULT BALLS  A / B / C
 ========================================================= */
-
-.resultSection {
-  margin-bottom: 14px;
-}
-
-.sectionTitle {
-  font-size: 11px;
-  color: rgba(255,255,255,0.5);
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
 
 .resultBalls {
   display: flex;
   gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ballGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ballLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 184, 0, 0.75);
+  font-family: var(--font-montserrat);
+  letter-spacing: 0.06em;
 }
 
 .ball {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle at top,
-      #ffe38a,
-      #ffb800
-    );
-
+  background: radial-gradient(circle at top, #ffe38a, #ffb800);
   color: #111;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-weight: 800;
   font-size: 15px;
-
   box-shadow:
-    inset 0 2px 4px rgba(255,255,255,0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
     0 6px 14px rgba(255, 184, 0, 0.28);
 }
 
 /* =========================================================
-   BET RESULT LIST
+   CHIP SECTION
 ========================================================= */
 
-.betResults {
+.chipSection {
+  margin-top: 4px;
+}
+
+.sectionLabel {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.28);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.chipGrid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 1rem;
+  gap: 8px;
 }
 
-.betResultItem {
+/* =========================================================
+   CHIP TILE
+========================================================= */
+
+.chipTile {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  background: rgba(255,255,255,0.03);
-
-  border: 1px solid rgba(255,255,255,0.05);
-
+  gap: 10px;
   border-radius: 14px;
-
   padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: transform 120ms ease;
 }
 
-.betLeft {
+.chipTile:active {
+  transform: scale(0.98);
+}
+
+.chipNeutral {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.chipWin {
+  background: rgba(52, 211, 153, 0.07);
+  border-color: rgba(52, 211, 153, 0.16);
+}
+
+.chipLoss {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.14);
+}
+
+.chipRefund {
+  background: rgba(96, 165, 250, 0.06);
+  border-color: rgba(96, 165, 250, 0.15);
+}
+
+/* =========================================================
+   CHIP BOXES — Letter A/B/C + Number side by side
+========================================================= */
+
+.chipBoxes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.chipLetterBox {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 184, 0, 0.14);
+  border: 1px solid rgba(255, 184, 0, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-montserrat);
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffb800;
+}
+
+.chipNumberBox {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-montserrat);
+  font-size: 17px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.chipSep {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.22);
+  margin: 0 2px;
+  font-family: var(--font-montserrat);
+}
+
+/* =========================================================
+   CHIP INFO
+========================================================= */
+
+.chipInfo {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
 
-.betChip {
-  color: #fff;
+.chipType {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+  font-family: var(--font-inter);
+  letter-spacing: 0.04em;
+}
+
+.chipStatus {
+  font-size: 11px;
   font-weight: 700;
-  font-size: 13px;
+  letter-spacing: 0.06em;
 }
 
-.betAmount {
-  color: rgba(255,255,255,0.55);
-  font-size: 12px;
-}
-
-.betRight {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.betWin {
+.chipStatusWin {
   color: #34d399;
-  font-size: 13px;
-  font-weight: 700;
 }
 
-.betLoss {
+.chipStatusLoss {
   color: #ef4444;
-  font-size: 13px;
+}
+
+.chipStatusRefund {
+  font-size: 11px;
   font-weight: 700;
-}
-/* =========================================================
-   FIX TAB SWITCH BLINK + HEIGHT JUMP
-========================================================= */
-
-.contentWrapper {
-  position: relative;
-  min-height: 420px;
-  transition: all 220ms ease;
-}
-
-.contentFade {
-  animation: fadeSlide 220ms ease;
-}
-
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  letter-spacing: 0.06em;
+  color: #60a5fa;
 }
 
 /* =========================================================
-   PREVENT CARD JUMPING
+   CHIP AMOUNT
 ========================================================= */
 
-.orderList {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  width: 100%;
+.chipAmt {
+  font-family: var(--font-montserrat);
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* =========================================================
-   SMOOTH CARD RENDER
+   ANIMATIONS
 ========================================================= */
-
-.orderItem {
-  animation: cardFade 240ms ease;
-  will-change: transform, opacity;
-}
 
 @keyframes cardFade {
   from {
     opacity: 0;
     transform: scale(0.98);
   }
-
   to {
     opacity: 1;
     transform: scale(1);
@@ -417,33 +450,7 @@
 }
 
 /* =========================================================
-   LOADING / EMPTY HEIGHT FIX
-========================================================= */
-
-.emptyOrder {
-  min-height: 420px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/* =========================================================
-   MOBILE FIX
-========================================================= */
-
-@media (max-width: 480px) {
-  .contentWrapper {
-    min-height: 360px;
-  }
-
-  .emptyOrder {
-    min-height: 360px;
-  }
-}
-/* =========================================================
-   RESPONSIVE
+   MOBILE
 ========================================================= */
 
 @media (max-width: 480px) {
@@ -467,9 +474,15 @@
     font-size: 14px;
   }
 
-  .statusBadge {
-    min-width: 82px;
+  .chipLetterBox,
+  .chipNumberBox {
+    width: 30px;
     height: 30px;
-    font-size: 11px;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+
+  .chipAmt {
+    font-size: 14px;
   }
 }
