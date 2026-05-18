@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type BetType = 'A' | 'B' | 'C' | 'AB' | 'AC' | 'BC' | 'ABC';
 
 
@@ -67,3 +68,86 @@ export interface BetOption {
   digits: string[];
   cat: number;
 }
+
+export type TabType = "bet" | "settlement" | "rollback";
+
+export interface BetHistoryItem {
+  id?: number;
+  settlement_id?: number;
+
+  lobby_id: string;
+  user_id: string;
+  operator_id: string;
+
+  bet_amount?: string;
+  win_amount?: string;
+
+  total_bet_amount?: string;
+  refund_amount?: string;
+
+  userBets?: any;
+  bets?: any;
+
+  result?: string;
+  bet_results?: string;
+
+  created_at: string;
+}
+
+export interface BetResult {
+  btAmt?: number;
+  amt?: number;
+  chip: string;
+  winAmt?: number;
+  mult?: number;
+  status?: "win" | "loss";
+}
+
+export interface ChipPart {
+  letter: string;
+  number: string;
+}
+
+// =========================================================
+// SAFE PARSER
+// =========================================================
+export const safeParse = (data: any): any => {
+  if (!data) return [];
+  try {
+    if (typeof data === "object") return data;
+    let parsed = JSON.parse(data);
+    if (typeof parsed === "string") parsed = JSON.parse(parsed);
+    return parsed;
+  } catch {
+    return [];
+  }
+};
+
+export const parseChip = (chip: string): ChipPart[] => {
+  if (!chip) return [];
+  return chip.split("-").map((part) => {
+    const [left, right] = part.split(":");
+    const leftIsLetter = isNaN(Number(left));
+    return {
+      letter: leftIsLetter ? left : right,
+      number: leftIsLetter ? right : left,
+    };
+  });
+};
+
+// =========================================================
+// FORMAT DATE
+// =========================================================
+export const formatDate = (dateStr: string) => {
+  try {
+    return new Date(dateStr).toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch {
+    return dateStr;
+  }
+};

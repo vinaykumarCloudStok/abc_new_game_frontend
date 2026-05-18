@@ -36,10 +36,11 @@ const HomeLayout = () => {
     if (!connected || !info) return <LoaderSocket />;
   return (
     <>
-      <CommonPopup />
+   
       <RulesModal />
       <Header />
       <main style={mainStyle}>
+           <CommonPopup />
         <LobbySelector />
         <InfoCard />
         <BettingSection />
