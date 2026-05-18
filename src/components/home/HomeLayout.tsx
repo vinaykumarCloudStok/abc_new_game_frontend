@@ -6,12 +6,13 @@ import InfoCard from '../InfoCard/InfoCard'
 import BettingSection from '../BettingSection/BettingSection'
 import TabSection from '../TabSection/TabSection'
 import ActionBar from '../ActionBar/ActionBar'
-import { useDispatch } from 'react-redux'
-import type { AppDispatch } from '../../store'
+import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch, RootState } from '../../store'
 import { getQueryParams } from '../../utils/helper'
 import { getSocket } from '../../socket/socket'
 import { initSocketListeners } from '../../socket/socketListner'
 import CommonPopup from '../modal/CommonPopup'
+import LoaderSocket from '../Loader/LoaderSocket'
    const mainStyle: React.CSSProperties = {
   marginTop: '80px',
   display: 'flex',
@@ -26,10 +27,13 @@ const HomeLayout = () => {
   const queryParams = useMemo(() => getQueryParams(), []);
   const token = queryParams?.id;
   const gameId = queryParams?.game_id;
+    const connected = useSelector((state: RootState) => state.socketSlice.connected);
+      const info = useSelector((state: RootState) => state.socketSlice.info);
  useEffect(() => {
     if (!token) return;
     initSocketListeners(dispatch, token, gameId);
   }, [token, dispatch, gameId]);
+    if (!connected || !info) return <LoaderSocket />;
   return (
     <>
       <CommonPopup />

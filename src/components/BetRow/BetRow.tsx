@@ -17,8 +17,14 @@ const BetRow: React.FC<BetOption> = ({
 
   const [qty, setQty] = useState(0);
 
-  // input value for A/B/C/AB/ABC
   const [inputValue, setInputValue] = useState("");
+
+  // ----------------------------------------------------------------
+  // GET BETS
+  // ----------------------------------------------------------------
+  const bets = useSelector(
+    (state: RootState) => state.betSlip.bets
+  );
 
   // ----------------------------------------------------------------
   // GET SELECTED LOBBY
@@ -34,51 +40,99 @@ const BetRow: React.FC<BetOption> = ({
   }, [lobbies, selectedLobby]);
 
   // ----------------------------------------------------------------
+  // CHIP VALUE
+  // ----------------------------------------------------------------
+  const chipValue = useMemo(() => {
+    return digits
+      .map((digit, index) => {
+        const value = inputValue[index] || "";
+        return `${digit}:${value}`;
+      })
+      .join("-");
+  }, [digits, inputValue]);
+
+  // ----------------------------------------------------------------
+  // CHECK DUPLICATE
+  // ----------------------------------------------------------------
+  const alreadyExists = useMemo(() => {
+    return bets.some(
+      (bet) => bet.cat === cat && bet.chip === chipValue
+    );
+  }, [bets, cat, chipValue]);
+
+  // ----------------------------------------------------------------
   // DISABLE CONDITION
   // ----------------------------------------------------------------
-const isBetDisabled =
-  !currentLobby || 
-  currentLobby?.status === "bet_closed" ||currentLobby?.status==="cancelled"||
-  currentLobby?.status === "resulted"
+  const isBetDisabled =
+    !currentLobby ||
+    currentLobby?.status === "bet_closed" ||
+    currentLobby?.status === "cancelled" ||
+    currentLobby?.status === "resulted";
+
+  // ----------------------------------------------------------------
+  // CHECK IF ALL REQUIRED DIGITS ENTERED
+  // ----------------------------------------------------------------
+  const hasEnteredNumber = digits.every(
+    (_, index) =>
+      inputValue[index] !== undefined &&
+      inputValue[index] !== ""
+  );
+
+  // ----------------------------------------------------------------
+  // HANDLE INCREASE
+  // ----------------------------------------------------------------
   const handleIncrease = () => {
-    if (isBetDisabled) return;
+    if (
+      isBetDisabled ||
+      alreadyExists ||
+      !hasEnteredNumber
+    )
+      return;
 
     setQty((prev) => prev + 1);
   };
 
-const handleDecrease = () => {
-  if (isBetDisabled) return;
+  // ----------------------------------------------------------------
+  // HANDLE DECREASE
+  // ----------------------------------------------------------------
+  const handleDecrease = () => {
+    if (
+      isBetDisabled ||
+      alreadyExists ||
+      !hasEnteredNumber
+    )
+      return;
 
-  setQty((prev) => (prev > 0 ? prev - 1 : 0));
-};
+    setQty((prev) => (prev > 0 ? prev - 1 : 0));
+  };
 
-const handleAdd = () => {
-  if (isBetDisabled) return;
+  // ----------------------------------------------------------------
+  // HANDLE ADD
+  // ----------------------------------------------------------------
+  const handleAdd = () => {
+    if (
+      isBetDisabled ||
+      alreadyExists ||
+      !hasEnteredNumber
+    )
+      return;
 
-  if (!qty) return;
+    if (!qty) return;
 
-  // generate backend chip format
-  // Single  -> 1:A
-  // Double  -> 1:A-2:B
-  // Triple  -> 1:A-2:B-3:C
-  const chipValue = digits
-    .map((digit, index) => `${index + 1}:${digit}`)
-    .join("-");
+    dispatch(
+      addBet({
+        id: crypto.randomUUID(),
+        cat,
+        chip: chipValue,
+        qty,
+        amt: qty * pricePerTicket,
+        label,
+      })
+    );
 
-  dispatch(
-    addBet({
-      id: crypto.randomUUID(),
-      cat,
-      chip: chipValue,
-      qty,
-      amt: qty * pricePerTicket,
-      label,
-    })
-  );
-
-  setQty(0);
-  setInputValue("");
-};
+    setQty(0);
+    setInputValue("");
+  };
 
   return (
     <div
@@ -98,6 +152,7 @@ const handleAdd = () => {
           </div>
         </div>
 
+        {/* INPUTS */}
         <div className={styles.guessBox}>
           {digits.map((digit, index) => (
             <input
@@ -108,32 +163,44 @@ const handleAdd = () => {
               value={inputValue[index] || ""}
               placeholder={digit}
               className={styles.guessInput}
-              disabled={isBetDisabled}
+              disabled={isBetDisabled || alreadyExists}
               onChange={(e) => {
-                if (isBetDisabled) return;
+                if (
+                  isBetDisabled ||
+                  alreadyExists
+                )
+                  return;
 
-                // only allow 0-9
-                const value = e.target.value.replace(
-                  /[^0-9]/g,
-                  ""
-                );
+                // allow only 0-9
+                const value =
+                  e.target.value.replace(
+                    /[^0-9]/g,
+                    ""
+                  );
 
-                const updated = inputValue.split("");
+                const updated =
+                  inputValue.split("");
 
                 updated[index] = value;
 
-                const finalValue = updated.join("");
+                const finalValue =
+                  updated.join("");
 
                 setInputValue(finalValue);
 
-                // when typing starts -> default qty 1
-                if (
-                  finalValue.replace(/\s/g, "").length > 0
-                ) {
-                  setQty((prev) =>
-                    prev === 0 ? 1 : prev
+                // AUTO SET QTY
+                const isComplete =
+                  digits.every(
+                    (_, i) =>
+                      updated[i] !== undefined &&
+                      updated[i] !== ""
                   );
-                } else {
+
+                if (isComplete && qty === 0) {
+                  setQty(1);
+                }
+
+                if (!isComplete) {
                   setQty(0);
                 }
               }}
@@ -142,38 +209,118 @@ const handleAdd = () => {
         </div>
       </div>
 
+      {/* ACTION */}
       <div className={styles.actionSection}>
         <div className={styles.stepper}>
+          {/* MINUS */}
           <button
             className={styles.stepBtn}
             onClick={handleDecrease}
-            disabled={qty <= 1 || isBetDisabled}
+            disabled={
+              qty <= 1 ||
+              isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber
+            }
+             style={{pointerEvents: isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber?"none":"auto",
+              opacity:isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber?".5":""
+            }}
           >
             -
           </button>
 
+          {/* QTY INPUT */}
           <input
+            type="number"
+            min={0}
             className={styles.qtyInput}
-            readOnly
             value={qty}
-            disabled={isBetDisabled}
+            disabled={
+              isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber
+            }
+            style={{ opacity:isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber?".5":""}}
+            onFocus={(e) => {
+              // remove 0 on focus
+              if (qty === 0) {
+                e.target.value = "";
+              }
+            }}
+            onBlur={(e) => {
+              // show 0 again if empty
+              if (e.target.value === "") {
+                setQty(0);
+              }
+            }}
+            onChange={(e) => {
+              if (
+                isBetDisabled ||
+                alreadyExists ||
+                !hasEnteredNumber
+              )
+                return;
+
+              const value = e.target.value;
+
+              if (value === "") {
+                setQty(0);
+                return;
+              }
+
+              const parsed = Number(value);
+
+              if (
+                !isNaN(parsed) &&
+                parsed >= 0
+              ) {
+                setQty(parsed);
+              }
+            }}
           />
 
+          {/* PLUS */}
           <button
             className={styles.stepBtn}
             onClick={handleIncrease}
-            disabled={isBetDisabled}
+            disabled={
+              isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber
+            }
+            style={{pointerEvents:isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber?"none":"auto",
+             opacity:isBetDisabled ||
+              alreadyExists ||
+              !hasEnteredNumber?".5":""}}
           >
             +
           </button>
         </div>
 
+        {/* ADD BUTTON */}
         <button
           className={styles.addBtn}
           onClick={handleAdd}
-          disabled={isBetDisabled}
+          disabled={
+            isBetDisabled ||
+            alreadyExists ||
+            !hasEnteredNumber ||
+            qty <= 0
+          }
         >
-          {isBetDisabled ? "BET CLOSED" : "ADD"}
+          {isBetDisabled
+            ? "BET CLOSED"
+            : alreadyExists
+            ? "ADDED"
+            : "ADD"}
         </button>
       </div>
     </div>

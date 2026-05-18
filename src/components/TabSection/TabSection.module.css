@@ -3,190 +3,473 @@
   margin-bottom: var(--spacing-gutter);
 }
 
+/* =========================================================
+   TABS
+========================================================= */
+
 .tabs {
   display: flex;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  margin-bottom: var(--spacing-sm);
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .tabBtn {
   flex: 1;
-  padding: 12px;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
+  height: 46px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(18px);
+  color: var(--color-on-surface-variant);
   font-family: var(--font-montserrat);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-  transition: color 200ms ease, border-color 200ms ease;
-  color: var(--color-on-surface-variant);
+  transition: all 180ms ease;
 }
 
-.tabBtn:hover {
-  color: var(--color-on-surface);
+
+
+.activeTab {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 184, 0, 1),
+    rgba(255, 208, 77, 1)
+  );
+  color: #111;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow:
+    0 6px 18px rgba(255, 184, 0, 0.22),
+    inset 0 1px 0 rgba(255,255,255,0.35);
 }
 
-.tabBtnActive {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-}
+/* =========================================================
+   EMPTY STATE
+========================================================= */
 
-/* Result History Table */
-.tableWrapper {
-  background: rgba(60, 46, 79, 0.4);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.thead {
-  background: var(--color-surface-container-high);
-}
-
-.th {
-  padding: 12px var(--spacing-sm);
-  font-family: var(--font-inter);
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-on-surface-variant);
-}
-
-.thCenter { text-align: center; }
-.thRight { text-align: right; }
-
-.tr {
-  border-top: 1px solid rgba(255,255,255,0.05);
-  transition: background 150ms ease;
-}
-
-.tr:hover {
-  background: rgba(255,255,255,0.04);
-}
-
-.td {
-  padding: 12px var(--spacing-sm);
-  font-family: var(--font-montserrat);
-  font-size: 14px;
-  color: var(--color-on-surface);
-}
-
-.tdCenter { text-align: center; color: var(--color-on-surface-variant); font-size: 13px; }
-.tdRight { text-align: right; }
-
-.resultBalls {
-  display: flex;
-  justify-content: flex-end;
-  gap: 4px;
-}
-
-.ball {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(214, 186, 255, 0.12);
-  color: var(--color-primary);
-  font-size: 12px;
-  font-family: var(--font-montserrat);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* My Order Empty State */
 .emptyOrder {
-  background: rgba(60, 46, 79, 0.4);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-md);
+  background: rgba(40, 32, 58, 0.72);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 22px;
+  padding: 42px 20px;
   text-align: center;
 }
 
 .emptyIcon {
-  font-size: 48px !important;
-  color: rgba(204, 196, 209, 0.3);
-  display: block;
-  margin-bottom: var(--spacing-xs);
+  font-size: 56px !important;
+  color: rgba(255,255,255,0.16);
+  margin-bottom: 10px;
 }
 
 .emptyText {
-  font-family: var(--font-inter);
-  font-size: 16px;
   color: var(--color-on-surface-variant);
+  font-size: 14px;
+  font-family: var(--font-inter);
+  letter-spacing: 0.02em;
 }
 
-/* Order list items */
+/* =========================================================
+   LIST
+========================================================= */
+
 .orderList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
+/* =========================================================
+   CARD
+========================================================= */
+
 .orderItem {
-  background: rgba(60, 46, 79, 0.4);
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.015)
+    ),
+    rgba(44, 34, 62, 0.92);
+
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-sm);
+
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 22px;
+
+  padding: 16px;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.orderItem:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* top glow */
+.orderItem::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.22),
+    transparent
+  );
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.orderHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
 }
 
 .orderMeta {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
 .orderType {
   font-family: var(--font-montserrat);
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--color-primary);
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  line-height: 1.2;
 }
 
-.orderDetail {
+.orderId {
+  color: rgba(255,255,255,0.42);
+  font-size: 11px;
+  font-family: var(--font-inter);
+  word-break: break-all;
+}
+
+.orderDate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.55);
   font-size: 12px;
-  color: var(--color-on-surface-variant);
 }
 
-.orderRight {
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.statusBadge {
+  min-width: 92px;
+  height: 34px;
+  padding: 0 14px;
+
+  border-radius: 999px;
+
   display: flex;
   align-items: center;
-  gap: 12px;
-}
+  justify-content: center;
 
-.orderTotal {
-  font-family: var(--font-montserrat);
+  font-size: 12px;
   font-weight: 700;
-  font-size: 16px;
-  color: var(--color-secondary);
+  text-transform: capitalize;
+
+  border: 1px solid transparent;
 }
 
-.removeBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--color-error);
+.statusWin {
+  background: rgba(52, 211, 153, 0.12);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.18);
+  font-size: 12px;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.statusLoss {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.18);
+  font-size: 12px;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.statusRollback {
+  background: rgba(96, 165, 250, 0.12);
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.18);
+  font-size: 12px;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   AMOUNT GRID
+========================================================= */
+
+.amountGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.amountCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.amountLabel {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.amountValue {
+  font-family: var(--font-montserrat);
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* =========================================================
+   RESULT BALLS
+========================================================= */
+
+.resultSection {
+  margin-bottom: 14px;
+}
+
+.sectionTitle {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.resultBalls {
+  display: flex;
+  gap: 10px;
+}
+
+.ball {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at top,
+      #ffe38a,
+      #ffb800
+    );
+
+  color: #111;
+
   display: flex;
   align-items: center;
-  padding: 4px;
-  border-radius: var(--radius-full);
-  transition: background 150ms;
+  justify-content: center;
+
+  font-weight: 800;
+  font-size: 15px;
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.3),
+    0 6px 14px rgba(255, 184, 0, 0.28);
 }
 
-.removeBtn:hover {
-  background: rgba(255,180,171,0.1);
+/* =========================================================
+   BET RESULT LIST
+========================================================= */
+
+.betResults {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.betResultItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: rgba(255,255,255,0.03);
+
+  border: 1px solid rgba(255,255,255,0.05);
+
+  border-radius: 14px;
+
+  padding: 10px 12px;
+}
+
+.betLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.betChip {
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.betAmount {
+  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+}
+
+.betRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.betWin {
+  color: #34d399;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.betLoss {
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 700;
+}
+/* =========================================================
+   FIX TAB SWITCH BLINK + HEIGHT JUMP
+========================================================= */
+
+.contentWrapper {
+  position: relative;
+  min-height: 420px;
+  transition: all 220ms ease;
+}
+
+.contentFade {
+  animation: fadeSlide 220ms ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   PREVENT CARD JUMPING
+========================================================= */
+
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+/* =========================================================
+   SMOOTH CARD RENDER
+========================================================= */
+
+.orderItem {
+  animation: cardFade 240ms ease;
+  will-change: transform, opacity;
+}
+
+@keyframes cardFade {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =========================================================
+   LOADING / EMPTY HEIGHT FIX
+========================================================= */
+
+.emptyOrder {
+  min-height: 420px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   MOBILE FIX
+========================================================= */
+
+@media (max-width: 480px) {
+  .contentWrapper {
+    min-height: 360px;
+  }
+
+  .emptyOrder {
+    min-height: 360px;
+  }
+}
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 480px) {
+  .tabBtn {
+    font-size: 12px;
+    height: 42px;
+  }
+
+  .orderItem {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .amountValue {
+    font-size: 18px;
+  }
+
+  .ball {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+
+  .statusBadge {
+    min-width: 82px;
+    height: 30px;
+    font-size: 11px;
+  }
 }

@@ -41,70 +41,70 @@ const socketSlice = createSlice({
         toggleRulesModal(state) {
             state.isRulesModalOpen = !state.isRulesModalOpen;
         },
-       setLobbies: (
-  state,
-  action: PayloadAction<Lobby[]>
-) => {
-  state.lobbies = action.payload;
+        setLobbies: (
+            state,
+            action: PayloadAction<Lobby[]>
+        ) => {
+            state.lobbies = action.payload;
 
-  // AUTO SELECT OPEN LOBBY
-  const openLobby = action.payload.find(
-    (lobby) => lobby.status === "betting_open"
-  );
+            // AUTO SELECT OPEN LOBBY
+            const openLobby = action.payload.find(
+                (lobby) => lobby.status === "betting_open"
+            );
 
-  state.selectedLobby = openLobby
-    ? openLobby.lobby_uuid
-    : action.payload.length > 0
-    ? action.payload[0].lobby_uuid
-    : null;
-},
+            state.selectedLobby = openLobby
+                ? openLobby.lobby_uuid
+                : action.payload.length > 0
+                    ? action.payload[0].lobby_uuid
+                    : null;
+        },
 
         // -----------------------------------------------------------------------
         // UPDATE SINGLE LOBBY
         // -----------------------------------------------------------------------
-       updateLobby: (
-  state,
-  action: PayloadAction<
-    Partial<Lobby> & { lobby_uuid: string }
-  >
-) => {
-  const updatedLobby = action.payload;
+        updateLobby: (
+            state,
+            action: PayloadAction<
+                Partial<Lobby> & { lobby_uuid: string }
+            >
+        ) => {
+            const updatedLobby = action.payload;
 
-  const index = state.lobbies.findIndex(
-    (lobby) =>
-      lobby.lobby_uuid === updatedLobby.lobby_uuid
-  );
+            const index = state.lobbies.findIndex(
+                (lobby) =>
+                    lobby.lobby_uuid === updatedLobby.lobby_uuid
+            );
 
-  if (index !== -1) {
-    state.lobbies[index] = {
-      ...state.lobbies[index],
-      ...updatedLobby,
-    };
-  }
+            if (index !== -1) {
+                state.lobbies[index] = {
+                    ...state.lobbies[index],
+                    ...updatedLobby,
+                };
+            }
 
-  // CHECK CURRENT SELECTED LOBBY
-  const selected = state.lobbies.find(
-    (lobby) =>
-      lobby.lobby_uuid === state.selectedLobby
-  );
+            // CHECK CURRENT SELECTED LOBBY
+            const selected = state.lobbies.find(
+                (lobby) =>
+                    lobby.lobby_uuid === state.selectedLobby
+            );
 
-  // IF CURRENT SELECTED LOBBY CLOSED
-  if (
-    selected &&
-    ["bet_closed", "resulted", "cancelled"].includes(
-      selected.status
-    )
-  ) {
-    const nextOpenLobby = state.lobbies.find(
-      (lobby) =>
-        lobby.status === "betting_open"
-    );
+            // IF CURRENT SELECTED LOBBY CLOSED
+            if (
+                selected &&
+                ["bet_closed", "resulted", "cancelled"].includes(
+                    selected.status
+                )
+            ) {
+                const nextOpenLobby = state.lobbies.find(
+                    (lobby) =>
+                        lobby.status === "betting_open"
+                );
 
-    state.selectedLobby = nextOpenLobby
-      ? nextOpenLobby.lobby_uuid
-      : null;
-  }
-},
+                state.selectedLobby = nextOpenLobby
+                    ? nextOpenLobby.lobby_uuid
+                    : null;
+            }
+        },
 
         // -----------------------------------------------------------------------
         // ADD NEW LOBBY

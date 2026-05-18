@@ -10,6 +10,7 @@ import {
 } from "../../store/slices/betSlipSlice";
 
 import { getSocket } from "../../socket/socket";
+import { showPopup } from "../../store/slices/popupSlice";
 
 const ActionBar: React.FC = () => {
   const dispatch = useDispatch();
@@ -23,7 +24,12 @@ const ActionBar: React.FC = () => {
   const lobbies = useSelector(
     (state: RootState) => state.socketSlice.lobbies
   );
-
+  const balance = Number(
+    useSelector(
+      (state: RootState) =>
+        state.socketSlice.info.balance
+    )
+  );
  const selectedLobby = useSelector(
   (state: RootState) =>
     state.socketSlice.selectedLobby
@@ -41,29 +47,75 @@ const activeLobby = lobbies.find(
     0
   );
 
-  const handlePlaceBet = () => {
-    if (!activeLobby) return;
 
-    const payload = 
-      {
-        lobbyId: activeLobby.lobby_uuid,
-        bets: bets.map((bet) => ({
-          cat: bet.cat,
-          chip: bet.chip,
-          amt: bet.amt,
-        })),
-      } ;
+const handlePlaceBet = () => {
+  if (!activeLobby) return;
 
-    console.log("BET PAYLOAD:", payload);
+  // USER BALANCE
 
-    const socket = getSocket();
 
-    socket?.emit("bet", payload);
+  // TOTAL BET
+  const totalAmount = bets.reduce(
+    (sum, item) => sum + item.amt,
+    0
+  );
 
-    dispatch(clearBets());
+  // MIN BET
+  if (totalAmount < 20) {
+    dispatch(
+      showPopup({
+        type: "error",
+        message: "Minimum bet is 20",
+      })
+    );
 
-    setShowBets(false);
+    return;
+  }
+
+  // MAX BET
+  if (totalAmount > 25000) {
+    dispatch(
+      showPopup({
+        type: "error",
+        message: "Maximum bet is 25000",
+      })
+    );
+
+    return;
+  }
+
+  // INSUFFICIENT BALANCE
+  if (totalAmount > balance) {
+    dispatch(
+      showPopup({
+        type: "error",
+        message: "Insufficient Balance",
+      })
+    );
+
+    return;
+  }
+
+  const payload = {
+    lobbyId: activeLobby.lobby_uuid,
+
+    bets: bets.map((bet) => ({
+      cat: bet.cat,
+      chip: bet.chip,
+      amt: bet.amt,
+    })),
   };
+
+  console.log("BET PAYLOAD:", payload);
+
+  const socket = getSocket();
+
+  socket?.emit("bet", payload);
+
+  dispatch(clearBets());
+
+  setShowBets(false);
+};
 
   const handleUndo = () => {
     dispatch(undoLastBet());
