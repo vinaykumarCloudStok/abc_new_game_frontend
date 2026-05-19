@@ -18,6 +18,7 @@ import LoaderSocket from '../Loader/LoaderSocket'
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
+  position:"relative"
 
 };
 const HomeLayout = () => {
