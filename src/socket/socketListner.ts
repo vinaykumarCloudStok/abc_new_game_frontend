@@ -78,31 +78,31 @@ export const initSocketListeners = (
       case "lobby":
         dispatch(setLobbies(data));
         break;
-    case "settlement":
-      dispatch(
-        showPopup({
-          type: data.totalWinAmount > 0 ? "success" : "error",
-          message: `${data.message} Bet: ₹${data.totalBetAmount} | Win: ₹${data.totalWinAmount}`,
-        })
-      );
-      break;
+      case "settlement":
+        dispatch(
+          showPopup({
+            type: data.totalWinAmount > 0 ? "success" : "error",
+            message: `${data.message} Bet: ₹${data.totalBetAmount} | Win: ₹${data.totalWinAmount}`,
+          })
+        );
+        break;
       // ---------------------------------------------------------------------
       // UPDATE SINGLE LOBBY
       // ---------------------------------------------------------------------
-     case "lobby_updated":
-  dispatch(updateLobby(data));
+      case "lobby_updated":
+        dispatch(updateLobby(data));
 
-  // SHOW ROLLBACK POPUP
-  if (data.status === "cancelled") {
-    dispatch(
-      showPopup({
-        type: "error",
-        message: "Lobby cancelled. Your bets have been rolled back.",
-      })
-    );
-  }
+        // SHOW ROLLBACK POPUP
+        if (data.status === "cancelled") {
+          dispatch(
+            showPopup({
+              type: "error",
+              message: "Lobby cancelled. Your bets have been rolled back.",
+            })
+          );
+        }
 
-  break;
+        break;
       case "lobby_result":
         dispatch(setLobbyResult(data));
 

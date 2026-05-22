@@ -26,7 +26,7 @@ const TabSection: React.FC = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_SOCKET_URL}bet-history?user_id=${info.user_id}&operator_id=${info.operator_id}&type=${status}`
+        `${import.meta.env.VITE_APP_BASE_SOCKET_URL}/bet-history?user_id=${info.user_id}&operator_id=${info.operator_id}&type=${status}`
       );
       const data = res?.data?.data || [];
       if (status === "bet") setBetData(data);
