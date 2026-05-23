@@ -15,7 +15,7 @@
 
 .tabBtn {
   flex: 1;
-  height: 46px;
+  height: 40px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.03);
@@ -23,7 +23,7 @@
   color: var(--color-on-surface-variant);
   font-family: var(--font-montserrat);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 180ms ease;
 }
@@ -483,6 +483,48 @@
   }
 
   .chipAmt {
+    font-size: 14px;
+  }
+}
+/* =========================================================
+   GAME HISTORY — SUM ball + pending state
+========================================================= */
+
+.ballSum {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at top, #6ee7b7, #34d399);
+  color: #0b1e17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.35),
+    0 6px 14px rgba(52, 211, 153, 0.28);
+}
+
+.pendingResult {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(96, 165, 250, 0.06);
+  border: 1px dashed rgba(96, 165, 250, 0.25);
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-inter);
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 480px) {
+  .ballSum {
+    width: 34px;
+    height: 34px;
     font-size: 14px;
   }
 }

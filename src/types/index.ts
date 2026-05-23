@@ -10,7 +10,15 @@ export interface CartItem {
   multiplier: number;
   lobby: string;
 }
-
+export interface LobbyHistoryItem {
+  lobby_uuid: string;
+  result_at: string;
+  result: {
+    a: number;
+    b: number;
+    c: number;
+  } | null;
+}
 export interface DrawResult {
   issue: string;
   time: string;
@@ -69,7 +77,7 @@ export interface BetOption {
   cat: number;
 }
 
-export type TabType = "bet" | "settlement" | "rollback";
+export type TabType = "game" | "bet" | "settlement" | "rollback";
 
 export interface BetHistoryItem {
   id?: number;
