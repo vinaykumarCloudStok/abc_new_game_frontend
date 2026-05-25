@@ -77,7 +77,7 @@ export interface BetOption {
   cat: number;
 }
 
-export type TabType = "game" | "myorder" | "rollback";
+export type TabType =  "myorder"|"game" | "rollback";
 
 export interface BetHistoryItem {
   id?: number;

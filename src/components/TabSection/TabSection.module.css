@@ -604,9 +604,7 @@
   transition: all 160ms ease;
 }
 
-.subTabBtn:hover {
-  color: rgba(255, 255, 255, 0.8);
-}
+
 
 .activeSubTab {
   background: linear-gradient(

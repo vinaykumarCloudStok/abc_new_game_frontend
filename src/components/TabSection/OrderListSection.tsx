@@ -54,16 +54,17 @@ const OrderListSection: React.FC<OrderListProp> = ({
                 <span className={styles.statusWin}>DECLARED</span>
               </div>
               <div className={styles.metaRow}>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Lobby ID</span>
-                  <span className={styles.metaValue}>{item.lobby_uuid}</span>
-                </div>
-                <div className={styles.metaItem}>
+                    <div className={styles.metaItem}>
                   <span className={styles.metaLabel}>Time</span>
                   <span className={styles.metaValue}>
                     {formatDate(item.result_at)}
                   </span>
                 </div>
+                <div className={styles.metaItem}>
+                  <span className={styles.metaLabel}>Lobby ID</span>
+                  <span className={styles.metaValue}>{item.lobby_uuid.slice(0,20)}</span>
+                </div>
+            
               </div>
             </div>
 
@@ -135,15 +136,16 @@ const OrderListSection: React.FC<OrderListProp> = ({
               </div>
 
               <div className={styles.metaRow}>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Lobby ID</span>
-                  <span className={styles.metaValue}>{item.lobby_id}</span>
-                </div>
+            
                 <div className={styles.metaItem}>
                   <span className={styles.metaLabel}>Time</span>
                   <span className={styles.metaValue}>
                     {formatDate(item.created_at)}
                   </span>
+                </div>
+                    <div className={styles.metaItem}>
+                  <span className={styles.metaLabel}>Lobby ID</span>
+                  <span className={styles.metaValue}>{item.lobby_id.slice(0,20)}</span>
                 </div>
               </div>
             </div>

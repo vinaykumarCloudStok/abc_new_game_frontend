@@ -10,7 +10,7 @@ import OrderListSection from "./OrderListSection";
 type MyOrderSubTab = "bet" | "settlement";
 
 const TabSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>("game");
+  const [activeTab, setActiveTab] = useState<TabType>("myorder");
   const [myOrderSubTab, setMyOrderSubTab] = useState<MyOrderSubTab>("bet");
   const [loading, setLoading] = useState(false);
 
@@ -153,18 +153,19 @@ const TabSection: React.FC = () => {
     <div className={styles.container}>
       {/* MAIN TABS */}
       <div className={styles.tabs}>
+             <button
+          className={`${styles.tabBtn} ${activeTab === "myorder" ? styles.activeTab : ""}`}
+          onClick={() => setActiveTab("myorder")}
+        >
+          My Order
+        </button>
         <button
           className={`${styles.tabBtn} ${activeTab === "game" ? styles.activeTab : ""}`}
           onClick={() => setActiveTab("game")}
         >
           Game History
         </button>
-        <button
-          className={`${styles.tabBtn} ${activeTab === "myorder" ? styles.activeTab : ""}`}
-          onClick={() => setActiveTab("myorder")}
-        >
-          My Order
-        </button>
+   
         <button
           className={`${styles.tabBtn} ${activeTab === "rollback" ? styles.activeTab : ""}`}
           onClick={() => setActiveTab("rollback")}

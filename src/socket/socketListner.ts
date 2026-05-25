@@ -114,11 +114,11 @@ export const initSocketListeners = (
           })
         );
 
-        // remove after 2 sec
+     
         setTimeout(() => {
           dispatch(removeLobby(data.lobby_uuid));
           dispatch(clearLatestResult());
-        }, 7000);
+        }, 12000);
 
         break;
       // ---------------------------------------------------------------------
