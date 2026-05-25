@@ -14,14 +14,15 @@ interface OrderListProp {
   loading: boolean;
   currentData: BetHistoryItem[] | LobbyHistoryItem[];
   activeTab: TabType;
+  myOrderSubTab?: "bet" | "settlement";
 }
 
 const OrderListSection: React.FC<OrderListProp> = ({
   loading,
   currentData,
   activeTab,
+  myOrderSubTab,
 }) => {
-  /* ---------- LOADING / EMPTY ---------- */
   if (loading) {
     return (
       <div className={styles.orderList}>
@@ -39,147 +40,127 @@ const OrderListSection: React.FC<OrderListProp> = ({
   }
 
   /* ===================================================
-     GAME HISTORY TAB  →  /lobby-history data
+     GAME HISTORY — Only DECLARED results
   =================================================== */
   if (activeTab === "game") {
     const games = currentData as LobbyHistoryItem[];
-
     return (
       <div className={styles.orderList}>
-        {games.map((item) => {
-          const hasResult = item.result !== null && item.result !== undefined;
-        
-
-          return (
-            <div key={item.lobby_uuid} className={styles.orderItem}>
-              {/* HEADER */}
-              <div className={styles.orderHeader}>
-                <div className={styles.orderMeta}>
-                  <div className={styles.orderTopRow}>
-                    <span className={styles.orderType}>GAME RESULT</span>
-                    <span
-                      className={
-                        hasResult ? styles.statusWin : styles.statusRollback
-                      }
-                    >
-                      {hasResult ? "DECLARED" : "PENDING"}
-                    </span>
-                  </div>
-                  <span className={styles.orderId}>{item.lobby_uuid}</span>
-                  <span
-                    className={styles.orderDate}
-                    style={{ textTransform: "uppercase" }}
-                  >
+        {games.map((item) => (
+          <div key={item.lobby_uuid} className={styles.orderItem}>
+            <div className={styles.orderHeader}>
+              <div className={styles.orderTopRow}>
+                <span className={styles.orderType}>GAME RESULT</span>
+                <span className={styles.statusWin}>DECLARED</span>
+              </div>
+              <div className={styles.metaRow}>
+                <div className={styles.metaItem}>
+                  <span className={styles.metaLabel}>Lobby ID</span>
+                  <span className={styles.metaValue}>{item.lobby_uuid}</span>
+                </div>
+                <div className={styles.metaItem}>
+                  <span className={styles.metaLabel}>Time</span>
+                  <span className={styles.metaValue}>
                     {formatDate(item.result_at)}
                   </span>
                 </div>
               </div>
-
-              {/* RESULT BALLS — A / B / C + SUM */}
-              {hasResult ? (
-                <div className={styles.resultBalls}>
-                  {(["a", "b", "c"] as const).map((key) => (
-                    <div key={key} className={styles.ballGroup}>
-                      <span className={styles.ballLabel}>
-                        {key.toUpperCase()}
-                      </span>
-                      <span className={styles.ball}>{item.result![key]}</span>
-                    </div>
-                  ))}
-
-                  
-                </div>
-              ) : (
-                <div className={styles.pendingResult}>
-                  Result will be declared soon
-                </div>
-              )}
             </div>
-          );
-        })}
+
+            <div className={styles.resultBalls}>
+              {(["a", "b", "c"] as const).map((key) => (
+                <div key={key} className={styles.ballGroup}>
+                  <span className={styles.ballLabel}>{key.toUpperCase()}</span>
+                  <span className={styles.ball}>{item.result![key]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
 
   /* ===================================================
-     BET / SETTLEMENT / ROLLBACK TABS  →  /bet-history data
+     MY ORDER (bet | settlement)  &  ROLLBACK
   =================================================== */
   const bets = currentData as BetHistoryItem[];
+  const isRollback = activeTab === "rollback";
+  const isSettlement = activeTab === "myorder" && myOrderSubTab === "settlement";
+  const isPendingBet = activeTab === "myorder" && myOrderSubTab === "bet";
 
   return (
     <div className={styles.orderList}>
       {bets.map((item) => {
         const result = safeParse(item.result);
 
-        // settlement tab → bet_results (has btAmt, chip, status)
-        // bet/rollback tab → userBets or bets (has amt, chip)
-        const betResults: BetResult[] =
-          activeTab === "settlement"
-            ? safeParse(item.bet_results)
-            : safeParse(item.userBets || item.bets);
+        const betResults: BetResult[] = isSettlement
+          ? safeParse(item.bet_results)
+          : safeParse(item.userBets || item.bets);
 
         const totalBetsCount = betResults?.length || 0;
-        const isOverallWin =
-          activeTab === "settlement" && Number(item.win_amount) > 0;
+        const isOverallWin = isSettlement && Number(item.win_amount) > 0;
+
+        let statusLabel = "";
+        let statusClass = "";
+        if (isRollback) {
+          statusLabel = "REFUNDED";
+          statusClass = styles.statusRollback;
+        } else if (isPendingBet) {
+          statusLabel = "PENDING";
+          statusClass = styles.statusPending;
+        } else if (isOverallWin) {
+          statusLabel = "WIN";
+          statusClass = styles.statusWin;
+        } else {
+          statusLabel = "LOSS";
+          statusClass = styles.statusLoss;
+        }
+
+        const headingLabel = isRollback
+          ? "ROLLBACK"
+          : isSettlement
+          ? "SETTLEMENT"
+          : "BET PLACED";
 
         return (
           <div
-            key={item.id || item.settlement_id}
+            key={item.id || item.settlement_id || item.lobby_id}
             className={styles.orderItem}
           >
-            {/* HEADER */}
             <div className={styles.orderHeader}>
-              <div className={styles.orderMeta}>
-                <div className={styles.orderTopRow}>
-                  <span className={styles.orderType}>
-                    {activeTab === "bet"
-                      ? "All Bets"
-                      : activeTab === "settlement"
-                      ? "SETTLEMENT"
-                      : "ROLLBACK"}
-                  </span>
-                  {activeTab !== "bet" && (
-                    <span
-                      className={
-                        activeTab === "rollback"
-                          ? styles.statusRollback
-                          : isOverallWin
-                          ? styles.statusWin
-                          : styles.statusLoss
-                      }
-                    >
-                      {activeTab === "rollback"
-                        ? "REFUNDED"
-                        : isOverallWin
-                        ? "WIN"
-                        : "LOSS"}
-                    </span>
-                  )}
+              <div className={styles.orderTopRow}>
+                <span className={styles.orderType}>{headingLabel}</span>
+                <span className={statusClass}>{statusLabel}</span>
+              </div>
+
+              <div className={styles.metaRow}>
+                <div className={styles.metaItem}>
+                  <span className={styles.metaLabel}>Lobby ID</span>
+                  <span className={styles.metaValue}>{item.lobby_id}</span>
                 </div>
-                <span className={styles.orderId}>{item.lobby_id}</span>
-                <span
-                  className={styles.orderDate}
-                  style={{ textTransform: "uppercase" }}
-                >
-                  {formatDate(item.created_at)}
-                </span>
+                <div className={styles.metaItem}>
+                  <span className={styles.metaLabel}>Time</span>
+                  <span className={styles.metaValue}>
+                    {formatDate(item.created_at)}
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* AMOUNT SECTION */}
             <div className={styles.amountGrid}>
               <div className={styles.amountCard}>
                 <div className={styles.amountLabel}>Bet Amount</div>
                 <div className={styles.amountValue}>
-                  {item.bet_amount || item.total_bet_amount}
+                  ₹{item.bet_amount || item.total_bet_amount || 0}
                 </div>
               </div>
 
               <div className={styles.amountCard}>
                 <div className={styles.amountLabel}>
-                  {activeTab === "rollback"
+                  {isRollback
                     ? "Refund"
-                    : activeTab === "settlement"
+                    : isSettlement
                     ? "Win Amount"
                     : "Total Bets"}
                 </div>
@@ -188,36 +169,32 @@ const OrderListSection: React.FC<OrderListProp> = ({
                     isOverallWin ? styles.amountWin : ""
                   }`}
                 >
-                  {activeTab === "rollback"
-                    ? `${item.refund_amount}`
-                    : activeTab === "settlement"
-                    ? `${item.win_amount}`
-                    : `${totalBetsCount}`}
+                  {isRollback
+                    ? `₹${item.refund_amount || 0}`
+                    : isSettlement
+                    ? `₹${item.win_amount || 0}`
+                    : totalBetsCount}
                 </div>
               </div>
             </div>
 
-            {/* RESULT BALLS — A / B / C */}
             {result && result.a !== undefined && (
               <div className={styles.resultBalls}>
                 {(["a", "b", "c"] as const).map((key) => (
                   <div key={key} className={styles.ballGroup}>
-                    <span className={styles.ballLabel}>
-                      {key.toUpperCase()}
-                    </span>
+                    <span className={styles.ballLabel}>{key.toUpperCase()}</span>
                     <span className={styles.ball}>{result[key]}</span>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* BET CHIP TILES */}
             {betResults?.length > 0 && (
               <div className={styles.chipSection}>
                 <div className={styles.sectionLabel}>
-                  {activeTab === "rollback"
+                  {isRollback
                     ? "Refunded bets"
-                    : activeTab === "settlement"
+                    : isSettlement
                     ? "Bet results"
                     : "Bets placed"}
                 </div>
@@ -231,7 +208,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
 
                     const tileClass = [
                       styles.chipTile,
-                      activeTab === "rollback"
+                      isRollback
                         ? styles.chipRefund
                         : isWin
                         ? styles.chipWin
@@ -242,7 +219,6 @@ const OrderListSection: React.FC<OrderListProp> = ({
 
                     return (
                       <div key={i} className={tileClass}>
-                        {/* Letter + Number boxes */}
                         <div className={styles.chipBoxes}>
                           {chipParts.map((part, pi) => (
                             <React.Fragment key={pi}>
@@ -259,9 +235,8 @@ const OrderListSection: React.FC<OrderListProp> = ({
                           ))}
                         </div>
 
-                        {/* Info */}
                         <div className={styles.chipInfo}>
-                          {activeTab === "settlement" && (
+                          {isSettlement && (
                             <span
                               className={`${styles.chipStatus} ${
                                 isWin
@@ -272,14 +247,18 @@ const OrderListSection: React.FC<OrderListProp> = ({
                               {isWin ? "WIN" : "LOSS"}
                             </span>
                           )}
-                          {activeTab === "rollback" && (
+                          {isRollback && (
                             <span className={styles.chipStatusRefund}>
                               REFUNDED
                             </span>
                           )}
+                          {isPendingBet && (
+                            <span className={styles.chipStatusPending}>
+                              PENDING
+                            </span>
+                          )}
                         </div>
 
-                        {/* Amount */}
                         <span className={styles.chipAmt}>₹{betAmt}</span>
                       </div>
                     );

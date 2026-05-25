@@ -39,14 +39,18 @@ const LobbySelector: React.FC = () => {
     return isTomorrow ? `Tomorrow ${time}` : time;
   };
 
-  // Priority: bet_closed first, then betting_open, then everything else (resulted, etc.)
+  // Remove closed lobbies
+  const filteredLobbies = (lobbies || []).filter(
+    (lobby) => lobby.status !== "bet_closed"
+  );
+
+  // betting_open first, then others
   const getStatusPriority = (status: string) => {
-    if (status === "bet_closed") return 0;
-    if (status === "betting_open") return 1;
-    return 2;
+    if (status === "betting_open") return 0;
+    return 1;
   };
 
-  const sortedLobbies = [...(lobbies || [])].sort(
+  const sortedLobbies = [...filteredLobbies].sort(
     (a, b) => getStatusPriority(a.status) - getStatusPriority(b.status)
   );
 
@@ -54,7 +58,6 @@ const LobbySelector: React.FC = () => {
     <section className={styles.section}>
       <div className={`${styles.scroll} no-scrollbar`}>
         {sortedLobbies.map((lobby) => {
-          const isClosed = lobby.status === "bet_closed";
           const isOpen = lobby.status === "betting_open";
           const isResulted = lobby.status === "resulted";
           const isActive = selectedLobby === lobby.lobby_uuid;
@@ -62,26 +65,18 @@ const LobbySelector: React.FC = () => {
           return (
             <button
               key={lobby.lobby_uuid}
-              disabled={isClosed || isResulted}
-              onClick={() =>
-                dispatch(selectLobby(lobby.lobby_uuid))
-              }
+              disabled={isResulted}
+              onClick={() => dispatch(selectLobby(lobby.lobby_uuid))}
               className={`
                 ${styles.chip}
                 ${
-                  isClosed
-                    ? styles.chipDisabled
-                    : isActive
+                  isActive
                     ? styles.chipSelected
                     : styles.chipActive
                 }
               `}
             >
               <span>{formatTime(lobby.result_at)}</span>
-
-              {isClosed && (
-                <span className={styles.closedBadge}>CLOSED</span>
-              )}
 
               {isOpen && (
                 <span className={styles.openBadge}>Open</span>

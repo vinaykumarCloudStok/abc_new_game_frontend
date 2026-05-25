@@ -77,28 +77,24 @@ export interface BetOption {
   cat: number;
 }
 
-export type TabType = "game" | "bet" | "settlement" | "rollback";
+export type TabType = "game" | "myorder" | "rollback";
 
 export interface BetHistoryItem {
   id?: number;
   settlement_id?: number;
-
   lobby_id: string;
-  user_id: string;
-  operator_id: string;
-
+  user_id?: string;
+  operator_id?: string;
   bet_amount?: string;
-  win_amount?: string;
-
   total_bet_amount?: string;
+  win_amount?: string;
   refund_amount?: string;
-
-  userBets?: any;
-  bets?: any;
-
-  result?: string;
-  bet_results?: string;
-
+  userBets?: string | null;     // from /bet-history
+  bets?: string | null;          // from /settlement (currently null in sample)
+  bet_results?: string | null;  // from /settlement
+  result?: string | null;
+  txn_id?: string;
+  txn_ids?: string;
   created_at: string;
 }
 

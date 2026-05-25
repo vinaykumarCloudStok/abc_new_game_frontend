@@ -4,11 +4,14 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-xl);
   padding: var(--spacing-md);
+  padding-right: 64px; /* room for help btn */
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
   position: relative;
   overflow: hidden;
+  min-height: 140px;
 }
 
 .glow {
@@ -23,6 +26,15 @@
   pointer-events: none;
 }
 
+/* ---------------- LEFT COLUMN ---------------- */
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
 .label {
   font-family: var(--font-inter);
   font-size: 12px;
@@ -31,36 +43,158 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-on-surface-variant);
-  margin-bottom: var(--spacing-base);
+  margin: 0;
+}
+
+.flexRoundId {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lobbyIdText {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+}
+
+.lobbyId {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.5px;
+  font-family: var(--font-montserrat), monospace;
+  font-weight: 500;
 }
 
 .digits {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  margin-top: 8px;
+  gap: 10px;
+  margin-top: 4px;
+  min-height: 42px;
+}
+
+.digitsPlaceholder {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  letter-spacing: 0.5px;
 }
 
 .digitBall {
-  width: 32px;
-  height: 32px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 1px solid rgba(214, 186, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-montserrat);
+  background: linear-gradient(135deg, #ffcc00, #ff7b00);
+  color: #fff;
+  font-size: 20px;
   font-weight: 700;
-  font-size: 16px;
-  color: var(--color-primary);
+  box-shadow:
+    0 0 12px rgba(255, 170, 0, 0.5),
+    inset 0 2px 6px rgba(255, 255, 255, 0.3);
+  animation: popIn 0.5s ease forwards;
+  transform: scale(0);
 }
 
+@keyframes popIn {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15) rotate(10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* ---------------- RIGHT COLUMN (TIMER) ---------------- */
+.rightCol {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.timerPill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 14px;
+  min-width: 110px;
+  border-radius: var(--radius-lg, 14px);
+  background: linear-gradient(
+    135deg,
+    rgba(214, 186, 255, 0.18),
+    rgba(214, 186, 255, 0.06)
+  );
+  border: 1px solid rgba(214, 186, 255, 0.25);
+  box-shadow:
+    0 0 16px rgba(214, 186, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.timerHeader {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.timerIcon {
+  font-size: 12px;
+  color: rgba(214, 186, 255, 0.9);
+}
+
+.timerLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.timerValue {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 0 10px rgba(214, 186, 255, 0.3);
+}
+
+.timerSuffix {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 2px;
+}
+
+.timerLobbyId {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.5px;
+  margin: 0;
+  font-family: var(--font-montserrat), monospace;
+}
+
+/* ---------------- HELP BUTTON ---------------- */
 .helpBtn {
-  width: 48px;
-  height: 48px;
-  background: rgba(60, 46, 79, 0.4);
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(60, 46, 79, 0.6);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(233, 196, 0, 0.2);
+  border: 1px solid rgba(233, 196, 0, 0.25);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -69,80 +203,37 @@
   transition: transform 150ms ease;
   color: var(--color-tertiary);
   flex-shrink: 0;
+  font-size: 18px;
 }
 
 .helpBtn:active {
   transform: scale(0.93);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
-
-.resultWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.lobbyIdText{
-  font-size: 12px;
-  color: rgba(255,255,255,0.5);
-  letter-spacing: 1px;
-}
-.lobbyId {
-  font-size: 12px;
-  color: rgba(255,255,255,0.9);
-  letter-spacing: 1px;
-}
-
-.digits {
-  display: flex;
-  gap: 10px;
-  margin-top: 4px;
-}
-
-.digitBall {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+/* ---------------- URGENT STATE (under 60s) ---------------- */
+.timerPillUrgent {
   background: linear-gradient(
     135deg,
-    #ffcc00,
-    #ff7b00
+    rgba(255, 80, 80, 0.22),
+    rgba(255, 80, 80, 0.08)
   );
-
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
-
+  border-color: rgba(255, 100, 100, 0.45);
   box-shadow:
-    0 0 12px rgba(255, 170, 0, 0.5),
-    inset 0 2px 6px rgba(255,255,255,0.3);
-
-  animation: popIn 0.5s ease forwards;
-
-  transform: scale(0);
-}
-.flexRoundId{
-  display: flex;
-  align-items: center;
+    0 0 18px rgba(255, 80, 80, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: urgentPulse 1s ease-in-out infinite;
 }
 
-@keyframes popIn {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
+.timerValueUrgent {
+  color: #ffb3b3;
+  text-shadow: 0 0 10px rgba(255, 100, 100, 0.5);
+}
 
-  70% {
-    transform: scale(1.15) rotate(10deg);
-    opacity: 1;
+@keyframes urgentPulse {
+  0%, 100% {
+    transform: scale(1);
   }
-
-  100% {
-    transform: scale(1) rotate(0);
-    opacity: 1;
+  50% {
+    transform: scale(1.04);
   }
 }
