@@ -39,46 +39,32 @@ const LobbySelector: React.FC = () => {
     return isTomorrow ? `Tomorrow ${time}` : time;
   };
 
-  // betting_open lobbies first
-  const sortedLobbies = [...(lobbies || [])].sort((a, b) => {
-    if (
-      a.status === "betting_open" &&
-      b.status !== "betting_open"
-    ) {
-      return -1;
-    }
+  // Priority: bet_closed first, then betting_open, then everything else (resulted, etc.)
+  const getStatusPriority = (status: string) => {
+    if (status === "bet_closed") return 0;
+    if (status === "betting_open") return 1;
+    return 2;
+  };
 
-    if (
-      a.status !== "betting_open" &&
-      b.status === "betting_open"
-    ) {
-      return 1;
-    }
-
-    return 0;
-  });
+  const sortedLobbies = [...(lobbies || [])].sort(
+    (a, b) => getStatusPriority(a.status) - getStatusPriority(b.status)
+  );
 
   return (
     <section className={styles.section}>
       <div className={`${styles.scroll} no-scrollbar`}>
         {sortedLobbies.map((lobby) => {
-          const isClosed =
-            lobby.status === "bet_closed";
-
-          const isOpen =
-            lobby.status === "betting_open";
-const isResulted = lobby.status === "resulted";
-          const isActive =
-            selectedLobby === lobby.lobby_uuid;
+          const isClosed = lobby.status === "bet_closed";
+          const isOpen = lobby.status === "betting_open";
+          const isResulted = lobby.status === "resulted";
+          const isActive = selectedLobby === lobby.lobby_uuid;
 
           return (
             <button
               key={lobby.lobby_uuid}
-           disabled={isClosed || isResulted}
+              disabled={isClosed || isResulted}
               onClick={() =>
-                dispatch(
-                  selectLobby(lobby.lobby_uuid)
-                )
+                dispatch(selectLobby(lobby.lobby_uuid))
               }
               className={`
                 ${styles.chip}
@@ -91,26 +77,19 @@ const isResulted = lobby.status === "resulted";
                 }
               `}
             >
-              <span>
-                {formatTime(lobby.result_at)}
-              </span>
+              <span>{formatTime(lobby.result_at)}</span>
 
               {isClosed && (
-                <span className={styles.closedBadge}>
-                  CLOSED
-                </span>
+                <span className={styles.closedBadge}>CLOSED</span>
               )}
 
               {isOpen && (
-                <span className={styles.openBadge}>
-                  Open
-                </span>
+                <span className={styles.openBadge}>Open</span>
               )}
+
               {isResulted && (
-  <span className={styles.resultBadge}>
-    Resulted
-  </span>
-)}
+                <span className={styles.resultBadge}>Resulted</span>
+              )}
             </button>
           );
         })}

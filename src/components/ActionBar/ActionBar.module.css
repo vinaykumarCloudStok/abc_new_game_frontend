@@ -9,30 +9,38 @@
 }
 
 .inner {
-  background: rgba(65, 51, 84, 0.85);
+  background: rgba(65, 51, 84, 0.88);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-xl);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border: 1px solid rgba(214, 186, 255, 0.2);
+  padding: 10px 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(214, 186, 255, 0.18);
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
 
   box-shadow:
-    0 0 15px rgba(214, 186, 255, 0.15),
-    0 8px 32px rgba(0,0,0,0.4);
+    0 0 15px rgba(214, 186, 255, 0.12),
+    0 8px 32px rgba(0, 0, 0, 0.45);
 }
+
+/* ---------- LEFT: Cart ---------- */
 
 .cartLeft {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 10px;
   cursor: pointer;
   flex: 1;
+  min-width: 0; /* critical: allow shrinking inside flex */
+  padding: 4px 6px 4px 4px;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+
+.cartLeft:active {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .cartIconWrapper {
@@ -40,123 +48,151 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(214, 186, 255, 0.12);
+  flex-shrink: 0;
 }
 
 .cartIcon {
-  font-size: 30px !important;
+  font-size: 22px !important;
   color: var(--color-secondary);
 }
 
 .badge {
   position: absolute;
-  top: -6px;
-  right: -8px;
+  top: -4px;
+  right: -4px;
 
-  min-width: 20px;
-  height: 20px;
+  min-width: 18px;
+  height: 18px;
   padding: 0 5px;
 
   background: var(--color-tertiary);
-
+  border: 2px solid rgba(65, 51, 84, 1);
   border-radius: 999px;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-
   color: #fff;
 
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
 }
 
 .cartInfo {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
 }
 
 .cartLabel {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--color-on-surface-variant);
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .cartTotal {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   color: var(--color-secondary);
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* ---------- RIGHT: Actions ---------- */
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .undoBtn {
-  height: 48px;
-  padding: 0 18px;
+  height: 42px;
+  width: 42px;
+  padding: 0;
+  flex-shrink: 0;
 
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
 
-  color: white;
-
-  font-size: 13px;
-  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
 
   cursor: pointer;
+  transition: all 0.18s ease;
+}
 
-  transition: all 0.2s ease;
+.undoBtn span {
+  font-size: 20px !important;
 }
 
 .undoBtn:hover {
-  background: rgba(255,255,255,0.14);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .undoBtn:active {
-  transform: scale(0.96);
+  transform: scale(0.94);
 }
 
 .undoBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
 .placeBtn {
-  padding: 0 var(--spacing-lg);
-  height: 48px;
+  height: 42px;
+  padding: 0 16px;
+  flex-shrink: 0;
 
   background-color: var(--color-secondary-container);
   color: var(--color-on-secondary-container);
 
   font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.04em;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 12px;
 
   cursor: pointer;
+  white-space: nowrap;
 
-  box-shadow: 0 0 20px rgba(195, 244, 0, 0.35);
+  box-shadow: 0 0 18px rgba(195, 244, 0, 0.32);
 
   transition:
     transform 100ms ease,
-    box-shadow 100ms ease,
+    box-shadow 200ms ease,
     opacity 200ms;
 }
 
 .placeBtn:hover {
-  box-shadow: 0 0 28px rgba(195, 244, 0, 0.5);
+  box-shadow: 0 0 26px rgba(195, 244, 0, 0.5);
 }
 
 .placeBtn:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .placeBtn:disabled {
@@ -165,27 +201,25 @@
   box-shadow: none;
 }
 
-/* BET DROPDOWN */
+/* ---------- BET DROPDOWN ---------- */
 
 .betDropdown {
   position: absolute;
-  bottom: 88px;
+  bottom: calc(100% + 8px);
   left: 0;
   right: 0;
 
-  background: rgba(44, 34, 58, 0.95);
-
-  border: 1px solid rgba(255,255,255,0.08);
-
-  border-radius: 20px;
+  background: rgba(44, 34, 58, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
 
   padding: 14px;
 
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
-  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-
-  animation: fadeUp 0.2s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  animation: fadeUp 0.22s ease;
 }
 
 .betHeader {
@@ -201,14 +235,13 @@
 }
 
 .closeBtn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
 
   border: none;
   border-radius: 50%;
 
-  background: rgba(255,255,255,0.08);
-
+  background: rgba(255, 255, 255, 0.08);
   color: white;
 
   display: flex;
@@ -216,12 +249,11 @@
   justify-content: center;
 
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
 .closeBtn:hover {
-  background: rgba(255,255,255,0.14);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .closeBtn:active {
@@ -235,10 +267,20 @@
 .betList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 
   max-height: 240px;
   overflow-y: auto;
+  padding-right: 2px;
+}
+
+.betList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.betList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
 
 .betItem {
@@ -246,10 +288,8 @@
   align-items: center;
   justify-content: space-between;
 
-  background: rgba(255,255,255,0.05);
-
-  border-radius: 14px;
-
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
   padding: 10px 12px;
 }
 
@@ -257,11 +297,12 @@
   font-size: 14px;
   font-weight: 700;
   color: white;
+  margin: 0;
 }
 
 .betChip {
   font-size: 11px;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .betAmount {
@@ -273,11 +314,37 @@
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ---------- Narrow screens (very small phones) ---------- */
+@media (max-width: 360px) {
+  .inner {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .cartLeft {
+    gap: 8px;
+  }
+
+  .cartIconWrapper {
+    width: 36px;
+    height: 36px;
+  }
+
+  .placeBtn {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .undoBtn {
+    width: 38px;
+    height: 38px;
   }
 }

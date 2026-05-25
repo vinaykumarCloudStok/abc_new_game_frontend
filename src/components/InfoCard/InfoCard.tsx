@@ -20,7 +20,7 @@ const InfoCard: React.FC = () => {
       <div className={styles.glow} />
 
       <div className={styles.resultWrapper}>
-        <p className={styles.label}>Last Draw Result</p>
+        <p className={styles.label}>Draw Result</p>
 
         <div className={styles.flexRoundId}>
            <p className={styles.lobbyIdText}>

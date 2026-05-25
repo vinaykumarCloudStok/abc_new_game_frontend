@@ -133,7 +133,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
                 <div className={styles.orderTopRow}>
                   <span className={styles.orderType}>
                     {activeTab === "bet"
-                      ? "RESULT"
+                      ? "All Bets"
                       : activeTab === "settlement"
                       ? "SETTLEMENT"
                       : "ROLLBACK"}
@@ -171,7 +171,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
               <div className={styles.amountCard}>
                 <div className={styles.amountLabel}>Bet Amount</div>
                 <div className={styles.amountValue}>
-                  ₹{item.bet_amount || item.total_bet_amount}
+                  {item.bet_amount || item.total_bet_amount}
                 </div>
               </div>
 
@@ -189,9 +189,9 @@ const OrderListSection: React.FC<OrderListProp> = ({
                   }`}
                 >
                   {activeTab === "rollback"
-                    ? `₹${item.refund_amount}`
+                    ? `${item.refund_amount}`
                     : activeTab === "settlement"
-                    ? `₹${item.win_amount}`
+                    ? `${item.win_amount}`
                     : `${totalBetsCount}`}
                 </div>
               </div>

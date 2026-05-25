@@ -9,39 +9,38 @@ import ActionBar from '../ActionBar/ActionBar'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../store'
 import { getQueryParams } from '../../utils/helper'
-import { getSocket } from '../../socket/socket'
+
 import { initSocketListeners } from '../../socket/socketListner'
 import CommonPopup from '../modal/CommonPopup'
 import LoaderSocket from '../Loader/LoaderSocket'
-   const mainStyle: React.CSSProperties = {
+const mainStyle: React.CSSProperties = {
   marginTop: '80px',
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
-  position:"relative"
+  position: "relative"
 
 };
 const HomeLayout = () => {
-   const dispatch = useDispatch<AppDispatch>();
-  const socket = getSocket();
-  console.log(socket)
+  const dispatch = useDispatch<AppDispatch>();
   const queryParams = useMemo(() => getQueryParams(), []);
+  console.log(queryParams)
   const token = queryParams?.id;
   const gameId = queryParams?.game_id;
-    const connected = useSelector((state: RootState) => state.socketSlice.connected);
-      const info = useSelector((state: RootState) => state.socketSlice.info);
- useEffect(() => {
+  const connected = useSelector((state: RootState) => state.socketSlice.connected);
+  const info = useSelector((state: RootState) => state.socketSlice.info);
+  useEffect(() => {
     if (!token) return;
     initSocketListeners(dispatch, token, gameId);
   }, [token, dispatch, gameId]);
-    if (!connected || !info) return <LoaderSocket />;
+  if (!connected || !info) return <LoaderSocket />;
   return (
     <>
-   
+
       <RulesModal />
       <Header />
       <main style={mainStyle}>
-           <CommonPopup />
+        <CommonPopup />
         <LobbySelector />
         <InfoCard />
         <BettingSection />

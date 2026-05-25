@@ -80,7 +80,7 @@ const TabSection: React.FC = () => {
           className={`${styles.tabBtn} ${activeTab === "bet" ? styles.activeTab : ""}`}
           onClick={() => setActiveTab("bet")}
         >
-          Result History
+          All Bets
         </button>
         <button
           className={`${styles.tabBtn} ${activeTab === "settlement" ? styles.activeTab : ""}`}
