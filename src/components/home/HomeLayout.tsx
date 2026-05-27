@@ -39,8 +39,9 @@ const HomeLayout = () => {
 
       <RulesModal />
       <Header />
+
       <main style={mainStyle}>
-        <CommonPopup />
+              <CommonPopup />
         <LobbySelector />
         <InfoCard />
         <BettingSection />

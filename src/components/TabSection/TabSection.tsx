@@ -74,10 +74,23 @@ const TabSection: React.FC = () => {
     fetchBetHistory(myOrderSubTab);
   }, [myOrderSubTab]);
 
-  /**
-   * For "bet" sub-tab → group raw bets by lobby_id (multiple bet rows per lobby).
-   * For "settlement" sub-tab → use as-is (already one row per lobby).
-   */
+useEffect(() => {
+  const handleRefresh = () => {
+    if (!info.user_id || !info.operator_id) return;
+
+    // refresh current myorder tab
+    if (activeTab === "myorder") {
+      fetchBetHistory(myOrderSubTab);
+    }
+  };
+
+  window.addEventListener("refreshBetHistory", handleRefresh);
+
+  return () => {
+    window.removeEventListener("refreshBetHistory", handleRefresh);
+  };
+}, [activeTab, myOrderSubTab, info.user_id, info.operator_id]);
+
   const myOrderData = useMemo(() => {
     if (myOrderSubTab === "settlement") {
       return [...settlementData].sort((a, b) => {
@@ -183,7 +196,7 @@ const TabSection: React.FC = () => {
             }`}
             onClick={() => setMyOrderSubTab("bet")}
           >
-            Bets
+            Open Bets
           </button>
           <button
             className={`${styles.subTabBtn} ${

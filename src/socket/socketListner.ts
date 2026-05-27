@@ -127,14 +127,20 @@ export const initSocketListeners = (
       case "lobby_created":
         dispatch(addLobby(data));
         break;
-      case "bet":
-        dispatch(
-          showPopup({
-            type: "success",
-            message: data.message,
-          })
-        );
-        break;
+    case "bet":
+  dispatch(
+    showPopup({
+      type: "success",
+      message: data.message,
+    })
+  );
+
+  // refresh bet tab after 2 sec
+  setTimeout(() => {
+    window.dispatchEvent(new Event("refreshBetHistory"));
+  }, 2000);
+
+  break;
       default:
         console.log("Unhandled socket event:", eventName);
         break;
