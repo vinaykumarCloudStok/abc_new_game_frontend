@@ -30,7 +30,7 @@ const LobbySelector: React.FC = () => {
       date.getFullYear() === tomorrow.getFullYear();
 
     const time = date.toLocaleTimeString([], {
-      hour: "2-digit",
+      hour: "numeric",
       minute: "2-digit",
       second: "2-digit",
       hour12: true,
@@ -44,15 +44,29 @@ const LobbySelector: React.FC = () => {
     (lobby) => lobby.status !== "bet_closed"
   );
 
-  // betting_open first, then others
-  const getStatusPriority = (status: string) => {
-    if (status === "betting_open") return 0;
-    return 1;
-  };
+  const now = new Date();
 
-  const sortedLobbies = [...filteredLobbies].sort(
-    (a, b) => getStatusPriority(a.status) - getStatusPriority(b.status)
-  );
+  const sortedLobbies = [...filteredLobbies].sort((a, b) => {
+    const aDate = new Date(a.result_at);
+    const bDate = new Date(b.result_at);
+
+    const aIsToday =
+      aDate.getDate() === now.getDate() &&
+      aDate.getMonth() === now.getMonth() &&
+      aDate.getFullYear() === now.getFullYear();
+
+    const bIsToday =
+      bDate.getDate() === now.getDate() &&
+      bDate.getMonth() === now.getMonth() &&
+      bDate.getFullYear() === now.getFullYear();
+
+    // Today first
+    if (aIsToday && !bIsToday) return -1;
+    if (!aIsToday && bIsToday) return 1;
+
+    // Then sort by time
+    return aDate.getTime() - bDate.getTime();
+  });
 
   return (
     <section className={styles.section}>
@@ -60,7 +74,14 @@ const LobbySelector: React.FC = () => {
         {sortedLobbies.map((lobby) => {
           const isOpen = lobby.status === "betting_open";
           const isResulted = lobby.status === "resulted";
-          const isActive = selectedLobby === lobby.lobby_uuid;
+          const lobbyDate = new Date(lobby.result_at);
+          const isToday =
+            lobbyDate.getDate() === new Date().getDate() &&
+            lobbyDate.getMonth() === new Date().getMonth() &&
+            lobbyDate.getFullYear() === new Date().getFullYear();
+
+          const isActive =
+            isToday && selectedLobby === lobby.lobby_uuid;
 
           return (
             <button
@@ -69,21 +90,24 @@ const LobbySelector: React.FC = () => {
               onClick={() => dispatch(selectLobby(lobby.lobby_uuid))}
               className={`
                 ${styles.chip}
-                ${
-                  isActive
-                    ? styles.chipSelected
-                    : styles.chipActive
+                ${isActive
+                  ? styles.chipSelected
+                  : styles.chipActive
                 }
               `}
             >
               <span>{formatTime(lobby.result_at)}</span>
 
               {isOpen && (
-                <span className={styles.openBadge}>Open</span>
+                <span className={styles.openBadge}>
+                  Open
+                </span>
               )}
 
               {isResulted && (
-                <span className={styles.resultBadge}>Resulted</span>
+                <span className={styles.resultBadge}>
+                  Resulted
+                </span>
               )}
             </button>
           );
