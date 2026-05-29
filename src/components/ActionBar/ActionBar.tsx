@@ -52,9 +52,9 @@ const ActionBar: React.FC = () => {
       0
     );
 
-    if (totalAmount < 20) {
+    if (totalAmount < 12) {
       dispatch(
-        showPopup({ type: "error", message: "Minimum bet is 20" })
+        showPopup({ type: "error", message: "Minimum bet is 12" })
       );
       return;
     }

@@ -114,7 +114,7 @@ export const initSocketListeners = (
           })
         );
 
-     
+
         setTimeout(() => {
           dispatch(removeLobby(data.lobby_uuid));
           dispatch(clearLatestResult());
@@ -127,26 +127,36 @@ export const initSocketListeners = (
       case "lobby_created":
         dispatch(addLobby(data));
         break;
-    case "bet":
-  dispatch(
-    showPopup({
-      type: "success",
-      message: data.message,
-    })
-  );
+      case "bet":
+        dispatch(
+          showPopup({
+            type: "success",
+            message: data.message,
+          })
+        );
 
-  // refresh bet tab after 2 sec
-  setTimeout(() => {
-    window.dispatchEvent(new Event("refreshBetHistory"));
-  }, 2000);
+        // refresh bet tab after 2 sec
+        setTimeout(() => {
+          window.dispatchEvent(new Event("refreshBetHistory"));
+        }, 2000);
 
-  break;
+        break;
       default:
         console.log("Unhandled socket event:", eventName);
         break;
     }
   });
-
+// -------------------------------------------------------------------------
+// BET ERROR
+// -------------------------------------------------------------------------
+socket.on("betError", (message) => {
+  dispatch(
+    showPopup({
+      type: "error",
+      message: typeof message === "string" ? message : "Invalid Bet",
+    })
+  );
+});
   // -------------------------------------------------------------------------
   // CONNECT
   // -------------------------------------------------------------------------

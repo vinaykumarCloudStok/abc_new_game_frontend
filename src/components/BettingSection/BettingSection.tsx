@@ -9,7 +9,7 @@ const BET_OPTIONS: BetOption[] = [
     betType: "A",
     label: "A Digit",
     multiplier: 9,
-    pricePerTicket: 20,
+    pricePerTicket: 12,
     digits: ["A"],
     cat: 1,
   },
@@ -18,7 +18,7 @@ const BET_OPTIONS: BetOption[] = [
     betType: "B",
     label: "B Digit",
     multiplier: 9,
-    pricePerTicket: 20,
+    pricePerTicket: 12,
     digits: ["B"],
     cat: 1,
   },
@@ -27,7 +27,7 @@ const BET_OPTIONS: BetOption[] = [
     betType: "C",
     label: "C Digit",
     multiplier: 9,
-    pricePerTicket: 20,
+    pricePerTicket: 12,
     digits: ["C"],
     cat: 1,
   },
@@ -39,7 +39,7 @@ const DOUBLE_OPTIONS: BetOption[] = [
     betType: "AB",
     label: "AB Combo",
     multiplier: 90,
-    pricePerTicket: 20,
+    pricePerTicket: 15,
     digits: ["A", "B"],
     cat: 2,
   },
@@ -48,7 +48,7 @@ const DOUBLE_OPTIONS: BetOption[] = [
     betType: "AC",
     label: "AC Combo",
     multiplier: 90,
-    pricePerTicket: 20,
+    pricePerTicket:15,
     digits: ["A", "C"],
     cat: 2,
   },
@@ -57,7 +57,7 @@ const DOUBLE_OPTIONS: BetOption[] = [
     betType: "BC",
     label: "BC Combo",
     multiplier: 90,
-    pricePerTicket: 20,
+    pricePerTicket: 15,
     digits: ["B", "C"],
     cat: 2,
   },
@@ -69,7 +69,7 @@ const TRIPLE_OPTIONS: BetOption[] = [
     betType: "ABC",
     label: "ABC Combo",
     multiplier: 900,
-    pricePerTicket: 20,
+    pricePerTicket: 25,
     digits: ["A", "B", "C"],
     cat: 3,
   },
@@ -113,7 +113,7 @@ const BettingSection: React.FC = () => {
           </p>
 
           <p className={styles.sectionPrice}>
-            ₹ {DOUBLE_OPTIONS[0].pricePerTicket}.00
+            {DOUBLE_OPTIONS[0].pricePerTicket}.00
           </p>
         </div>
 
@@ -136,7 +136,7 @@ const BettingSection: React.FC = () => {
           </p>
 
           <p className={styles.sectionPrice}>
-            ₹ {TRIPLE_OPTIONS[0].pricePerTicket}.00
+            {TRIPLE_OPTIONS[0].pricePerTicket}.00
           </p>
         </div>
 
