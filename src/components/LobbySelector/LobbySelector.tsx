@@ -16,36 +16,74 @@ const LobbySelector: React.FC = () => {
     (state: RootState) => state.socketSlice.selectedLobby
   );
 
-  useEffect(() => {
-    if (!lobbies?.length) return;
+useEffect(() => {
+  if (!lobbies?.length) return;
 
-    const savedLobby =
-      localStorage.getItem("selectedLobby");
+  const savedLobby =
+    localStorage.getItem("selectedLobby");
 
-    // Remove hidden bet_closed lobbies
-    const availableLobbies = lobbies.filter(
-      (lobby) => lobby.status !== "bet_closed"
+  // KEEP bet_closed active
+  // remove only resulted/cancelled
+  const availableLobbies = lobbies.filter(
+    (lobby) =>
+      !["resulted", "cancelled"].includes(
+        lobby.status
+      )
+  );
+
+  // current selected lobby
+  const currentLobby = lobbies.find(
+    (lobby) =>
+      lobby.lobby_uuid === selectedLobby
+  );
+
+  // KEEP selected if betting_open OR bet_closed
+  if (
+    currentLobby &&
+    !["resulted", "cancelled"].includes(
+      currentLobby.status
+    )
+  ) {
+    return;
+  }
+
+  // restore saved lobby
+  const validSavedLobby =
+    availableLobbies.find(
+      (lobby) =>
+        lobby.lobby_uuid === savedLobby
     );
 
-    // Check saved lobby exists and is visible
-    const validSavedLobby = availableLobbies.find(
-      (lobby) => lobby.lobby_uuid === savedLobby
+  if (validSavedLobby) {
+    dispatch(
+      selectLobby(
+        validSavedLobby.lobby_uuid
+      )
     );
 
-    if (validSavedLobby) {
-      dispatch(selectLobby(validSavedLobby.lobby_uuid));
-    } else if (availableLobbies.length > 0) {
-      // Auto select first available lobby
-      dispatch(
-        selectLobby(availableLobbies[0].lobby_uuid)
-      );
+    return;
+  }
 
-      localStorage.setItem(
-        "selectedLobby",
-        availableLobbies[0].lobby_uuid
-      );
-    }
-  }, [lobbies, dispatch]);
+  // select next betting_open
+  const nextOpenLobby =
+    availableLobbies.find(
+      (lobby) =>
+        lobby.status === "betting_open"
+    );
+
+  if (nextOpenLobby) {
+    dispatch(
+      selectLobby(
+        nextOpenLobby.lobby_uuid
+      )
+    );
+
+    localStorage.setItem(
+      "selectedLobby",
+      nextOpenLobby.lobby_uuid
+    );
+  }
+}, [lobbies, selectedLobby, dispatch]);
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
