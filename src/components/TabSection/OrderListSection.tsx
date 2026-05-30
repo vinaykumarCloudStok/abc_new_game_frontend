@@ -138,10 +138,12 @@ const OrderListSection: React.FC<OrderListProp> = ({
               <div className={styles.metaRow}>
             
                 <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Time</span>
-                  <span className={styles.metaValue}>
-                    {formatDate(item.created_at)}
-                  </span>
+                  <span className={styles.metaLabel}>{isPendingBet?"Result Time":"Time"}</span>
+                <span className={styles.metaValue}>
+  {formatDate(
+    isPendingBet ? item.result_at : item.created_at
+  )}
+</span>
                 </div>
                     <div className={styles.metaItem}>
                   <span className={styles.metaLabel}>Lobby ID</span>

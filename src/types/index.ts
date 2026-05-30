@@ -94,6 +94,7 @@ export interface BetHistoryItem {
   bet_results?: string | null;  // from /settlement
   result?: string | null;
   txn_id?: string;
+  result_at:string
   txn_ids?: string;
   created_at: string;
 }

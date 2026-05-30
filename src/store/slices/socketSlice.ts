@@ -41,97 +41,164 @@ const socketSlice = createSlice({
         toggleRulesModal(state) {
             state.isRulesModalOpen = !state.isRulesModalOpen;
         },
-        setLobbies: (
-            state,
-            action: PayloadAction<Lobby[]>
-        ) => {
-            state.lobbies = action.payload;
+setLobbies: (
+  state,
+  action: PayloadAction<Lobby[]>
+) => {
+  // sort by result_at ascending
+  const sortedLobbies = [...action.payload].sort(
+    (a, b) =>
+      new Date(a.result_at).getTime() -
+      new Date(b.result_at).getTime()
+  );
 
-            // AUTO SELECT OPEN LOBBY
-            const openLobby = action.payload.find(
-                (lobby) => lobby.status === "betting_open"
-            );
+  state.lobbies = sortedLobbies;
 
-            state.selectedLobby = openLobby
-                ? openLobby.lobby_uuid
-                : action.payload.length > 0
-                    ? action.payload[0].lobby_uuid
-                    : null;
-        },
+  // only visible active lobbies
+  const availableLobbies =
+    sortedLobbies.filter(
+      (lobby) =>
+        ![
+          "bet_closed",
+          "resulted",
+          "cancelled",
+        ].includes(lobby.status)
+    );
+
+  // select earliest betting_open lobby
+  const firstOpenLobby =
+    availableLobbies.find(
+      (lobby) =>
+        lobby.status === "betting_open"
+    );
+
+  state.selectedLobby = firstOpenLobby
+    ? firstOpenLobby.lobby_uuid
+    : null;
+
+  // update localStorage
+  if (firstOpenLobby) {
+    localStorage.setItem(
+      "selectedLobby",
+      firstOpenLobby.lobby_uuid
+    );
+  }
+},
 
         // -----------------------------------------------------------------------
         // UPDATE SINGLE LOBBY
         // -----------------------------------------------------------------------
-        updateLobby: (
-            state,
-            action: PayloadAction<
-                Partial<Lobby> & { lobby_uuid: string }
-            >
-        ) => {
-            const updatedLobby = action.payload;
+  updateLobby: (
+  state,
+  action: PayloadAction<
+    Partial<Lobby> & { lobby_uuid: string }
+  >
+) => {
+  const updatedLobby = action.payload;
 
-            const index = state.lobbies.findIndex(
-                (lobby) =>
-                    lobby.lobby_uuid === updatedLobby.lobby_uuid
-            );
+  const index = state.lobbies.findIndex(
+    (lobby) =>
+      lobby.lobby_uuid === updatedLobby.lobby_uuid
+  );
 
-            if (index !== -1) {
-                state.lobbies[index] = {
-                    ...state.lobbies[index],
-                    ...updatedLobby,
-                };
-            }
+  if (index !== -1) {
+    state.lobbies[index] = {
+      ...state.lobbies[index],
+      ...updatedLobby,
+    };
+  }
 
-            // CHECK CURRENT SELECTED LOBBY
-            const selected = state.lobbies.find(
-                (lobby) =>
-                    lobby.lobby_uuid === state.selectedLobby
-            );
+  const selectedLobbyData = state.lobbies.find(
+    (lobby) =>
+      lobby.lobby_uuid === state.selectedLobby
+  );
 
-            // IF CURRENT SELECTED LOBBY CLOSED
-            if (
-                selected &&
-                ["bet_closed", "resulted", "cancelled"].includes(
-                    selected.status
-                )
-            ) {
-                const nextOpenLobby = state.lobbies.find(
-                    (lobby) =>
-                        lobby.status === "betting_open"
-                );
+  if (
+    selectedLobbyData &&
+    ["bet_closed", "resulted", "cancelled"].includes(
+      selectedLobbyData.status
+    )
+  ) {
+    const nextOpenLobby = state.lobbies.find(
+      (lobby) => lobby.status === "betting_open"
+    );
 
-                state.selectedLobby = nextOpenLobby
-                    ? nextOpenLobby.lobby_uuid
-                    : null;
-            }
-        },
+    state.selectedLobby = nextOpenLobby
+      ? nextOpenLobby.lobby_uuid
+      : null;
+
+    // IMPORTANT
+    if (nextOpenLobby) {
+      localStorage.setItem(
+        "selectedLobby",
+        nextOpenLobby.lobby_uuid
+      );
+    }
+  }
+},
 
         // -----------------------------------------------------------------------
         // ADD NEW LOBBY
         // -----------------------------------------------------------------------
-        addLobby: (state, action: PayloadAction<Lobby[]>) => {
-            const newLobbies = action.payload;
+addLobby: (
+  state,
+  action: PayloadAction<Lobby[]>
+) => {
+  const newLobbies = action.payload;
 
-            // prevent duplicate
-            const filtered = newLobbies.filter(
-                (newLobby) =>
-                    !state.lobbies.some(
-                        (existing) =>
-                            existing.lobby_uuid === newLobby.lobby_uuid
-                    )
-            );
+  // prevent duplicates
+  const filtered = newLobbies.filter(
+    (newLobby) =>
+      !state.lobbies.some(
+        (existing) =>
+          existing.lobby_uuid ===
+          newLobby.lobby_uuid
+      )
+  );
 
-            state.lobbies = [...filtered, ...state.lobbies];
+  // merge lobbies
+  state.lobbies = [
+    ...state.lobbies,
+    ...filtered,
+  ];
 
-            // AUTO SELECT NEW OPEN LOBBY
-            const latestOpenLobby = filtered.find(
-                (lobby) => lobby.status === "betting_open"
-            );
+  // sort by result_at time
+  state.lobbies.sort(
+    (a, b) =>
+      new Date(a.result_at).getTime() -
+      new Date(b.result_at).getTime()
+  );
 
-            if (latestOpenLobby) {
-                state.selectedLobby = latestOpenLobby.lobby_uuid;
-            }
-        },
+  // KEEP current selected lobby active
+  const currentLobby = state.lobbies.find(
+    (lobby) =>
+      lobby.lobby_uuid === state.selectedLobby
+  );
+
+  // only change if current selected invalid
+  if (
+    !currentLobby ||
+    ["bet_closed", "resulted", "cancelled"].includes(
+      currentLobby.status
+    )
+  ) {
+    const nextOpenLobby = state.lobbies.find(
+      (lobby) =>
+        lobby.status === "betting_open"
+    );
+
+    state.selectedLobby = nextOpenLobby
+      ? nextOpenLobby.lobby_uuid
+      : null;
+
+    if (nextOpenLobby) {
+      localStorage.setItem(
+        "selectedLobby",
+        nextOpenLobby.lobby_uuid
+      );
+    }
+  }
+},
         selectLobby: (state, action: PayloadAction<string>) => {
             state.selectedLobby = action.payload;
         },
