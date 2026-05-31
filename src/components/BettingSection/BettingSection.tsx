@@ -8,7 +8,7 @@ const BET_OPTIONS: BetOption[] = [
     type: "A",
     betType: "A",
     label: "A Digit",
-    multiplier: 9,
+    multiplier: 100,
     pricePerTicket: 12,
     digits: ["A"],
     cat: 1,
@@ -17,7 +17,7 @@ const BET_OPTIONS: BetOption[] = [
     type: "B",
     betType: "B",
     label: "B Digit",
-    multiplier: 9,
+    multiplier: 100,
     pricePerTicket: 12,
     digits: ["B"],
     cat: 1,
@@ -26,7 +26,7 @@ const BET_OPTIONS: BetOption[] = [
     type: "C",
     betType: "C",
     label: "C Digit",
-    multiplier: 9,
+    multiplier: 100,
     pricePerTicket: 12,
     digits: ["C"],
     cat: 1,
@@ -38,7 +38,7 @@ const DOUBLE_OPTIONS: BetOption[] = [
     type: "AB",
     betType: "AB",
     label: "AB Combo",
-    multiplier: 90,
+    multiplier: 1000,
     pricePerTicket: 15,
     digits: ["A", "B"],
     cat: 2,
@@ -47,7 +47,7 @@ const DOUBLE_OPTIONS: BetOption[] = [
     type: "AC",
     betType: "AC",
     label: "AC Combo",
-    multiplier: 90,
+    multiplier: 1000,
     pricePerTicket:15,
     digits: ["A", "C"],
     cat: 2,
@@ -56,7 +56,7 @@ const DOUBLE_OPTIONS: BetOption[] = [
     type: "BC",
     betType: "BC",
     label: "BC Combo",
-    multiplier: 90,
+    multiplier: 1000,
     pricePerTicket: 15,
     digits: ["B", "C"],
     cat: 2,
@@ -68,7 +68,7 @@ const TRIPLE_OPTIONS: BetOption[] = [
     type: "ABC",
     betType: "ABC",
     label: "ABC Combo",
-    multiplier: 900,
+    multiplier: 10000,
     pricePerTicket: 25,
     digits: ["A", "B", "C"],
     cat: 3,
@@ -86,7 +86,7 @@ const BettingSection: React.FC = () => {
 
         <div className={styles.sectionMeta}>
           <p className={styles.sectionWin}>
-            Win {BET_OPTIONS[0].multiplier}X / per bet
+            Win {BET_OPTIONS[0].multiplier} / per ticket
           </p>
 
           <p className={styles.sectionPrice}>
@@ -109,7 +109,7 @@ const BettingSection: React.FC = () => {
 
         <div className={styles.sectionMeta}>
           <p className={styles.sectionWin}>
-            Win {DOUBLE_OPTIONS[0].multiplier}X / per bet
+            Win {DOUBLE_OPTIONS[0].multiplier} / per ticket
           </p>
 
           <p className={styles.sectionPrice}>
@@ -132,7 +132,7 @@ const BettingSection: React.FC = () => {
 
         <div className={styles.sectionMeta}>
           <p className={styles.sectionWin}>
-            Win {TRIPLE_OPTIONS[0].multiplier}X / per bet
+            Win {TRIPLE_OPTIONS[0].multiplier} / per ticket
           </p>
 
           <p className={styles.sectionPrice}>
