@@ -1,4 +1,9 @@
+// BettingSection.tsx
+
 import React from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
+
 import styles from "./BettingSection.module.css";
 import BetRow from "../BetRow/BetRow";
 import type { BetOption } from "../../types";
@@ -48,7 +53,7 @@ const DOUBLE_OPTIONS: BetOption[] = [
     betType: "AC",
     label: "AC Combo",
     multiplier: 1000,
-    pricePerTicket:15,
+    pricePerTicket: 15,
     digits: ["A", "C"],
     cat: 2,
   },
@@ -76,13 +81,22 @@ const TRIPLE_OPTIONS: BetOption[] = [
 ];
 
 const BettingSection: React.FC = () => {
+  // ----------------------------------------------------------------
+  // SELECTED LOBBY
+  // ----------------------------------------------------------------
+  const selectedLobby = useSelector(
+    (state: RootState) => state.socketSlice.selectedLobby
+  );
+
   return (
     <section className={styles.section}>
-      {/* Single */}
-      {/* Single */}
+      {/* ---------------------------------------------------------------- */}
+      {/* SINGLE */}
+      {/* ---------------------------------------------------------------- */}
       <div className={styles.sectionHeader}>
-
-        <h2 className={styles.sectionTitle}>Single Digit</h2>
+        <h2 className={styles.sectionTitle}>
+          Single Digit
+        </h2>
 
         <div className={styles.sectionMeta}>
           <p className={styles.sectionWin}>
@@ -93,19 +107,24 @@ const BettingSection: React.FC = () => {
             {BET_OPTIONS[0].pricePerTicket}.00/per ticket
           </p>
         </div>
-
       </div>
 
       <div className={styles.grid}>
         {BET_OPTIONS.map((opt) => (
-          <BetRow key={opt.type} {...opt} />
+          <BetRow
+            key={`${selectedLobby}-${opt.type}`}
+            {...opt}
+          />
         ))}
       </div>
 
-      {/* Double */}
-      {/* Double */}
+      {/* ---------------------------------------------------------------- */}
+      {/* DOUBLE */}
+      {/* ---------------------------------------------------------------- */}
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Double Digit</h2>
+        <h2 className={styles.sectionTitle}>
+          Double Digit
+        </h2>
 
         <div className={styles.sectionMeta}>
           <p className={styles.sectionWin}>
@@ -116,19 +135,24 @@ const BettingSection: React.FC = () => {
             {DOUBLE_OPTIONS[0].pricePerTicket}.00
           </p>
         </div>
-
       </div>
 
       <div className={styles.grid}>
         {DOUBLE_OPTIONS.map((opt) => (
-          <BetRow key={opt.type} {...opt} />
+          <BetRow
+            key={`${selectedLobby}-${opt.type}`}
+            {...opt}
+          />
         ))}
       </div>
 
-      {/* Triple */}
-      {/* Triple */}
+      {/* ---------------------------------------------------------------- */}
+      {/* TRIPLE */}
+      {/* ---------------------------------------------------------------- */}
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Triple Digit</h2>
+        <h2 className={styles.sectionTitle}>
+          Triple Digit
+        </h2>
 
         <div className={styles.sectionMeta}>
           <p className={styles.sectionWin}>
@@ -139,12 +163,14 @@ const BettingSection: React.FC = () => {
             {TRIPLE_OPTIONS[0].pricePerTicket}.00
           </p>
         </div>
-
       </div>
 
       <div className={styles.grid}>
         {TRIPLE_OPTIONS.map((opt) => (
-          <BetRow key={opt.type} {...opt} />
+          <BetRow
+            key={`${selectedLobby}-${opt.type}`}
+            {...opt}
+          />
         ))}
       </div>
     </section>

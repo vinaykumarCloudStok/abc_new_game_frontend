@@ -183,7 +183,19 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
+.toBeDeclared {
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: #fbbf24;
 
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px dashed rgba(251, 191, 36, 0.25);
+}
 .metaItem:last-child .metaValue {
   text-transform: uppercase;
   white-space: nowrap;

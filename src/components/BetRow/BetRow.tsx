@@ -153,60 +153,78 @@ const BetRow: React.FC<BetOption> = ({
         </div>
 
         {/* INPUTS */}
-        <div className={styles.guessBox}>
-          {digits.map((digit, index) => (
-            <input
-              key={digit}
-              type="text"
-              inputMode="numeric"
-              maxLength={1}
-              value={inputValue[index] || ""}
-              placeholder={digit}
-              className={styles.guessInput}
-              disabled={isBetDisabled || alreadyExists}
-              onChange={(e) => {
-                if (
-                  isBetDisabled ||
-                  alreadyExists
-                )
-                  return;
+    {/* // inside INPUTS */}
+<div className={styles.guessBox}>
+  {digits.map((digit, index) => (
+    <input
+      key={digit}
+      type="text"
+      inputMode="numeric"
+      maxLength={1}
+      value={inputValue[index] || ""}
+      placeholder={digit}
+      className={styles.guessInput}
+      disabled={isBetDisabled || alreadyExists}
+      onChange={(e) => {
+        if (isBetDisabled || alreadyExists) return;
 
-                // allow only 0-9
-                const value =
-                  e.target.value.replace(
-                    /[^0-9]/g,
-                    ""
-                  );
+        // allow only 0-9
+        const value = e.target.value.replace(
+          /[^0-9]/g,
+          ""
+        );
 
-                const updated =
-                  inputValue.split("");
+        const updated = inputValue.split("");
 
-                updated[index] = value;
+        updated[index] = value;
 
-                const finalValue =
-                  updated.join("");
+        const finalValue = updated.join("");
 
-                setInputValue(finalValue);
+        setInputValue(finalValue);
 
-                // AUTO SET QTY
-                const isComplete =
-                  digits.every(
-                    (_, i) =>
-                      updated[i] !== undefined &&
-                      updated[i] !== ""
-                  );
+        // AUTO MOVE TO NEXT INPUT
+        if (value && index < digits.length - 1) {
+          const nextInput =
+            e.currentTarget
+              .parentElement
+              ?.children[index + 1] as HTMLInputElement;
 
-                if (isComplete && qty === 0) {
-                  setQty(1);
-                }
+          nextInput?.focus();
+        }
 
-                if (!isComplete) {
-                  setQty(0);
-                }
-              }}
-            />
-          ))}
-        </div>
+        // AUTO SET QTY
+        const isComplete = digits.every(
+          (_, i) =>
+            updated[i] !== undefined &&
+            updated[i] !== ""
+        );
+
+        if (isComplete && qty === 0) {
+          setQty(1);
+        }
+
+        if (!isComplete) {
+          setQty(0);
+        }
+      }}
+      onKeyDown={(e) => {
+        // MOVE BACK ON BACKSPACE
+        if (
+          e.key === "Backspace" &&
+          !inputValue[index] &&
+          index > 0
+        ) {
+          const prevInput =
+            e.currentTarget
+              .parentElement
+              ?.children[index - 1] as HTMLInputElement;
+
+          prevInput?.focus();
+        }
+      }}
+    />
+  ))}
+</div>
       </div>
 
       {/* ACTION */}

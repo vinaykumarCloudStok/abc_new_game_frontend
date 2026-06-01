@@ -21,19 +21,33 @@ const TabSection: React.FC = () => {
 
   const info = useSelector((state: RootState) => state.socketSlice.info);
 
-  const fetchGameHistory = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_SOCKET_URL}/lobby-history?user_id=${info.user_id}&operator_id=${info.operator_id}`
+ const fetchGameHistory = async () => {
+  try {
+    setLoading(true);
+
+    const res = await axios.get(
+      `${import.meta.env.VITE_APP_BASE_SOCKET_URL}/lobby-history?user_id=${info.user_id}&operator_id=${info.operator_id}`
+    );
+
+    const data = res?.data?.data || [];
+
+    const sortedData = data.sort((a: LobbyHistoryItem, b: LobbyHistoryItem) => {
+      if (a.result && !b.result) return -1;
+      if (!a.result && b.result) return 1;
+
+      return (
+        new Date(b.result_at).getTime() -
+        new Date(a.result_at).getTime()
       );
-      setGameHistoryData(res?.data?.data || []);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    });
+
+    setGameHistoryData(sortedData);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const fetchBetHistory = async (status: "bet" | "settlement" | "rollback") => {
     try {
@@ -152,15 +166,15 @@ useEffect(() => {
     });
   }, [betData, settlementData, myOrderSubTab]);
 
-  const currentData = useMemo(() => {
-    if (activeTab === "game") {
-      return gameHistoryData.filter(
-        (g) => g.result !== null && g.result !== undefined
-      );
-    }
-    if (activeTab === "myorder") return myOrderData;
-    return rollbackData;
-  }, [activeTab, gameHistoryData, myOrderData, rollbackData]);
+ const currentData = useMemo(() => {
+  if (activeTab === "game") {
+    return gameHistoryData;
+  }
+
+  if (activeTab === "myorder") return myOrderData;
+
+  return rollbackData;
+}, [activeTab, gameHistoryData, myOrderData, rollbackData]);
 
   return (
     <div className={styles.container}>

@@ -146,7 +146,7 @@ const ActionBar: React.FC = () => {
           </div>
 
           <div className={styles.cartInfo}>
-            <p className={styles.cartLabel}>Total Bets</p>
+            <p className={styles.cartLabel}>Totat Ticket Amount</p>
             <p className={styles.cartTotal}>{totalAmount}</p>
           </div>
         </div>
