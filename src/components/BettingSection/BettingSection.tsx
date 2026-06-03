@@ -80,6 +80,36 @@ const TRIPLE_OPTIONS: BetOption[] = [
   },
 ];
 
+// ----------------------------------------------------------------
+// CURRENCY FORMATTER (display only — no logic change)
+// ----------------------------------------------------------------
+const formatINR = (value: number) =>
+  `₹${new Intl.NumberFormat("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value)}`;
+
+// ----------------------------------------------------------------
+// REUSABLE SECTION HEADER
+// ----------------------------------------------------------------
+const SectionHeader: React.FC<{
+  title: string;
+  win: number;
+  price: number;
+}> = ({ title, win, price }) => (
+  <div className={styles.sectionHeader}>
+    <div className={styles.sectionTitleWrap}>
+      <div className={styles.titleLine}>
+        <h2 className={styles.sectionTitle}>{title}</h2>
+        <span className={styles.winPill}>Win {formatINR(win)}</span>
+      </div>
+      <p className={styles.sectionPrice}>{formatINR(price)} / per ticket</p>
+    </div>
+
+    <span className={styles.quickGuess}>Quick Guess</span>
+  </div>
+);
+
 const BettingSection: React.FC = () => {
   // ----------------------------------------------------------------
   // SELECTED LOBBY
@@ -93,84 +123,49 @@ const BettingSection: React.FC = () => {
       {/* ---------------------------------------------------------------- */}
       {/* SINGLE */}
       {/* ---------------------------------------------------------------- */}
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>
-          Single Digit
-        </h2>
-
-        <div className={styles.sectionMeta}>
-          <p className={styles.sectionWin}>
-            Win {BET_OPTIONS[0].multiplier} / per ticket
-          </p>
-
-          <p className={styles.sectionPrice}>
-            {BET_OPTIONS[0].pricePerTicket}.00/per ticket
-          </p>
-        </div>
-      </div>
+      <SectionHeader
+        title="Single Digit"
+        win={BET_OPTIONS[0].multiplier}
+        price={BET_OPTIONS[0].pricePerTicket}
+      />
 
       <div className={styles.grid}>
         {BET_OPTIONS.map((opt) => (
-          <BetRow
-            key={`${selectedLobby}-${opt.type}`}
-            {...opt}
-          />
+          <BetRow key={`${selectedLobby}-${opt.type}`} {...opt} />
         ))}
       </div>
 
       {/* ---------------------------------------------------------------- */}
       {/* DOUBLE */}
       {/* ---------------------------------------------------------------- */}
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>
-          Double Digit
-        </h2>
-
-        <div className={styles.sectionMeta}>
-          <p className={styles.sectionWin}>
-            Win {DOUBLE_OPTIONS[0].multiplier} / per ticket
-          </p>
-
-          <p className={styles.sectionPrice}>
-            {DOUBLE_OPTIONS[0].pricePerTicket}.00
-          </p>
-        </div>
-      </div>
+      <SectionHeader
+        title="Double Digit"
+        win={DOUBLE_OPTIONS[0].multiplier}
+        price={DOUBLE_OPTIONS[0].pricePerTicket}
+      />
 
       <div className={styles.grid}>
         {DOUBLE_OPTIONS.map((opt) => (
-          <BetRow
-            key={`${selectedLobby}-${opt.type}`}
-            {...opt}
-          />
+          <BetRow key={`${selectedLobby}-${opt.type}`}
+           isTriple={true}
+           {...opt} />
         ))}
       </div>
 
       {/* ---------------------------------------------------------------- */}
       {/* TRIPLE */}
       {/* ---------------------------------------------------------------- */}
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>
-          Triple Digit
-        </h2>
-
-        <div className={styles.sectionMeta}>
-          <p className={styles.sectionWin}>
-            Win {TRIPLE_OPTIONS[0].multiplier} / per ticket
-          </p>
-
-          <p className={styles.sectionPrice}>
-            {TRIPLE_OPTIONS[0].pricePerTicket}.00
-          </p>
-        </div>
-      </div>
+      <SectionHeader
+        title="Triple Digit"
+        win={TRIPLE_OPTIONS[0].multiplier}
+        price={TRIPLE_OPTIONS[0].pricePerTicket}
+      />
 
       <div className={styles.grid}>
         {TRIPLE_OPTIONS.map((opt) => (
-          <BetRow
-            key={`${selectedLobby}-${opt.type}`}
-            {...opt}
-          />
+          <BetRow key={`${selectedLobby}-${opt.type}`}
+                isTriple={true}
+           {...opt} />
         ))}
       </div>
     </section>

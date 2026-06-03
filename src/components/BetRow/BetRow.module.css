@@ -5,39 +5,51 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-sm);
+  padding: 12px;
+
   display: flex;
+  align-items: center;            /* badges + inputs + action on one baseline */
   justify-content: space-between;
-  gap: var(--spacing-sm);
+  gap: 10px;
+               /* graceful fallback on very small screens */
 }
-
-/* TOP */
-
+.fullAdd{
+  min-width: 106px;
+}
+.tripleCard {
+  display: flex !important;
+  align-items: flex-start !important;
+  flex-direction: column !important;
+}
+/* =========================================================
+   LEFT  →  BADGES + GUESS INPUTS  (inline, like reference)
+========================================================= */
 .topRow {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
+  flex-direction: row;            /* inline: badges to the LEFT of inputs */
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .leftInfo {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  flex: 1;
+  gap: 8px;
+  flex: 0 0 auto;
   min-width: 0;
 }
 
 /* BADGES */
-
 .badgeGroup {
   display: flex;
   flex-shrink: 0;
 }
 
 .badge {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: var(--color-primary-container);
   border: 2px solid var(--color-primary);
@@ -47,95 +59,52 @@
   justify-content: center;
 
   font-family: var(--font-montserrat);
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 800;
+  font-size: 16px;
 
   color: var(--color-primary);
-
   flex-shrink: 0;
 }
 
-.badge + .badge {
-  margin-left: -16px;
+/* PER-LETTER COLORS (display only) */
+.badgeA {
+  background: radial-gradient(circle at 30% 25%, #ff7a7a, #e23b3b);
+  border-color: #ff9a9a;
+  color: #fff;
 }
 
-.badge:first-child {
-  z-index: 3;
+.badgeB {
+  background: radial-gradient(circle at 30% 25%, #ffcf6b, #f59a12);
+  border-color: #ffdd95;
+  color: #3a2300;
 }
 
-.badge:nth-child(2) {
-  z-index: 2;
+.badgeC {
+  background: radial-gradient(circle at 30% 25%, #6fb6ff, #2f7fe0);
+  border-color: #a3d0ff;
+  color: #fff;
 }
 
-.badge:last-child {
-  z-index: 1;
-}
 
-/* TEXT */
 
-.textContent {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-  flex: 1;
-}
+.badge:first-child { z-index: 3; }
+.badge:nth-child(2) { z-index: 2; }
+.badge:last-child { z-index: 1; }
 
-.titleRow {
-  display: flex;
-  align-items: center;
-}
-
-.betName {
-  font-family: var(--font-inter);
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--color-secondary);
-  margin: 0;
-}
-
-.multiplier {
-  font-family: var(--font-inter);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-on-surface-variant);
-  margin: 0;
-}
-
-.price {
-  font-family: var(--font-inter);
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-primary);
-  white-space: nowrap;
-  margin-top: 2px;
-}
-
-/* BOTTOM */
-
-.bottomRow {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  justify-content:space-between;
-  margin-top: var(--spacing-xs);
-}
-
-/* INPUTS */
-
+/* GUESS INPUTS */
 .guessBox {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .guessInput {
-  width: 52px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
 
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
   background: rgba(60, 46, 79, 0.4);
   backdrop-filter: blur(20px);
@@ -143,11 +112,10 @@
   text-align: center;
 
   font-family: var(--font-montserrat);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
 
   color: var(--color-secondary);
-
   outline: none;
 
   transition:
@@ -156,37 +124,50 @@
     background 150ms ease;
 }
 
+.guessInput::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
 .guessInput:focus {
   border-color: var(--color-primary);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .guessInput:active {
   transform: scale(0.97);
 }
 
-/* STEPPER */
+/* =========================================================
+   RIGHT  →  STEPPER (stacked) + ADD BUTTON
+========================================================= */
+.actionSection {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  flex: 0 0 auto;
+}
 
 .stepper {
   display: flex;
   align-items: center;
-  min-width: 140px;
+  justify-content: space-between;
+  min-width: 106px;
+
   background: rgba(60, 46, 79, 0.4);
   backdrop-filter: blur(20px);
 
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-md);
 
   overflow: hidden;
 }
 
 .stepBtn {
-  width: 46px;
-  height: 46px;
+  width: 34px;
+  height: 34px;
 
   background: none;
   border: none;
-
   cursor: pointer;
 
   display: flex;
@@ -194,8 +175,7 @@
   justify-content: center;
 
   color: var(--color-on-surface);
-
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 
   transition:
@@ -203,17 +183,11 @@
     transform 100ms ease;
 }
 
-.stepBtn:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-.stepBtn:active {
-  transform: scale(0.9);
-  background: rgba(255,255,255,0.08);
-}
+.stepBtn:hover { background: rgba(255, 255, 255, 0.05); }
+.stepBtn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.08); }
 
 .qtyInput {
-  width: 54px;
+  width: 38px;
 
   background: transparent;
   border: none;
@@ -222,9 +196,8 @@
   text-align: center;
 
   font-family: var(--font-montserrat);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
-
   letter-spacing: 0.04em;
 
   color: var(--color-secondary);
@@ -238,31 +211,22 @@
   -webkit-appearance: none;
 }
 
-/* ACTIONS */
-
-.actionSection {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-direction: column;
-}
-
+/* ADD BUTTON */
 .addBtn {
-  min-width: 147px;
-  height: 48px;
-  padding: 0 18px;
+  height: 36px;
+  padding: 0 14px;
 
   background-color: var(--color-secondary-container);
   color: var(--color-on-secondary-container);
 
   font-family: var(--font-montserrat);
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.05em;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 
   border: none;
   border-radius: var(--radius-md);
-
   cursor: pointer;
 
   box-shadow: 0 4px 0 #3c4d00;
@@ -278,34 +242,27 @@
 }
 
 .addBtn:disabled {
-  opacity: 0.4;
   cursor: not-allowed;
+  opacity: 0.7;
 }
+
+/* DISABLED STATES */
 .disabledCard {
   opacity: 0.6;
   pointer-events: none;
-}
-
-.addBtn:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
 }
 
 .guessInput:disabled,
 .qtyInput:disabled {
   cursor: not-allowed;
 }
-/* MOBILE */
 
-@media (max-width: 768px) {
-  .bottomRow {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-
-  .guessBox {
-    flex-wrap: wrap;
-    gap: 4px;
-  }
+/* =========================================================
+   SMALL SCREENS — keep one tidy row, shrink slightly
+========================================================= */
+@media (max-width: 380px) {
+  .badge { width: 30px; height: 30px; font-size: 12px; }
+  .guessInput { width: 36px; height: 36px; font-size: 15px; }
+  .stepBtn { width: 30px; height: 32px; }
+  .qtyInput { width: 34px; }
 }

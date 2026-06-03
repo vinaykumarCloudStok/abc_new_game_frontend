@@ -4,49 +4,83 @@
   gap: var(--spacing-gutter);
 }
 
+/* =========================================================
+   SECTION HEADER  (Title + golden Win pill + price + Quick Guess)
+========================================================= */
 .sectionHeader {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
+  align-items: flex-start;
   justify-content: space-between;
+  gap: var(--spacing-xs);
   padding: 0 4px;
   margin-top: var(--spacing-md);
 }
-.sectionWin {
-  margin-top: 4px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-on-surface-variant);
-}
+
 .sectionHeader:first-child {
   margin-top: 0;
 }
-.sectionMeta{
+
+.sectionTitleWrap {
   display: flex;
-  align-items: center;
   flex-direction: column;
-  gap: 2px;
-}
-.sectionPrice{
-  font-size: 14px;
-  font-weight: 600;
-}
-.accent {
-  width: 4px;
-  height: 16px;
-  border-radius: var(--radius-full);
-  flex-shrink: 0;
+  gap: 4px;
+  min-width: 0;
 }
 
-.accentPrimary { background-color: var(--color-primary); }
-.accentTertiary { background-color: var(--color-tertiary); }
-.accentSecondary { background-color: var(--color-secondary-container); }
+.titleLine {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 
 .sectionTitle {
   font-family: var(--font-montserrat);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 18px;
   color: var(--color-secondary);
+  line-height: 1.1;
+}
+
+/* GOLDEN WIN PILL */
+.winPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+
+  font-family: var(--font-montserrat);
+  font-weight: 800;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+
+  color: #3a2a00;
+  background: linear-gradient(135deg, #ffe7a0 0%, #ffc31f 45%, #f5a300 100%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 4px 14px rgba(245, 163, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.sectionPrice {
+  font-family: var(--font-inter);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+}
+
+/* QUICK GUESS LABEL */
+.quickGuess {
+  flex-shrink: 0;
+  align-self: center;
+  font-family: var(--font-montserrat);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-primary);
+  opacity: 0.85;
 }
 
 .grid {

@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
 
 import styles from "./LobbySelector.module.css";
 import { selectLobby } from "../../store/slices/socketSlice";
+import { safeParse, type Lobby } from "../../types";
 
 const LobbySelector: React.FC = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,14 @@ const LobbySelector: React.FC = () => {
   const selectedLobby = useSelector(
     (state: RootState) => state.socketSlice.selectedLobby
   );
+
+  // latest result (read-only) — used to show result for a resulted lobby
+  const latestResult = useSelector(
+    (state: RootState) => state.socketSlice.latestResult
+  );
+
+  // which resulted lobby's result is currently being viewed (UI only)
+  const [viewLobby, setViewLobby] = useState<Lobby | null>(null);
 
 useEffect(() => {
   if (!lobbies?.length) return;
@@ -142,6 +151,39 @@ const filteredLobbies = (lobbies || [])
     dispatch(selectLobby(lobbyUuid));
   };
 
+  // ----------------------------------------------------------------
+  // RESULT FOR A SPECIFIC LOBBY (read-only, no logic change)
+  // Prefers latestResult, falls back to the lobby's own result field
+  // ----------------------------------------------------------------
+  const getLobbyResult = (
+    lobby: Lobby
+  ): { a: number; b: number; c: number } | null => {
+    if (
+      latestResult &&
+      latestResult.lobby_uuid === lobby.lobby_uuid &&
+      latestResult.result
+    ) {
+      return latestResult.result;
+    }
+
+    const parsed = safeParse(lobby.result);
+
+    if (
+      parsed &&
+      !Array.isArray(parsed) &&
+      parsed.a !== undefined
+    ) {
+      return parsed;
+    }
+
+    return null;
+  };
+
+  const viewedResult = useMemo(
+    () => (viewLobby ? getLobbyResult(viewLobby) : null),
+    [viewLobby, latestResult]
+  );
+
   return (
     <section className={styles.section}>
       <div className={`${styles.scroll} no-scrollbar`}>
@@ -161,16 +203,21 @@ const filteredLobbies = (lobbies || [])
           return (
             <button
               key={lobby.lobby_uuid}
-              disabled={isResulted}
-              onClick={() =>
-                handleSelectLobby(
-                  lobby.lobby_uuid
-                )
-              }
+              onClick={() => {
+                // RESULTED → open result view (does not change betting selection)
+                if (isResulted) {
+                  setViewLobby(lobby);
+                  return;
+                }
+
+                handleSelectLobby(lobby.lobby_uuid);
+              }}
               className={`
                 ${styles.chip}
                 ${
-                  isActive
+                  isResulted
+                    ? styles.chipResulted
+                    : isActive
                     ? styles.chipSelected
                     : styles.chipActive
                 }
@@ -207,6 +254,59 @@ const filteredLobbies = (lobbies || [])
           );
         })}
       </div>
+
+      {/* ============================================================ */}
+      {/* RESULT VIEW — lobby wise (UI only)                           */}
+      {/* ============================================================ */}
+      {viewLobby && (
+        <div
+          className={styles.resultOverlay}
+          onClick={() => setViewLobby(null)}
+        >
+          <div
+            className={styles.resultCard}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className={styles.resultClose}
+              onClick={() => setViewLobby(null)}
+              aria-label="Close result"
+            >
+              ✕
+            </button>
+
+            <p className={styles.resultTitle}>Lobby Result</p>
+
+            <p className={styles.resultLobbyId}>
+              {viewLobby.lobby_uuid.slice(0, 8)}…
+              {viewLobby.lobby_uuid.slice(-4)}
+            </p>
+
+            <p className={styles.resultTime}>
+              {formatTime(viewLobby.result_at)}
+            </p>
+
+            {viewedResult ? (
+              <div className={styles.resultBalls}>
+                {(["a", "b", "c"] as const).map((key) => (
+                  <div key={key} className={styles.ballGroup}>
+                    <span className={styles.ballLabel}>
+                      {key.toUpperCase()}
+                    </span>
+                    <span className={styles.ball}>
+                      {viewedResult[key]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.resultPending}>
+                Result will appear shortly…
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

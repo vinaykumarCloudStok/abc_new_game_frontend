@@ -90,3 +90,155 @@
   font-size: 10px;
   font-weight: 600;
 }
+/* =========================================================
+   RESULTED CHIP — now clickable (tap to view result)
+========================================================= */
+.chipResulted {
+  background: rgba(147, 51, 234, 0.14);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(147, 51, 234, 0.45);
+  cursor: pointer;
+  position: relative;
+}
+
+.chipResulted:hover {
+  background: rgba(147, 51, 234, 0.22);
+  box-shadow: 0 0 16px rgba(147, 51, 234, 0.3);
+}
+
+/* =========================================================
+   LOBBY-WISE RESULT VIEW (UI only)
+========================================================= */
+.resultOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(8, 4, 16, 0.6);
+  backdrop-filter: blur(6px);
+  animation: overlayFade 180ms ease;
+}
+
+.resultCard {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  padding: 26px 22px 28px;
+  border-radius: 24px;
+  text-align: center;
+
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+    rgba(44, 34, 62, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  animation: cardPop 220ms cubic-bezier(0.18, 0.9, 0.3, 1.2);
+}
+
+.resultClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms ease;
+}
+
+.resultClose:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.resultTitle {
+  font-family: var(--font-montserrat);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+
+.resultLobbyId {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.resultTime {
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.resultBalls {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.ballGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ballLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 184, 0, 0.8);
+  font-family: var(--font-montserrat);
+  letter-spacing: 0.06em;
+}
+
+.ball {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at top, #ffe38a, #ffb800);
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 22px;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    0 6px 14px rgba(255, 184, 0, 0.3);
+}
+
+.resultPending {
+  margin-top: 22px;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px dashed rgba(251, 191, 36, 0.25);
+}
+
+@keyframes overlayFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cardPop {
+  from { opacity: 0; transform: scale(0.9) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

@@ -6,12 +6,16 @@ import type { BetOption } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
 import { addBet } from "../../store/slices/betSlipSlice";
 import type { RootState } from "../../store";
+interface BetRowProps extends BetOption {
+  isTriple?: boolean;
+}
 
-const BetRow: React.FC<BetOption> = ({
+const BetRow: React.FC<BetRowProps> = ({
   label,
   pricePerTicket,
   digits,
   cat,
+  isTriple,
 }) => {
   const dispatch = useDispatch();
 
@@ -136,16 +140,21 @@ const BetRow: React.FC<BetOption> = ({
 
   return (
     <div
-      className={`${styles.card} ${
-        isBetDisabled ? styles.disabledCard : ""
-      }`}
+      className={`${styles.card}
+
+       ${isBetDisabled ? styles.disabledCard : ""
+        }`}
     >
       {/* TOP */}
-      <div className={styles.topRow}>
-        <div className={styles.leftInfo}>
+      <div className={`${styles.topRow} ${isTriple ? styles.tripleCard : ""}`}>
+        <div className={`${styles.leftInfo}`}>
           <div className={styles.badgeGroup}>
             {digits.map((digit) => (
-              <div key={digit} className={styles.badge}>
+              <div
+                key={digit}
+                className={`${styles.badge} ${styles[`badge${digit}` as keyof typeof styles] || ""
+                  }`}
+              >
                 {digit}
               </div>
             ))}
@@ -153,82 +162,82 @@ const BetRow: React.FC<BetOption> = ({
         </div>
 
         {/* INPUTS */}
-    {/* // inside INPUTS */}
-<div className={styles.guessBox}>
-  {digits.map((digit, index) => (
-    <input
-      key={digit}
-      type="text"
-      inputMode="numeric"
-      maxLength={1}
-      value={inputValue[index] || ""}
-      placeholder={digit}
-      className={styles.guessInput}
-      disabled={isBetDisabled || alreadyExists}
-      onChange={(e) => {
-        if (isBetDisabled || alreadyExists) return;
+        {/* // inside INPUTS */}
+        <div className={styles.guessBox}>
+          {digits.map((digit, index) => (
+            <input
+              key={digit}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={inputValue[index] || ""}
+              placeholder="-"
+              className={styles.guessInput}
+              disabled={isBetDisabled || alreadyExists}
+              onChange={(e) => {
+                if (isBetDisabled || alreadyExists) return;
 
-        // allow only 0-9
-        const value = e.target.value.replace(
-          /[^0-9]/g,
-          ""
-        );
+                // allow only 0-9
+                const value = e.target.value.replace(
+                  /[^0-9]/g,
+                  ""
+                );
 
-        const updated = inputValue.split("");
+                const updated = inputValue.split("");
 
-        updated[index] = value;
+                updated[index] = value;
 
-        const finalValue = updated.join("");
+                const finalValue = updated.join("");
 
-        setInputValue(finalValue);
+                setInputValue(finalValue);
 
-        // AUTO MOVE TO NEXT INPUT
-        if (value && index < digits.length - 1) {
-          const nextInput =
-            e.currentTarget
-              .parentElement
-              ?.children[index + 1] as HTMLInputElement;
+                // AUTO MOVE TO NEXT INPUT
+                if (value && index < digits.length - 1) {
+                  const nextInput =
+                    e.currentTarget
+                      .parentElement
+                      ?.children[index + 1] as HTMLInputElement;
 
-          nextInput?.focus();
-        }
+                  nextInput?.focus();
+                }
 
-        // AUTO SET QTY
-        const isComplete = digits.every(
-          (_, i) =>
-            updated[i] !== undefined &&
-            updated[i] !== ""
-        );
+                // AUTO SET QTY
+                const isComplete = digits.every(
+                  (_, i) =>
+                    updated[i] !== undefined &&
+                    updated[i] !== ""
+                );
 
-        if (isComplete && qty === 0) {
-          setQty(1);
-        }
+                if (isComplete && qty === 0) {
+                  setQty(1);
+                }
 
-        if (!isComplete) {
-          setQty(0);
-        }
-      }}
-      onKeyDown={(e) => {
-        // MOVE BACK ON BACKSPACE
-        if (
-          e.key === "Backspace" &&
-          !inputValue[index] &&
-          index > 0
-        ) {
-          const prevInput =
-            e.currentTarget
-              .parentElement
-              ?.children[index - 1] as HTMLInputElement;
+                if (!isComplete) {
+                  setQty(0);
+                }
+              }}
+              onKeyDown={(e) => {
+                // MOVE BACK ON BACKSPACE
+                if (
+                  e.key === "Backspace" &&
+                  !inputValue[index] &&
+                  index > 0
+                ) {
+                  const prevInput =
+                    e.currentTarget
+                      .parentElement
+                      ?.children[index - 1] as HTMLInputElement;
 
-          prevInput?.focus();
-        }
-      }}
-    />
-  ))}
-</div>
+                  prevInput?.focus();
+                }
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ACTION */}
-      <div className={styles.actionSection}>
+      <div className={`${styles.actionSection} ${isTriple ? styles.tripleCard : ""}`}>
         <div className={styles.stepper}>
           {/* MINUS */}
           <button
@@ -240,12 +249,13 @@ const BetRow: React.FC<BetOption> = ({
               alreadyExists ||
               !hasEnteredNumber
             }
-             style={{pointerEvents: isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber?"none":"auto",
-              opacity:isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber?".5":""
+            style={{
+              pointerEvents: isBetDisabled ||
+                alreadyExists ||
+                !hasEnteredNumber ? "none" : "auto",
+              opacity: isBetDisabled ||
+                alreadyExists ||
+                !hasEnteredNumber ? ".5" : ""
             }}
           >
             -
@@ -262,9 +272,11 @@ const BetRow: React.FC<BetOption> = ({
               alreadyExists ||
               !hasEnteredNumber
             }
-            style={{ opacity:isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber?".5":""}}
+            style={{
+              opacity: isBetDisabled ||
+                alreadyExists ||
+                !hasEnteredNumber ? ".5" : ""
+            }}
             onFocus={(e) => {
               // remove 0 on focus
               if (qty === 0) {
@@ -312,12 +324,14 @@ const BetRow: React.FC<BetOption> = ({
               alreadyExists ||
               !hasEnteredNumber
             }
-            style={{pointerEvents:isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber?"none":"auto",
-             opacity:isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber?".5":""}}
+            style={{
+              pointerEvents: isBetDisabled ||
+                alreadyExists ||
+                !hasEnteredNumber ? "none" : "auto",
+              opacity: isBetDisabled ||
+                alreadyExists ||
+                !hasEnteredNumber ? ".5" : ""
+            }}
           >
             +
           </button>
@@ -325,7 +339,7 @@ const BetRow: React.FC<BetOption> = ({
 
         {/* ADD BUTTON */}
         <button
-          className={styles.addBtn}
+          className={`${styles.addBtn} ${isTriple ? styles.fullAdd : ""}`}
           onClick={handleAdd}
           disabled={
             isBetDisabled ||
@@ -337,8 +351,10 @@ const BetRow: React.FC<BetOption> = ({
           {isBetDisabled
             ? "BET CLOSED"
             : alreadyExists
-            ? "ADDED"
-            : "ADD"}
+              ? "ADDED"
+              : qty > 0
+                ? `ADD ₹${qty * pricePerTicket}`
+                : "ADD"}
         </button>
       </div>
     </div>
