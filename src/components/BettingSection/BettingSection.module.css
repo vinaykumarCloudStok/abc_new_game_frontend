@@ -67,15 +67,36 @@
   color: var(--color-on-surface-variant);
 }
 
-/* QUICK GUESS LABEL */
+/* QUICK GUESS BUTTON */
 .quickGuess {
   flex-shrink: 0;
   align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-family: var(--font-montserrat);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
-  color: var(--color-primary);
+  color: var(--color-on-primary-container);
+  background: var(--color-primary-container);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 150ms ease, background 150ms ease;
+}
+
+.quickGuess span {
+  font-size: 16px !important;
+}
+
+.quickGuess:hover {
+  box-shadow: 0 4px 12px rgba(107, 79, 160, 0.28);
+}
+
+.quickGuess:active {
+  transform: scale(0.94);
 }
 
 .grid {

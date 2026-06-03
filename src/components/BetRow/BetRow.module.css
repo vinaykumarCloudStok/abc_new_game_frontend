@@ -224,3 +224,42 @@
   .stepBtn { width: 30px; height: 32px; }
   .qtyInput { width: 34px; }
 }
+
+/* QUICK GUESS (per row) */
+.quickGuessBtn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  cursor: pointer;
+  transition: transform 120ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+.quickGuessBtn span {
+  font-size: 22px !important;
+}
+
+.quickGuessBtn:hover {
+  box-shadow: 0 4px 12px rgba(107, 79, 160, 0.28);
+}
+
+.quickGuessBtn:active {
+  transform: rotate(-18deg) scale(0.9);
+}
+
+.quickGuessBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 380px) {
+  .quickGuessBtn { width: 36px; height: 36px; }
+  .quickGuessBtn span { font-size: 20px !important; }
+}

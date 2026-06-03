@@ -119,22 +119,19 @@ useEffect(() => {
       : time;
   };
 
-  // Remove bet_closed when any lobby becomes resulted
-  const hasResultedLobby = (lobbies || []).some(
-    (lobby) => lobby.status === "resulted"
-  );
-
+  // ----------------------------------------------------------------
+  // TAB VISIBILITY
+  // Keep BOTH "betting_open" (Open) and "bet_closed" (Closed) tabs
+  // visible. A closed lobby stays on the strip while its result is
+  // pending (the result is declared within ~5 minutes of closing).
+  // Once the result is declared (status -> "resulted") or the lobby
+  // is "cancelled", that tab is removed from the strip.
+  // ----------------------------------------------------------------
 const filteredLobbies = (lobbies || [])
-  .filter((lobby) => {
-    if (
-      hasResultedLobby &&
-      lobby.status === "bet_closed"
-    ) {
-      return false;
-    }
-
-    return true;
-  })
+  .filter(
+    (lobby) =>
+      !["resulted", "cancelled"].includes(lobby.status)
+  )
   .sort(
     (a, b) =>
       new Date(a.result_at).getTime() -

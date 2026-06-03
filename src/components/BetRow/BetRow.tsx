@@ -1,5 +1,5 @@
 // BetRow.tsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./BetRow.module.css";
 import type { BetOption } from "../../types";
 
@@ -8,6 +8,9 @@ import { addBet } from "../../store/slices/betSlipSlice";
 import type { RootState } from "../../store";
 interface BetRowProps extends BetOption {
   isTriple?: boolean;
+  // Incrementing counter from the section header "Quick Guess" button.
+  // When it changes, this row auto-fills random digits.
+  quickGuessTick?: number;
 }
 
 const BetRow: React.FC<BetRowProps> = ({
@@ -16,6 +19,7 @@ const BetRow: React.FC<BetRowProps> = ({
   digits,
   cat,
   isTriple,
+  quickGuessTick,
 }) => {
   const dispatch = useDispatch();
 
@@ -109,6 +113,29 @@ const BetRow: React.FC<BetRowProps> = ({
 
     setQty((prev) => (prev > 0 ? prev - 1 : 0));
   };
+
+  // ----------------------------------------------------------------
+  // QUICK GUESS — auto fill random digit(s) for this row
+  // ----------------------------------------------------------------
+  const handleQuickGuess = () => {
+    if (isBetDisabled) return;
+
+    const random = digits
+      .map(() => Math.floor(Math.random() * 10))
+      .join("");
+
+    setInputValue(random);
+    setQty(1);
+  };
+
+  // Trigger quick guess when the section header button is pressed
+  // (quickGuessTick is incremented by the parent for every row).
+  useEffect(() => {
+    if (quickGuessTick && quickGuessTick > 0) {
+      handleQuickGuess();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quickGuessTick]);
 
   // ----------------------------------------------------------------
   // HANDLE ADD
@@ -233,6 +260,9 @@ const BetRow: React.FC<BetRowProps> = ({
               }}
             />
           ))}
+
+          {/* PER-ROW QUICK GUESS */}
+       
         </div>
       </div>
 

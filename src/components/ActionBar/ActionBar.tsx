@@ -6,11 +6,12 @@ import type { RootState } from "../../store";
 
 import {
   clearBets,
-  undoLastBet,
+  removeBet,
 } from "../../store/slices/betSlipSlice";
 
 import { getSocket } from "../../socket/socket";
 import { showPopup } from "../../store/slices/popupSlice";
+import { parseChip } from "../../types";
 
 const ActionBar: React.FC = () => {
   const dispatch = useDispatch();
@@ -91,8 +92,30 @@ const ActionBar: React.FC = () => {
     setShowBets(false);
   };
 
-  const handleUndo = () => {
-    dispatch(undoLastBet());
+  // ----------------------------------------------------------------
+  // DELETE A SINGLE BET (one by one)
+  // ----------------------------------------------------------------
+  const handleDeleteBet = (id: string) => {
+    dispatch(removeBet(id));
+  };
+
+  const handleClearAll = () => {
+    dispatch(clearBets());
+    setShowBets(false);
+  };
+
+  // letter -> accent color (matches BetRow badge colors)
+  const letterColor = (letter: string) => {
+    switch (letter.toUpperCase()) {
+      case "A":
+        return "#e23b3b";
+      case "B":
+        return "#f59a12";
+      case "C":
+        return "#2f7fe0";
+      default:
+        return "var(--color-primary)";
+    }
   };
 
   return (
@@ -100,30 +123,83 @@ const ActionBar: React.FC = () => {
       {showBets && bets.length > 0 && (
         <div className={styles.betDropdown}>
           <div className={styles.betHeader}>
-            <span>Current Bets ({totalBets})</span>
+            <span className={styles.betHeaderTitle}>
+              Current Bets
+              <span className={styles.betCountPill}>{totalBets}</span>
+            </span>
 
-            <button
-              className={styles.closeBtn}
-              onClick={() => setShowBets(false)}
-              aria-label="Close"
-            >
-              <span className="material-symbols-outlined">close</span>
-            </button>
+            <div className={styles.betHeaderActions}>
+              <button
+                className={styles.clearAllBtn}
+                onClick={handleClearAll}
+              >
+                Clear all
+              </button>
+
+              <button
+                className={styles.closeBtn}
+                onClick={() => setShowBets(false)}
+                aria-label="Close"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
           </div>
 
           <div className={styles.betList}>
-            {bets.map((bet, index) => (
-              <div key={index} className={styles.betItem}>
-                <div>
-                  <p className={styles.betNumber}>{bet.cat}</p>
-                  <span className={styles.betChip}>
-                    Chip: {bet.chip}
-                  </span>
-                </div>
+            {bets.map((bet) => {
+              const parts = parseChip(bet.chip);
 
-                <div className={styles.betAmount}>{bet.amt}</div>
-              </div>
-            ))}
+              return (
+                <div key={bet.id} className={styles.betItem}>
+                  <div className={styles.betItemLeft}>
+                    <div className={styles.chipChips}>
+                      {parts.map((part, i) => (
+                        <span
+                          key={`${bet.id}-${i}`}
+                          className={styles.chipChip}
+                          style={{
+                            borderColor: letterColor(part.letter),
+                            color: letterColor(part.letter),
+                          }}
+                        >
+                          <b className={styles.chipLetter}>
+                            {part.letter}
+                          </b>
+                          <span className={styles.chipNumber}>
+                            {part.number || "-"}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+
+                    <span className={styles.betMeta}>
+                      {bet.label} • Qty {bet.qty}
+                    </span>
+                  </div>
+
+                  <div className={styles.betItemRight}>
+                    <div className={styles.betAmount}>₹{bet.amt}</div>
+
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => handleDeleteBet(bet.id)}
+                      aria-label="Delete bet"
+                      title="Remove this bet"
+                    >
+                      <span className="material-symbols-outlined">
+                        delete
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className={styles.betFooter}>
+            <span>Total ({totalBets})</span>
+            <span className={styles.betFooterTotal}>₹{totalAmount}</span>
           </div>
         </div>
       )}
@@ -152,15 +228,6 @@ const ActionBar: React.FC = () => {
         </div>
 
         <div className={styles.actions}>
-          <button
-            className={styles.undoBtn}
-            onClick={handleUndo}
-            disabled={!bets.length}
-            aria-label="Undo last bet"
-          >
-            <span className="material-symbols-outlined">undo</span>
-          </button>
-
           <button
             className={styles.placeBtn}
             onClick={handlePlaceBet}

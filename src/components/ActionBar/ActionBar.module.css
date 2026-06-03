@@ -291,3 +291,178 @@
   .placeBtn { padding: 0 12px; font-size: 12px; }
   .undoBtn { width: 38px; height: 38px; }
 }
+
+/* ===========================================================
+   IMPROVED BET DROPDOWN (delete one-by-one + richer UI)
+   =========================================================== */
+
+.betHeaderTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.betCountPill {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.betHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clearAllBtn {
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface-container-high);
+  color: var(--color-error);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.clearAllBtn:hover {
+  background: var(--color-error-container);
+}
+
+.clearAllBtn:active {
+  transform: scale(0.94);
+}
+
+/* ---------- bet item (override of old layout) ---------- */
+.betItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 14px;
+  padding: 10px 10px 10px 12px;
+  animation: betItemIn 0.18s ease;
+}
+
+@keyframes betItemIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.betItemLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.chipChips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chipChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1.5px solid var(--color-outline-variant);
+  border-radius: 999px;
+  background: var(--color-surface);
+  line-height: 1;
+}
+
+.chipLetter {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.chipNumber {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-on-surface);
+}
+
+.betMeta {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.betItemRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.betAmount {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  white-space: nowrap;
+}
+
+.deleteBtn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface);
+  color: var(--color-error);
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.16s ease;
+}
+
+.deleteBtn span {
+  font-size: 19px !important;
+}
+
+.deleteBtn:hover {
+  background: var(--color-error-container);
+  border-color: var(--color-error);
+}
+
+.deleteBtn:active {
+  transform: scale(0.9);
+}
+
+/* ---------- footer total ---------- */
+.betFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-outline-variant);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+}
+
+.betFooterTotal {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--color-on-surface);
+}

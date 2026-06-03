@@ -1,6 +1,6 @@
 // BettingSection.tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 
@@ -96,7 +96,8 @@ const SectionHeader: React.FC<{
   title: string;
   win: number;
   price: number;
-}> = ({ title, win, price }) => (
+  onQuickGuess: () => void;
+}> = ({ title, win, price, onQuickGuess }) => (
   <div className={styles.sectionHeader}>
     <div className={styles.sectionTitleWrap}>
       <div className={styles.titleLine}>
@@ -106,7 +107,14 @@ const SectionHeader: React.FC<{
       <p className={styles.sectionPrice}>{formatINR(price)} / per ticket</p>
     </div>
 
-    <span className={styles.quickGuess}>Quick Guess</span>
+    <button
+      type="button"
+      className={styles.quickGuess}
+      onClick={onQuickGuess}
+    >
+      <span className="material-symbols-outlined">casino</span>
+      Quick Guess
+    </button>
   </div>
 );
 
@@ -118,6 +126,15 @@ const BettingSection: React.FC = () => {
     (state: RootState) => state.socketSlice.selectedLobby
   );
 
+  // ----------------------------------------------------------------
+  // QUICK GUESS TICKS (one per section)
+  // Incrementing a tick tells every BetRow in that section to
+  // auto-fill a random number. (Resets on lobby change via the row keys.)
+  // ----------------------------------------------------------------
+  const [singleTick, setSingleTick] = useState(0);
+  const [doubleTick, setDoubleTick] = useState(0);
+  const [tripleTick, setTripleTick] = useState(0);
+
   return (
     <section className={styles.section}>
       {/* ---------------------------------------------------------------- */}
@@ -127,11 +144,16 @@ const BettingSection: React.FC = () => {
         title="Single Digit"
         win={BET_OPTIONS[0].multiplier}
         price={BET_OPTIONS[0].pricePerTicket}
+        onQuickGuess={() => setSingleTick((t) => t + 1)}
       />
 
       <div className={styles.grid}>
         {BET_OPTIONS.map((opt) => (
-          <BetRow key={`${selectedLobby}-${opt.type}`} {...opt} />
+          <BetRow
+            key={`${selectedLobby}-${opt.type}`}
+            quickGuessTick={singleTick}
+            {...opt}
+          />
         ))}
       </div>
 
@@ -142,13 +164,17 @@ const BettingSection: React.FC = () => {
         title="Double Digit"
         win={DOUBLE_OPTIONS[0].multiplier}
         price={DOUBLE_OPTIONS[0].pricePerTicket}
+        onQuickGuess={() => setDoubleTick((t) => t + 1)}
       />
 
       <div className={styles.grid}>
         {DOUBLE_OPTIONS.map((opt) => (
-          <BetRow key={`${selectedLobby}-${opt.type}`}
-           isTriple={true}
-           {...opt} />
+          <BetRow
+            key={`${selectedLobby}-${opt.type}`}
+            isTriple={true}
+            quickGuessTick={doubleTick}
+            {...opt}
+          />
         ))}
       </div>
 
@@ -159,13 +185,17 @@ const BettingSection: React.FC = () => {
         title="Triple Digit"
         win={TRIPLE_OPTIONS[0].multiplier}
         price={TRIPLE_OPTIONS[0].pricePerTicket}
+        onQuickGuess={() => setTripleTick((t) => t + 1)}
       />
 
       <div className={styles.grid}>
         {TRIPLE_OPTIONS.map((opt) => (
-          <BetRow key={`${selectedLobby}-${opt.type}`}
-                isTriple={true}
-           {...opt} />
+          <BetRow
+            key={`${selectedLobby}-${opt.type}`}
+            isTriple={true}
+            quickGuessTick={tripleTick}
+            {...opt}
+          />
         ))}
       </div>
     </section>
