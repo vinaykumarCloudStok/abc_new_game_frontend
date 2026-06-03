@@ -4,9 +4,7 @@
   gap: var(--spacing-gutter);
 }
 
-/* =========================================================
-   SECTION HEADER  (Title + golden Win pill + price + Quick Guess)
-========================================================= */
+/* SECTION HEADER */
 .sectionHeader {
   display: flex;
   align-items: flex-start;
@@ -38,7 +36,7 @@
   font-family: var(--font-montserrat);
   font-weight: 800;
   font-size: 18px;
-  color: var(--color-secondary);
+  color: var(--color-on-surface);
   line-height: 1.1;
 }
 
@@ -48,20 +46,18 @@
   align-items: center;
   padding: 4px 12px;
   border-radius: var(--radius-full);
-
   font-family: var(--font-montserrat);
   font-weight: 800;
   font-size: 12.5px;
   letter-spacing: 0.02em;
   white-space: nowrap;
-
   color: #3a2a00;
   background: linear-gradient(135deg, #ffe7a0 0%, #ffc31f 45%, #f5a300 100%);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow:
-    0 4px 14px rgba(245, 163, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 4px 12px rgba(245, 163, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .sectionPrice {
@@ -80,7 +76,6 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--color-primary);
-  opacity: 0.85;
 }
 
 .grid {

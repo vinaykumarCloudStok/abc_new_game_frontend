@@ -6,7 +6,6 @@
 /* =========================================================
    TABS
 ========================================================= */
-
 .tabs {
   display: flex;
   gap: 10px;
@@ -16,39 +15,36 @@
 .tabBtn {
   flex: 1;
   height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(18px);
+  background: var(--color-surface);
   color: var(--color-on-surface-variant);
   font-family: var(--font-montserrat);
   font-weight: 700;
   font-size: 12px;
   cursor: pointer;
   transition: all 180ms ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.tabBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-on-surface);
 }
 
 .activeTab {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 184, 0, 1),
-    rgba(255, 208, 77, 1)
-  );
-  color: #111;
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 6px 18px rgba(255, 184, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  background: linear-gradient(135deg, #ffc107, #ffd24d);
+  color: #5a3d00;
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(255, 184, 0, 0.3);
 }
 
 /* =========================================================
    EMPTY STATE
 ========================================================= */
-
 .emptyOrder {
-  background: rgba(40, 32, 58, 0.72);
-  backdrop-filter: blur(22px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 22px;
   min-height: 420px;
   display: flex;
@@ -58,12 +54,12 @@
   color: var(--color-on-surface-variant);
   font-size: 14px;
   font-family: var(--font-inter);
+  box-shadow: var(--shadow-sm);
 }
 
 /* =========================================================
    LIST
 ========================================================= */
-
 .orderList {
   display: flex;
   flex-direction: column;
@@ -74,51 +70,41 @@
 /* =========================================================
    CARD
 ========================================================= */
-
 .orderItem {
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.04),
-      rgba(255, 255, 255, 0.015)
-    ),
-    rgba(44, 34, 62, 0.92);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 22px;
   padding: 16px;
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  transition: transform 180ms ease, border-color 180ms ease;
+  box-shadow: var(--shadow-md);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
   animation: cardFade 240ms ease;
   will-change: transform, opacity;
 }
 
 .orderItem:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-lg);
 }
 
 .orderItem::before {
   content: "";
   position: absolute;
-  inset: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.22),
-    transparent
-  );
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ffc107, #ffd24d);
+}
+
+/* Rollback card gets a blue accent */
+.orderItemRollback::before {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
 }
 
 /* =========================================================
    HEADER
 ========================================================= */
-
 .orderHeader {
   margin-bottom: 14px;
 }
@@ -134,7 +120,7 @@
   font-family: var(--font-montserrat);
   font-weight: 800;
   font-size: 15px;
-  color: #fff;
+  color: var(--color-on-surface);
   line-height: 1.2;
   letter-spacing: 0.04em;
 }
@@ -142,15 +128,14 @@
 /* =========================================================
    META ROW — Lobby ID + Time with labels
 ========================================================= */
-
 .metaRow {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto 1fr;
   gap: 14px;
   margin-top: 10px;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 12px;
 }
 
@@ -163,6 +148,7 @@
 
 .metaItem:last-child {
   align-items: flex-end;
+  text-align: right;
 }
 
 .metaLabel {
@@ -170,19 +156,19 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-on-surface-variant);
   font-family: var(--font-montserrat);
 }
 
 .metaValue {
   font-size: 12px;
   font-weight: 600;
-  color: #fff;
-  font-family: var(--font-inter);
+  color: var(--color-on-surface);
+  font-family: var(--font-montserrat), monospace;
   word-break: break-all;
-  text-transform: uppercase;
   letter-spacing: 0.02em;
 }
+
 .toBeDeclared {
   margin-top: 10px;
   padding: 14px;
@@ -191,24 +177,39 @@
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.08em;
-  color: #fbbf24;
-
-  background: rgba(251, 191, 36, 0.08);
-  border: 1px dashed rgba(251, 191, 36, 0.25);
+  color: #b45309;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px dashed rgba(217, 119, 6, 0.4);
 }
-.metaItem:last-child .metaValue {
-  text-transform: uppercase;
-  white-space: nowrap;
+
+/* =========================================================
+   REFUND BANNER (rollback)
+========================================================= */
+.refundBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  color: #1d4ed8;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.refundBanner .material-symbols-outlined {
+  font-size: 18px;
 }
 
 /* =========================================================
    STATUS BADGES
 ========================================================= */
-
 .statusWin {
-  background: rgba(52, 211, 153, 0.12);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.2);
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.28);
   font-size: 11px;
   font-weight: 700;
   padding: 3px 10px;
@@ -217,9 +218,9 @@
 }
 
 .statusLoss {
-  background: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.28);
   font-size: 11px;
   font-weight: 700;
   padding: 3px 10px;
@@ -228,9 +229,9 @@
 }
 
 .statusRollback {
-  background: rgba(96, 165, 250, 0.12);
-  color: #60a5fa;
-  border: 1px solid rgba(96, 165, 250, 0.2);
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.28);
   font-size: 11px;
   font-weight: 700;
   padding: 3px 10px;
@@ -239,9 +240,9 @@
 }
 
 .statusPending {
-  background: rgba(251, 191, 36, 0.12);
-  color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.25);
+  background: rgba(217, 119, 6, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.3);
   font-size: 11px;
   font-weight: 700;
   padding: 3px 10px;
@@ -252,7 +253,6 @@
 /* =========================================================
    AMOUNT GRID
 ========================================================= */
-
 .amountGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -261,35 +261,39 @@
 }
 
 .amountCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 16px;
   padding: 12px;
 }
 
 .amountLabel {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--color-on-surface-variant);
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  font-weight: 600;
 }
 
 .amountValue {
   font-family: var(--font-montserrat);
   font-size: 20px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-on-surface);
 }
 
 .amountWin {
-  color: #34d399;
+  color: #15803d;
+}
+
+.amountRefund {
+  color: #2563eb;
 }
 
 /* =========================================================
    RESULT BALLS  A / B / C
 ========================================================= */
-
 .resultBalls {
   display: flex;
   gap: 10px;
@@ -306,7 +310,7 @@
 .ballLabel {
   font-size: 11px;
   font-weight: 700;
-  color: rgba(255, 184, 0, 0.75);
+  color: #b45309;
   font-family: var(--font-montserrat);
   letter-spacing: 0.06em;
 }
@@ -316,15 +320,15 @@
   height: 38px;
   border-radius: 50%;
   background: radial-gradient(circle at top, #ffe38a, #ffb800);
-  color: #111;
+  color: #5a3d00;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   font-size: 15px;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.3),
-    0 6px 14px rgba(255, 184, 0, 0.28);
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    0 4px 10px rgba(255, 184, 0, 0.3);
 }
 
 .ballSum {
@@ -339,24 +343,24 @@
   font-weight: 800;
   font-size: 15px;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.35),
-    0 6px 14px rgba(52, 211, 153, 0.28);
+    inset 0 2px 4px rgba(255, 255, 255, 0.45),
+    0 4px 10px rgba(52, 211, 153, 0.3);
 }
 
 /* =========================================================
    CHIP SECTION
 ========================================================= */
-
 .chipSection {
   margin-top: 4px;
 }
 
 .sectionLabel {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.28);
+  color: var(--color-on-surface-variant);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: 8px;
+  font-weight: 700;
 }
 
 .chipGrid {
@@ -368,14 +372,13 @@
 /* =========================================================
    CHIP TILE
 ========================================================= */
-
 .chipTile {
   display: flex;
   align-items: center;
   gap: 10px;
   border-radius: 14px;
   padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--color-outline-variant);
   transition: transform 120ms ease;
 }
 
@@ -384,29 +387,28 @@
 }
 
 .chipNeutral {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.07);
+  background: var(--color-surface-container);
+  border-color: var(--color-outline-variant);
 }
 
 .chipWin {
-  background: rgba(52, 211, 153, 0.07);
-  border-color: rgba(52, 211, 153, 0.16);
+  background: rgba(22, 163, 74, 0.07);
+  border-color: rgba(22, 163, 74, 0.22);
 }
 
 .chipLoss {
   background: rgba(239, 68, 68, 0.06);
-  border-color: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.2);
 }
 
 .chipRefund {
-  background: rgba(96, 165, 250, 0.06);
-  border-color: rgba(96, 165, 250, 0.15);
+  background: rgba(59, 130, 246, 0.06);
+  border-color: rgba(59, 130, 246, 0.22);
 }
 
 /* =========================================================
    CHIP BOXES — Letter A/B/C + Number side by side
 ========================================================= */
-
 .chipBoxes {
   display: flex;
   align-items: center;
@@ -419,36 +421,36 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: rgba(255, 184, 0, 0.14);
-  border: 1px solid rgba(255, 184, 0, 0.28);
+  background: rgba(255, 184, 0, 0.16);
+  border: 1px solid rgba(255, 184, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-montserrat);
   font-size: 17px;
   font-weight: 800;
-  color: #ffb800;
+  color: #b45309;
 }
 
 .chipNumberBox {
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-surface-container-highest);
+  border: 1px solid var(--color-outline-variant);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-montserrat);
   font-size: 17px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-on-surface);
 }
 
 .chipSep {
   font-size: 12px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.22);
+  color: var(--color-on-surface-variant);
   margin: 0 2px;
   font-family: var(--font-montserrat);
 }
@@ -456,7 +458,6 @@
 /* =========================================================
    CHIP INFO
 ========================================================= */
-
 .chipInfo {
   flex: 1;
   display: flex;
@@ -467,7 +468,7 @@
 
 .chipType {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.38);
+  color: var(--color-on-surface-variant);
   font-family: var(--font-inter);
   letter-spacing: 0.04em;
 }
@@ -479,36 +480,35 @@
 }
 
 .chipStatusWin {
-  color: #34d399;
+  color: #15803d;
 }
 
 .chipStatusLoss {
-  color: #ef4444;
+  color: #dc2626;
 }
 
 .chipStatusRefund {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #60a5fa;
+  color: #2563eb;
 }
 
 .chipStatusPending {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #fbbf24;
+  color: #b45309;
 }
 
 /* =========================================================
    CHIP AMOUNT
 ========================================================= */
-
 .chipAmt {
   font-family: var(--font-montserrat);
   font-size: 15px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-on-surface);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -516,22 +516,14 @@
 /* =========================================================
    ANIMATIONS
 ========================================================= */
-
 @keyframes cardFade {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* =========================================================
    MOBILE
 ========================================================= */
-
 @media (max-width: 480px) {
   .tabBtn {
     font-size: 12px;
@@ -578,27 +570,24 @@
 
   .metaItem:last-child {
     align-items: flex-start;
-  }
-
-  .metaItem:last-child .metaValue {
-    white-space: normal;
+    text-align: left;
   }
 
   .metaValue {
     font-size: 11px;
   }
 }
+
 /* =========================================================
    SUB-TABS (inside My Order)
 ========================================================= */
-
 .subTabs {
   display: flex;
   gap: 6px;
   margin-bottom: 14px;
   padding: 4px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-surface-container-high);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 12px;
 }
 
@@ -608,7 +597,7 @@
   border: none;
   border-radius: 9px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-on-surface-variant);
   font-family: var(--font-montserrat);
   font-weight: 700;
   font-size: 12px;
@@ -617,18 +606,10 @@
   transition: all 160ms ease;
 }
 
-
-
 .activeSubTab {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 184, 0, 0.95),
-    rgba(255, 208, 77, 0.95)
-  );
-  color: #111;
-  box-shadow:
-    0 4px 12px rgba(255, 184, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, #ffc107, #ffd24d);
+  color: #5a3d00;
+  box-shadow: 0 4px 10px rgba(255, 184, 0, 0.28);
 }
 
 @media (max-width: 480px) {
@@ -636,7 +617,7 @@
     height: 36px;
     font-size: 11px;
   }
-  .chipTile{
+  .chipTile {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;

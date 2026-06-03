@@ -12,22 +12,21 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(26, 12, 44, 0.8);
+  background: rgba(27, 27, 37, 0.4);
   backdrop-filter: blur(8px);
   cursor: pointer;
 }
 
 .modal {
-  background: rgba(60, 46, 79, 0.6);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(214, 186, 255, 0.2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 20px;
   padding: 24px;
   width: 100%;
   max-width: 360px;
   position: relative;
   z-index: 10;
+  box-shadow: 0 24px 60px rgba(27, 27, 37, 0.25);
   animation: slideUp 250ms ease;
 }
 
@@ -58,7 +57,7 @@
 }
 
 .closeBtn:hover {
-  background: rgba(255,255,255,0.1);
+  background: var(--color-surface-container-high);
   color: var(--color-on-surface);
 }
 
@@ -76,13 +75,13 @@
 }
 
 .ruleKey {
-  color: var(--color-secondary);
-  font-weight: 600;
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .divider {
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid var(--color-outline-variant);
   margin-top: 4px;
   padding-top: var(--spacing-sm);
   font-size: 13px;

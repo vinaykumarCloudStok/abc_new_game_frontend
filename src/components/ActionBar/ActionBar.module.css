@@ -1,46 +1,43 @@
 .bar {
   position: fixed;
   bottom: 44px;
-  left: var(--spacing-margin-mobile);
-  right: var(--spacing-margin-mobile);
+  left: 0;
+  right: 0;
   z-index: 40;
   max-width: 430px;
+  width: 100%;
   margin: 0 auto;
 }
 
 .inner {
-  background: rgba(65, 51, 84, 0.88);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   padding: 10px 12px;
+  width: 100%;
   border-radius: 18px;
-  border: 1px solid rgba(214, 186, 255, 0.18);
-
+  border: 1px solid var(--color-outline-variant);
   display: flex;
   align-items: center;
   gap: 8px;
-
-  box-shadow:
-    0 0 15px rgba(214, 186, 255, 0.12),
-    0 8px 32px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 10px 30px rgba(27, 27, 37, 0.16);
 }
 
 /* ---------- LEFT: Cart ---------- */
-
 .cartLeft {
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
   flex: 1;
-  min-width: 0; /* critical: allow shrinking inside flex */
+  min-width: 0;
   padding: 4px 6px 4px 4px;
   border-radius: 12px;
   transition: background 0.2s ease;
 }
 
 .cartLeft:active {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--color-surface-container-high);
 }
 
 .cartIconWrapper {
@@ -51,32 +48,28 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: rgba(214, 186, 255, 0.12);
+  background: var(--color-primary-container);
   flex-shrink: 0;
 }
 
 .cartIcon {
   font-size: 22px !important;
-  color: var(--color-secondary);
+  color: var(--color-on-primary-container);
 }
 
 .badge {
   position: absolute;
   top: -4px;
   right: -4px;
-
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
-
-  background: var(--color-tertiary);
-  border: 2px solid rgba(65, 51, 84, 1);
+  background: #ef4444;
+  border: 2px solid #fff;
   border-radius: 999px;
-
   font-size: 10px;
   font-weight: 700;
   color: #fff;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,9 +97,9 @@
 
 .cartTotal {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
-  color: var(--color-secondary);
+  color: var(--color-on-surface);
   margin: 0;
   line-height: 1.2;
   white-space: nowrap;
@@ -115,7 +108,6 @@
 }
 
 /* ---------- RIGHT: Actions ---------- */
-
 .actions {
   display: flex;
   align-items: center;
@@ -128,17 +120,13 @@
   width: 42px;
   padding: 0;
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.06);
-
-  color: rgba(255, 255, 255, 0.9);
-
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface);
   cursor: pointer;
   transition: all 0.18s ease;
 }
@@ -148,7 +136,7 @@
 }
 
 .undoBtn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-surface-container-highest);
 }
 
 .undoBtn:active {
@@ -164,31 +152,22 @@
   height: 42px;
   padding: 0 16px;
   flex-shrink: 0;
-
   background-color: var(--color-secondary-container);
   color: var(--color-on-secondary-container);
-
-  font-weight: 700;
+  font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-
   border: none;
   border-radius: 12px;
-
   cursor: pointer;
   white-space: nowrap;
-
-  box-shadow: 0 0 18px rgba(195, 244, 0, 0.32);
-
-  transition:
-    transform 100ms ease,
-    box-shadow 200ms ease,
-    opacity 200ms;
+  box-shadow: 0 4px 14px rgba(171, 214, 0, 0.45);
+  transition: transform 100ms ease, box-shadow 200ms ease, opacity 200ms;
 }
 
 .placeBtn:hover {
-  box-shadow: 0 0 26px rgba(195, 244, 0, 0.5);
+  box-shadow: 0 6px 20px rgba(171, 214, 0, 0.6);
 }
 
 .placeBtn:active {
@@ -196,29 +175,24 @@
 }
 
 .placeBtn:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 /* ---------- BET DROPDOWN ---------- */
-
 .betDropdown {
   position: absolute;
   bottom: calc(100% + 8px);
   left: 0;
   right: 0;
-
-  background: rgba(44, 34, 58, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 18px;
-
   padding: 14px;
-
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 36px rgba(27, 27, 37, 0.18);
   animation: fadeUp 0.22s ease;
 }
 
@@ -226,34 +200,28 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   font-size: 14px;
   font-weight: 700;
-  color: white;
-
+  color: var(--color-on-surface);
   margin-bottom: 12px;
 }
 
 .closeBtn {
   width: 30px;
   height: 30px;
-
   border: none;
   border-radius: 50%;
-
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface);
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .closeBtn:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--color-surface-container-highest);
 }
 
 .closeBtn:active {
@@ -268,7 +236,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-
   max-height: 240px;
   overflow-y: auto;
   padding-right: 2px;
@@ -279,7 +246,7 @@
 }
 
 .betList::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(27, 27, 37, 0.2);
   border-radius: 4px;
 }
 
@@ -287,8 +254,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
   border-radius: 12px;
   padding: 10px 12px;
 }
@@ -296,55 +263,31 @@
 .betNumber {
   font-size: 14px;
   font-weight: 700;
-  color: white;
+  color: var(--color-on-surface);
   margin: 0;
 }
 
 .betChip {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-on-surface-variant);
 }
 
 .betAmount {
   font-size: 15px;
-  font-weight: 700;
-  color: var(--color-secondary);
+  font-weight: 800;
+  color: var(--color-on-surface);
 }
 
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- Narrow screens (very small phones) ---------- */
+/* ---------- Narrow screens ---------- */
 @media (max-width: 360px) {
-  .inner {
-    padding: 8px 10px;
-    gap: 6px;
-  }
-
-  .cartLeft {
-    gap: 8px;
-  }
-
-  .cartIconWrapper {
-    width: 36px;
-    height: 36px;
-  }
-
-  .placeBtn {
-    padding: 0 12px;
-    font-size: 12px;
-  }
-
-  .undoBtn {
-    width: 38px;
-    height: 38px;
-  }
+  .inner { padding: 8px 10px; gap: 6px; }
+  .cartLeft { gap: 8px; }
+  .cartIconWrapper { width: 36px; height: 36px; }
+  .placeBtn { padding: 0 12px; font-size: 12px; }
+  .undoBtn { width: 38px; height: 38px; }
 }

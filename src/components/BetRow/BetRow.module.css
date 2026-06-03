@@ -1,32 +1,31 @@
-/* BetRow.module.css */
+/* BetRow.module.css — light theme */
 
 .card {
-  background: rgba(60, 46, 79, 0.4);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-xl);
   padding: 12px;
-
   display: flex;
-  align-items: center;            /* badges + inputs + action on one baseline */
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
-               /* graceful fallback on very small screens */
+  box-shadow: var(--shadow-sm);
 }
-.fullAdd{
+
+.fullAdd {
   min-width: 106px;
 }
+
 .tripleCard {
   display: flex !important;
   align-items: flex-start !important;
   flex-direction: column !important;
 }
-/* =========================================================
-   LEFT  →  BADGES + GUESS INPUTS  (inline, like reference)
-========================================================= */
+
+/* LEFT → BADGES + GUESS INPUTS */
 .topRow {
   display: flex;
-  flex-direction: row;            /* inline: badges to the LEFT of inputs */
+  flex-direction: row;
   align-items: center;
   gap: 10px;
   flex: 1 1 auto;
@@ -53,20 +52,17 @@
   border-radius: 50%;
   background-color: var(--color-primary-container);
   border: 2px solid var(--color-primary);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-family: var(--font-montserrat);
   font-weight: 800;
   font-size: 16px;
-
-  color: var(--color-primary);
+  color: var(--color-on-primary-container);
   flex-shrink: 0;
 }
 
-/* PER-LETTER COLORS (display only) */
+/* PER-LETTER COLORS */
 .badgeA {
   background: radial-gradient(circle at 30% 25%, #ff7a7a, #e23b3b);
   border-color: #ff9a9a;
@@ -85,8 +81,6 @@
   color: #fff;
 }
 
-
-
 .badge:first-child { z-index: 3; }
 .badge:nth-child(2) { z-index: 2; }
 .badge:last-child { z-index: 1; }
@@ -102,44 +96,33 @@
 .guessInput {
   width: 40px;
   height: 40px;
-
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  background: rgba(60, 46, 79, 0.4);
-  backdrop-filter: blur(20px);
-
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface-container);
   text-align: center;
-
   font-family: var(--font-montserrat);
   font-size: 16px;
   font-weight: 700;
-
-  color: var(--color-secondary);
+  color: var(--color-on-surface);
   outline: none;
-
-  transition:
-    border 150ms ease,
-    transform 120ms ease,
-    background 150ms ease;
+  transition: border 150ms ease, transform 120ms ease, background 150ms ease;
 }
 
 .guessInput::placeholder {
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--color-on-surface-variant);
+  opacity: 0.6;
 }
 
 .guessInput:focus {
   border-color: var(--color-primary);
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-surface);
 }
 
 .guessInput:active {
   transform: scale(0.97);
 }
 
-/* =========================================================
-   RIGHT  →  STEPPER (stacked) + ADD BUTTON
-========================================================= */
+/* RIGHT → STEPPER + ADD BUTTON */
 .actionSection {
   display: flex;
   align-items: stretch;
@@ -152,56 +135,41 @@
   align-items: center;
   justify-content: space-between;
   min-width: 106px;
-
-  background: rgba(60, 46, 79, 0.4);
-  backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-md);
-
   overflow: hidden;
 }
 
 .stepBtn {
   width: 34px;
   height: 34px;
-
   background: none;
   border: none;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: var(--color-on-surface);
   font-size: 18px;
   font-weight: 700;
-
-  transition:
-    background 150ms ease,
-    transform 100ms ease;
+  transition: background 150ms ease, transform 100ms ease;
 }
 
-.stepBtn:hover { background: rgba(255, 255, 255, 0.05); }
-.stepBtn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.08); }
+.stepBtn:hover { background: var(--color-surface-container-high); }
+.stepBtn:active { transform: scale(0.9); background: var(--color-surface-container-highest); }
 
 .qtyInput {
   width: 38px;
-
   background: transparent;
   border: none;
   outline: none;
-
   text-align: center;
-
   font-family: var(--font-montserrat);
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.04em;
-
-  color: var(--color-secondary);
-
+  color: var(--color-on-surface);
   appearance: textfield;
   -moz-appearance: textfield;
 }
@@ -215,30 +183,23 @@
 .addBtn {
   height: 36px;
   padding: 0 14px;
-
   background-color: var(--color-secondary-container);
   color: var(--color-on-secondary-container);
-
   font-family: var(--font-montserrat);
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.04em;
   white-space: nowrap;
-
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-
-  box-shadow: 0 4px 0 #3c4d00;
-
-  transition:
-    transform 100ms ease,
-    box-shadow 100ms ease;
+  box-shadow: 0 4px 0 #97b800;
+  transition: transform 100ms ease, box-shadow 100ms ease;
 }
 
 .addBtn:active {
   transform: translateY(2px);
-  box-shadow: 0 2px 0 #3c4d00;
+  box-shadow: 0 2px 0 #97b800;
 }
 
 .addBtn:disabled {
@@ -248,7 +209,7 @@
 
 /* DISABLED STATES */
 .disabledCard {
-  opacity: 0.6;
+  opacity: 0.55;
   pointer-events: none;
 }
 
@@ -257,9 +218,6 @@
   cursor: not-allowed;
 }
 
-/* =========================================================
-   SMALL SCREENS — keep one tidy row, shrink slightly
-========================================================= */
 @media (max-width: 380px) {
   .badge { width: 30px; height: 30px; font-size: 12px; }
   .guessInput { width: 36px; height: 36px; font-size: 15px; }

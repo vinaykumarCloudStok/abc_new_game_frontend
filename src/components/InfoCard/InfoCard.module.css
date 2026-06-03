@@ -1,239 +1,275 @@
 .card {
-  background: rgba(60, 46, 79, 0.4);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-md);
-  padding-right: 64px; /* room for help btn */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-sm);
   position: relative;
   overflow: hidden;
-  min-height: 140px;
+  box-shadow: var(--shadow-md);
 }
 
-.glow {
+/* subtle top accent line */
+.card::before {
+  content: "";
   position: absolute;
-  right: -40px;
-  top: -40px;
-  width: 128px;
-  height: 128px;
-  background: rgba(214, 186, 255, 0.1);
-  border-radius: 50%;
-  filter: blur(24px);
-  pointer-events: none;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-secondary-container), #8bd3ff);
+}
+
+/* ---------------- 2-COLUMN GRID ---------------- */
+.grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
 }
 
 /* ---------------- LEFT COLUMN ---------------- */
 .leftCol {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   flex: 1;
   min-width: 0;
 }
 
-.label {
-  font-family: var(--font-inter);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-  margin: 0;
-}
-
-.flexRoundId {
+.titleLine {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
-.lobbyIdText {
+.title {
+  font-family: var(--font-montserrat);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.howBtn {
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-outline-variant);
+  background: var(--color-surface-container);
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-inter);
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 150ms ease, border-color 150ms ease, transform 120ms ease;
 }
 
+.howBtn:hover {
+  background: var(--color-primary-container);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary-container);
+}
+
+.howBtn:active {
+  transform: scale(0.95);
+}
+
+/* result lobby id under title */
 .lobbyId {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: 0.5px;
   font-family: var(--font-montserrat), monospace;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0.4px;
+  word-break: break-all;
+  line-height: 1.3;
+  cursor: pointer;
+  user-select: all;
+  transition: color 150ms ease;
 }
 
+.lobbyId:hover {
+  color: var(--color-primary);
+}
+
+/* ---------------- RESULT BALLS ---------------- */
 .digits {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 4px;
-  min-height: 42px;
+  margin-top: 2px;
+  min-height: 46px;
+  flex-wrap: wrap;
 }
 
 .digitsPlaceholder {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
   font-style: italic;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .digitBall {
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #ffcc00, #ff7b00);
   color: #fff;
-  font-size: 20px;
-  font-weight: 700;
+  font-family: var(--font-montserrat);
+  font-size: 21px;
+  font-weight: 800;
+  background: radial-gradient(circle at 30% 25%, #9d7bff, #6d4fa0);
   box-shadow:
-    0 0 12px rgba(255, 170, 0, 0.5),
-    inset 0 2px 6px rgba(255, 255, 255, 0.3);
+    0 4px 12px rgba(109, 79, 160, 0.35),
+    inset 0 2px 6px rgba(255, 255, 255, 0.35);
   animation: popIn 0.5s ease forwards;
   transform: scale(0);
 }
 
+/* per-position colors to match the reference (purple / amber / blue) */
+.digitBall:nth-of-type(2) {
+  background: radial-gradient(circle at 30% 25%, #ffcf6b, #f59a12);
+  box-shadow:
+    0 4px 12px rgba(245, 154, 18, 0.35),
+    inset 0 2px 6px rgba(255, 255, 255, 0.4);
+}
+
+.digitBall:nth-of-type(3) {
+  background: radial-gradient(circle at 30% 25%, #6fb6ff, #2f7fe0);
+  box-shadow:
+    0 4px 12px rgba(47, 127, 224, 0.35),
+    inset 0 2px 6px rgba(255, 255, 255, 0.35);
+}
+
 @keyframes popIn {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
-  }
-  70% {
-    transform: scale(1.15) rotate(10deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(0);
-    opacity: 1;
-  }
+  0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+  70% { transform: scale(1.15) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
 }
 
 /* ---------------- RIGHT COLUMN (TIMER) ---------------- */
 .rightCol {
   display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.timerPill {
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 10px 14px;
-  min-width: 110px;
-  border-radius: var(--radius-lg, 14px);
-  background: linear-gradient(
-    135deg,
-    rgba(214, 186, 255, 0.18),
-    rgba(214, 186, 255, 0.06)
-  );
-  border: 1px solid rgba(214, 186, 255, 0.25);
-  box-shadow:
-    0 0 16px rgba(214, 186, 255, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.timerHeader {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.timerIcon {
-  font-size: 12px;
-  color: rgba(214, 186, 255, 0.9);
-}
-
-.timerLabel {
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.65);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.timerValue {
-  font-size: 20px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: #fff;
-  margin: 0;
-  line-height: 1.1;
-  text-shadow: 0 0 10px rgba(214, 186, 255, 0.3);
-}
-
-.timerSuffix {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.6);
-  margin-left: 2px;
-}
-
-.timerLobbyId {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.5px;
-  margin: 0;
-  font-family: var(--font-montserrat), monospace;
-}
-
-/* ---------------- HELP BUTTON ---------------- */
-.helpBtn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  background: rgba(60, 46, 79, 0.6);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(233, 196, 0, 0.25);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 150ms ease;
-  color: var(--color-tertiary);
+  align-items: flex-end;
+  gap: 8px;
   flex-shrink: 0;
-  font-size: 18px;
+  max-width: 46%;
 }
 
-.helpBtn:active {
-  transform: scale(0.93);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+.timeLabel {
+  font-family: var(--font-inter);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
 }
+
+/* flip-clock countdown */
+.flipClock {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flipDigit {
+  position: relative;
+  min-width: 26px;
+  height: 36px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #1b1b25;
+  color: #fff;
+  font-family: var(--font-montserrat);
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 3px 8px rgba(27, 27, 37, 0.25);
+}
+
+/* flip-clock hinge line */
+.flipDigit::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 50%;
+  height: 1px;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.colon {
+  color: var(--color-on-surface);
+  font-family: var(--font-montserrat);
+  font-size: 20px;
+  font-weight: 800;
+  padding: 0 1px;
+}
+
+/* next-draw lobby id under timer */
+.nextLobbyId {
+  font-family: var(--font-montserrat), monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+ 
+  line-height: 1.3;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: all;
+  transition: color 150ms ease;
+}
+
+.nextLobbyId:hover {
+  color: var(--color-primary);
+}
+
 /* ---------------- URGENT STATE (under 60s) ---------------- */
-.timerPillUrgent {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 80, 80, 0.22),
-    rgba(255, 80, 80, 0.08)
-  );
-  border-color: rgba(255, 100, 100, 0.45);
-  box-shadow:
-    0 0 18px rgba(255, 80, 80, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+.flipUrgent .flipDigit {
+  background: #c81e1e;
+  box-shadow: 0 3px 10px rgba(200, 30, 30, 0.4);
   animation: urgentPulse 1s ease-in-out infinite;
 }
 
-.timerValueUrgent {
-  color: #ffb3b3;
-  text-shadow: 0 0 10px rgba(255, 100, 100, 0.5);
+.flipUrgent .colon {
+  color: #c81e1e;
 }
 
 @keyframes urgentPulse {
-  0%, 100% {
-    transform: scale(1);
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 380px) {
+
+  .title { font-size: 14px; }
+  .digitBall { width: 40px; height: 40px; font-size: 18px; }
+  .flipDigit { min-width: 22px; height: 32px; font-size: 19px; }
+  .colon { font-size: 17px; }
+  .nextLobbyId{
+    font-size: 12px;
   }
-  50% {
-    transform: scale(1.04);
+}
+@media (max-width:360px) {
+  .card{
+    padding: 8px;
+    border-radius: 2px;
+  }
+  .nextLobbyId{
+    font-size: 10px;
+  }
+  .title{
+    font-size: 12px;
+  }
+  .howBtn{
+    padding: 4px;
   }
 }

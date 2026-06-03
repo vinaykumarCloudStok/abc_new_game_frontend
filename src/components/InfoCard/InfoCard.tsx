@@ -2,8 +2,6 @@ import React, { useEffect, useState, useMemo } from "react";
 import styles from "./InfoCard.module.css";
 import { toggleRulesModal } from "../../store/slices/socketSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { BiInfoCircle } from "react-icons/bi";
-import { FiClock } from "react-icons/fi";
 
 const InfoCard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +17,7 @@ const InfoCard: React.FC = () => {
   const digits = latestResult ? Object.values(latestResult.result) : [];
 
   // -------------------------------------------------------------------
-  // NEXT DRAW LOBBY
+  // NEXT DRAW LOBBY  (logic unchanged)
   // -------------------------------------------------------------------
   const nextDrawLobby = useMemo(() => {
     if (!lobbies || lobbies.length === 0) return null;
@@ -48,7 +46,7 @@ const InfoCard: React.FC = () => {
   }, [lobbies, selectedLobby]);
 
   // -------------------------------------------------------------------
-  // LIVE COUNTDOWN — TICKS EVERY SECOND
+  // LIVE COUNTDOWN — TICKS EVERY SECOND  (logic unchanged)
   // -------------------------------------------------------------------
   const [timeLeft, setTimeLeft] = useState<number>(0);
 
@@ -72,7 +70,7 @@ const InfoCard: React.FC = () => {
   }, [nextDrawLobby]);
 
   // -------------------------------------------------------------------
-  // FORMAT MM:SS or HH:MM:SS
+  // FORMAT MM:SS or HH:MM:SS  (logic unchanged)
   // -------------------------------------------------------------------
   const formatCountdown = (ms: number) => {
     if (ms <= 0) return "00:00";
@@ -89,79 +87,112 @@ const InfoCard: React.FC = () => {
       : `${pad(mins)}:${pad(secs)}`;
   };
 
-  const shortUuid = (uuid?: string) => (uuid ? uuid.slice(0, 16) : "—");
-
   // Add urgency class when under 60s
   const isUrgent = timeLeft > 0 && timeLeft <= 60_000;
 
+  // Full lobby ids (no truncation)
+  const resultLobbyId = latestResult?.lobby_uuid || null;
+  const nextLobbyId = nextDrawLobby?.lobby_uuid || null;
+
+  // -------------------------------------------------------------------
+  // COPY TO CLIPBOARD  (UI helper, no business logic)
+  // -------------------------------------------------------------------
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const copyId = (id: string, key: string) => {
+    try {
+      navigator.clipboard?.writeText(id);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 1200);
+    } catch {
+      /* clipboard unavailable — ignore */
+    }
+  };
+
   return (
     <section className={styles.card}>
-      <div className={styles.glow} />
-
-      {/* LEFT COLUMN */}
-      <div className={styles.leftCol}>
-        <p className={styles.label}>Draw Result</p>
-
-        <div className={styles.flexRoundId}>
-          <span className={styles.lobbyIdText}>Lobby:</span>
-          <span className={styles.lobbyId}>
-            {latestResult?.lobby_uuid
-              ? `${latestResult.lobby_uuid.slice(0, 8)}...${latestResult.lobby_uuid.slice(-4)}`
-              : shortUuid(nextDrawLobby?.lobby_uuid)}
-          </span>
-        </div>
-
-        <div className={styles.digits}>
-          {digits.length > 0 ? (
-            digits.map((digit, index) => (
-              <div
-                key={index}
-                className={styles.digitBall}
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                {digit}
-              </div>
-            ))
-          ) : (
-            <div className={styles.digitsPlaceholder}>
-              Awaiting next result
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* RIGHT COLUMN — TIMER */}
-      {nextDrawLobby && (
-        <div className={styles.rightCol}>
-          <div
-            className={`${styles.timerPill} ${
-              isUrgent ? styles.timerPillUrgent : ""
-            }`}
-          >
-            <div className={styles.timerHeader}>
-              <FiClock className={styles.timerIcon} />
-              <span className={styles.timerLabel}>Next Draw</span>
-            </div>
-            <p
-              className={`${styles.timerValue} ${
-                isUrgent ? styles.timerValueUrgent : ""
-              }`}
+      <div className={styles.grid}>
+        {/* ---------------- LEFT COLUMN ---------------- */}
+        <div className={styles.leftCol}>
+          <div className={styles.titleLine}>
+            <p className={styles.title}>Draw Result</p>
+            <button
+              className={styles.howBtn}
+              onClick={() => dispatch(toggleRulesModal())}
+              aria-label="How to play"
             >
-              {formatCountdown(timeLeft)}
-            </p>
-           
+              How to play
+            </button>
+          </div>
+          {resultLobbyId && (
+            <span
+              className={styles.lobbyId}
+              title="Click to copy"
+              onClick={() => copyId(resultLobbyId, "result")}
+            >
+              {copiedKey === "result" ? "Copied!" : resultLobbyId}
+            </span>
+          )}
+
+          <div className={styles.digits}>
+              <div
+          
+                  className={styles.digitBall}
+                 
+                >
+                  1
+                </div>
+            {digits.length > 0 ? (
+              digits.map((digit, index) => (
+                <div
+                  key={index}
+                  className={styles.digitBall}
+                  style={{ animationDelay: `${index * 0.2}s` }}
+                >
+                  1
+                </div>
+              ))
+            ) : (
+              null
+            )}
           </div>
         </div>
-      )}
 
-      {/* HELP BUTTON */}
-      <button
-        className={styles.helpBtn}
-        onClick={() => dispatch(toggleRulesModal())}
-        aria-label="Open rules"
-      >
-        <BiInfoCircle className="icons" />
-      </button>
+        {/* ---------------- RIGHT COLUMN (TIMER) ---------------- */}
+        {nextDrawLobby && (
+          <div className={styles.rightCol}>
+            <span className={styles.timeLabel}>Next Draw</span>
+
+            <div
+              className={`${styles.flipClock} ${isUrgent ? styles.flipUrgent : ""
+                }`}
+            >
+              {formatCountdown(timeLeft)
+                .split("")
+                .map((ch, i) =>
+                  ch === ":" ? (
+                    <span key={i} className={styles.colon}>
+                      :
+                    </span>
+                  ) : (
+                    <span key={i} className={styles.flipDigit}>
+                      {ch}
+                    </span>
+                  )
+                )}
+            </div>
+          </div>
+        )}
+      </div>
+      {nextLobbyId && (
+        <p
+          className={styles.nextLobbyId}
+          title="Click to copy"
+          onClick={() => copyId(nextLobbyId, "next")}
+        >
+          <span>Lobby Id:</span>
+          <span>      {copiedKey === "next" ? "Copied!" : nextLobbyId}</span>
+        </p>
+      )}
     </section>
   );
 };
