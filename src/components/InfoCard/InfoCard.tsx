@@ -134,13 +134,7 @@ const InfoCard: React.FC = () => {
           )}
 
           <div className={styles.digits}>
-              <div
-          
-                  className={styles.digitBall}
-                 
-                >
-                  1
-                </div>
+             
             {digits.length > 0 ? (
               digits.map((digit, index) => (
                 <div
@@ -148,7 +142,7 @@ const InfoCard: React.FC = () => {
                   className={styles.digitBall}
                   style={{ animationDelay: `${index * 0.2}s` }}
                 >
-                  1
+                  {digit}
                 </div>
               ))
             ) : (
