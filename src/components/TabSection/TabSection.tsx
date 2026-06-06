@@ -179,7 +179,8 @@ useEffect(() => {
   return (
     <div className={styles.container}>
       {/* MAIN TABS */}
-      <div className={styles.tabs}>
+    <div className={styles.newContainer}>
+        <div className={styles.tabs}>
              <button
           className={`${styles.tabBtn} ${activeTab === "myorder" ? styles.activeTab : ""}`}
           onClick={() => setActiveTab("myorder")}
@@ -200,8 +201,6 @@ useEffect(() => {
           Rollback
         </button>
       </div>
-
-      {/* SUB-TABS — only when My Order is active */}
       {activeTab === "myorder" && (
         <div className={styles.subTabs}>
           <button
@@ -222,6 +221,7 @@ useEffect(() => {
           </button>
         </div>
       )}
+    </div>
 
       {/* CONTENT */}
       <OrderListSection

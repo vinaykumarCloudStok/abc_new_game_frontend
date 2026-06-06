@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Header.module.css';
 import { useAppSelector } from '../../hooks/redux';
-import logo from '../../assets/screen.png';
+import logo from '../../assets/logo.png';
 import { formatBalance } from '../../utils/helper';
 
 const Header: React.FC = () => {
