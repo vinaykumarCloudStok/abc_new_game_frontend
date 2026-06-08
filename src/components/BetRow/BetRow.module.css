@@ -13,7 +13,7 @@
 }
 
 .fullAdd {
-  min-width: 106px;
+  min-width: 119px;
 }
 
 .tripleCard {
@@ -181,7 +181,7 @@
 
 /* ADD BUTTON */
 .addBtn {
-  height: 36px;
+  height: 32px;
   padding: 0 14px;
   background-color: var(--color-secondary-container);
   color: var(--color-on-secondary-container);

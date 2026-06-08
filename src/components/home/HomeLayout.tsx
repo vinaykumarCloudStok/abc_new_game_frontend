@@ -14,7 +14,7 @@ import { initSocketListeners } from '../../socket/socketListner'
 import CommonPopup from '../modal/CommonPopup'
 import LoaderSocket from '../Loader/LoaderSocket'
 const mainStyle: React.CSSProperties = {
-  marginTop: '52px',
+  marginTop: '80px',
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',

@@ -222,7 +222,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
                     ? "Refund Amount"
                     : isSettlement
                     ? "Win Amount"
-                    : "Total Bets"}
+                    : "Total Tickets"}
                 </div>
 
                 <div

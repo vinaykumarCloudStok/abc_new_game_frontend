@@ -94,30 +94,15 @@ useEffect(() => {
   }
 }, [lobbies, selectedLobby, dispatch]);
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-
-    const now = new Date();
-
-    const tomorrow = new Date();
-    tomorrow.setDate(now.getDate() + 1);
-
-    const isTomorrow =
-      date.getDate() === tomorrow.getDate() &&
-      date.getMonth() === tomorrow.getMonth() &&
-      date.getFullYear() === tomorrow.getFullYear();
-
-    const time = date.toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
-
-    return isTomorrow
-      ? `Tomorrow ${time}`
-      : time;
-  };
+const formatTime = (dateString: string) => {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "UTC",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).format(new Date(dateString));
+};
 
   // ----------------------------------------------------------------
   // TAB VISIBILITY
