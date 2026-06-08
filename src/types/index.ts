@@ -41,6 +41,7 @@ export interface InfoData {
   user_id: string;
   operator_id: string;
   balance: string;
+  isAgent?: number;
 }
 export interface LobbyResult {
   lobby_uuid: string;

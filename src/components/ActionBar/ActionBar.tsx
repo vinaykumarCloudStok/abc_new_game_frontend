@@ -21,7 +21,14 @@ const ActionBar: React.FC = () => {
   const bets = useSelector(
     (state: RootState) => state.betSlip.bets
   );
+const info = useSelector(
+  (state: RootState) => state.socketSlice.info
+);
 
+const isAgent = Number(info?.isAgent) === 1;
+
+const MIN_BET_AMOUNT = isAgent ? 10 : 12;
+const MAX_BET_AMOUNT = 25000;
   const lobbies = useSelector(
     (state: RootState) => state.socketSlice.lobbies
   );
@@ -45,52 +52,61 @@ const ActionBar: React.FC = () => {
     0
   );
 
-  const handlePlaceBet = () => {
-    if (!activeLobby) return;
+ const handlePlaceBet = () => {
+  if (!activeLobby) return;
 
-    const totalAmount = bets.reduce(
-      (sum, item) => sum + item.amt,
-      0
+  const totalAmount = bets.reduce(
+    (sum, item) => sum + item.amt,
+    0
+  );
+
+  if (totalAmount < MIN_BET_AMOUNT) {
+    dispatch(
+      showPopup({
+        type: "error",
+        message: `Minimum bet is ₹${MIN_BET_AMOUNT}`,
+      })
     );
+    return;
+  }
 
-    if (totalAmount < 12) {
-      dispatch(
-        showPopup({ type: "error", message: "Minimum bet is 12" })
-      );
-      return;
-    }
+  if (totalAmount > MAX_BET_AMOUNT) {
+    dispatch(
+      showPopup({
+        type: "error",
+        message: `Maximum bet is ₹${MAX_BET_AMOUNT}`,
+      })
+    );
+    return;
+  }
 
-    if (totalAmount > 25000) {
-      dispatch(
-        showPopup({ type: "error", message: "Maximum bet is 25000" })
-      );
-      return;
-    }
+  if (totalAmount > balance) {
+    dispatch(
+      showPopup({
+        type: "error",
+        message: "Insufficient Balance",
+      })
+    );
+    return;
+  }
 
-    if (totalAmount > balance) {
-      dispatch(
-        showPopup({ type: "error", message: "Insufficient Balance" })
-      );
-      return;
-    }
-
-    const payload = {
-      lobbyId: activeLobby.lobby_uuid,
-      bets: bets.map((bet) => ({
-        cat: bet.cat,
-        chip: bet.chip,
-        amt: bet.amt,
-      })),
-    };
-
-    console.log("BET PAYLOAD:", payload);
-
-    const socket = getSocket();
-    socket?.emit("bet", payload);
-
-    dispatch(clearBets());
-    setShowBets(false);
+  const payload = {
+    lobbyId: activeLobby.lobby_uuid,
+    bets: bets.map((bet) => ({
+      cat: bet.cat,
+      chip: bet.chip,
+      amt: bet.amt,
+    })),
   };
+
+  console.log("BET PAYLOAD:", payload);
+
+  const socket = getSocket();
+  socket?.emit("bet", payload);
+
+  dispatch(clearBets());
+  setShowBets(false);
+};
 
   // ----------------------------------------------------------------
   // DELETE A SINGLE BET (one by one)

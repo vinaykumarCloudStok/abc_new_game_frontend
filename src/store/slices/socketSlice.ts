@@ -18,6 +18,7 @@ const initialState: SocketState = {
     user_id: "",
     operator_id: "",
     balance: "0.00",
+    isAgent: 0,
   },
 
   isRulesModalOpen: false,
@@ -110,7 +111,7 @@ const socketSlice = createSlice({
         sortedLobbies.find(
           (lobby) =>
             lobby.lobby_uuid ===
-              savedLobby &&
+            savedLobby &&
             ![
               "resulted",
               "cancelled",
@@ -348,9 +349,9 @@ const socketSlice = createSlice({
           nextOpenLobby
             ? nextOpenLobby.lobby_uuid
             : state.lobbies.length > 0
-            ? state.lobbies[0]
+              ? state.lobbies[0]
                 .lobby_uuid
-            : null;
+              : null;
 
         if (nextOpenLobby) {
           localStorage.setItem(

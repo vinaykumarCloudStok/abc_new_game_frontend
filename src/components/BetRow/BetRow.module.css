@@ -219,6 +219,12 @@
 }
 
 @media (max-width: 380px) {
+  .stepper{
+    min-width: auto;
+  }
+  .fullAdd{
+    min-width: 98px;
+  }
   .badge { width: 30px; height: 30px; font-size: 12px; }
   .guessInput { width: 36px; height: 36px; font-size: 15px; }
   .stepBtn { width: 30px; height: 32px; }
