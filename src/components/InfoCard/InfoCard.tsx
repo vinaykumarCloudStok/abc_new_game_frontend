@@ -91,7 +91,7 @@ const InfoCard: React.FC = () => {
   const isUrgent = timeLeft > 0 && timeLeft <= 60_000;
 
   // Full lobby ids (no truncation)
-  const resultLobbyId = latestResult?.lobby_uuid || null;
+  // const resultLobbyId = latestResult?.lobby_uuid || null;
   const nextLobbyId = nextDrawLobby?.lobby_uuid || null;
 
   // -------------------------------------------------------------------
@@ -123,7 +123,7 @@ const InfoCard: React.FC = () => {
               How to play
             </button>
           </div>
-          {resultLobbyId && (
+          {/* {resultLobbyId && (
             <span
               className={styles.lobbyId}
               title="Click to copy"
@@ -131,7 +131,7 @@ const InfoCard: React.FC = () => {
             >
               {copiedKey === "result" ? "Copied!" : resultLobbyId}
             </span>
-          )}
+          )} */}
 
           <div className={styles.digits}>
              
