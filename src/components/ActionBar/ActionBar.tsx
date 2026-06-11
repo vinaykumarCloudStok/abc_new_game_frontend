@@ -28,7 +28,7 @@ const info = useSelector(
 const isAgent = Number(info?.isAgent) === 1;
 
 const MIN_BET_AMOUNT = isAgent ? 10 : 12;
-const MAX_BET_AMOUNT = 25000;
+const MAX_BET_AMOUNT = 200000; // ₹2L cap
   const lobbies = useSelector(
     (state: RootState) => state.socketSlice.lobbies
   );
@@ -74,7 +74,7 @@ const MAX_BET_AMOUNT = 25000;
     dispatch(
       showPopup({
         type: "error",
-        message: `Maximum bet is ₹${MAX_BET_AMOUNT}`,
+        message: `Maximum bet is ₹${MAX_BET_AMOUNT.toLocaleString("en-IN")}`,
       })
     );
     return;

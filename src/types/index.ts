@@ -51,6 +51,20 @@ export interface LobbyResult {
     c: number;
   };
 }
+
+// Result the user explicitly opened by tapping a closed / resulted lobby tab.
+// `result` may be null while the draw is still pending (just closed, not yet declared).
+export interface SelectedResult {
+  lobby_uuid: string;
+  result: {
+    a: number;
+    b: number;
+    c: number;
+  } | null;
+  result_at?: string;
+  pending?: boolean;
+}
+
 export interface SocketState {
   connected: boolean;
   loading: boolean;
@@ -59,6 +73,10 @@ export interface SocketState {
   lobbies: Lobby[],
  selectedLobby: string | null;
   latestResult: LobbyResult | null;
+  selectedResult: SelectedResult | null;
+  // A just-resulted lobby is kept selected for a short window so the user
+  // can see its result before auto-advancing to the next open lobby.
+  stickyResultLobby: { lobby_uuid: string; until: number } | null;
 }
 export interface Lobby {
   lobby_uuid: string;

@@ -23,6 +23,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--spacing-sm);
+  flex-wrap: wrap;
 }
 
 /* ---------------- LEFT COLUMN ---------------- */
@@ -91,11 +92,36 @@
 }
 
 /* ---------------- RESULT BALLS ---------------- */
+.resultLabel {
+  font-family: var(--font-inter);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  margin-top: 10px;
+}
+
+.awaitingResult {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+  font-style: italic;
+  letter-spacing: 0.3px;
+}
+
+.resultTime {
+  font-family: var(--font-montserrat);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  white-space: nowrap;
+}
+
 .digits {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 2px;
+  margin-top: 12px;
   min-height: 46px;
   flex-wrap: wrap;
 }
@@ -155,6 +181,7 @@
   gap: 8px;
   flex-shrink: 0;
   max-width: 46%;
+  min-width: 0;
 }
 
 .timeLabel {
@@ -171,6 +198,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-wrap: nowrap;
 }
 
 .flipDigit {
@@ -221,8 +249,9 @@
   line-height: 1.3;
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
+  gap: 4px;
   align-items: center;
+  margin-top: .8rem;
   user-select: all;
   transition: color 150ms ease;
 }
@@ -248,28 +277,59 @@
 }
 
 /* ---------------- RESPONSIVE ---------------- */
-@media (max-width: 380px) {
 
-  .title { font-size: 14px; }
-  .digitBall { width: 40px; height: 40px; font-size: 18px; }
-  .flipDigit { min-width: 22px; height: 32px; font-size: 19px; }
-  .colon { font-size: 17px; }
-  .nextLobbyId{
-    font-size: 12px;
+/* On narrow widths the result balls + an HH:MM:SS timer cannot sit
+   side-by-side, so stack the timer into its own full-width row below
+   the balls. This guarantees the countdown never overlaps the balls. */
+@media (max-width: 480px) {
+  .grid {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .digits {
+    margin-top: 10px;
+  }
+
+  .rightCol {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 100%;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-outline-variant);
+  }
+
+  .timeLabel {
+    font-size: 13px;
   }
 }
-@media (max-width:360px) {
-  .card{
-    padding: 8px;
-    border-radius: 2px;
+
+@media (max-width: 380px) {
+  .title { font-size: 14px; }
+  .digits { gap: 8px; }
+  .digitBall { width: 40px; height: 40px; font-size: 18px; }
+  .flipClock { gap: 3px; }
+  .flipDigit { min-width: 20px; height: 32px; font-size: 18px; padding: 0 3px; }
+  .colon { font-size: 16px; }
+  .nextLobbyId { font-size: 12px; }
+}
+
+@media (max-width: 360px) {
+  .card {
+    padding: 10px;
+    border-radius: var(--radius-lg, 12px);
   }
-  .nextLobbyId{
-    font-size: 10px;
-  }
-  .title{
-    font-size: 12px;
-  }
-  .howBtn{
-    padding: 4px;
-  }
+  .rightCol { padding-top: 10px; }
+  .timeLabel { font-size: 12px; }
+  .digits { gap: 6px; }
+  .digitBall { width: 38px; height: 38px; font-size: 17px; }
+  .flipDigit { min-width: 22px; height: 30px; font-size: 16px; }
+  .colon { font-size: 15px; }
+  .nextLobbyId { font-size: 11px; }
+  .title { font-size: 12px; }
+  .howBtn { padding: 4px 8px; }
 }

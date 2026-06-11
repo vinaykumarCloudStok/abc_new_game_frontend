@@ -15,6 +15,8 @@ interface OrderListProp {
   currentData: BetHistoryItem[] | LobbyHistoryItem[];
   activeTab: TabType;
   myOrderSubTab?: "bet" | "settlement";
+  /** Count of pending bets that belong to other (non-selected) lobbies */
+  otherLobbyCount?: number;
 }
 
 /* Format any numeric value as Indian Rupees (display only, no logic change) */
@@ -29,7 +31,10 @@ const OrderListSection: React.FC<OrderListProp> = ({
   currentData,
   activeTab,
   myOrderSubTab,
+  otherLobbyCount = 0,
 }) => {
+  const isOpenBetsTab = activeTab === "myorder" && myOrderSubTab === "bet";
+
   if (loading) {
     return (
       <div className={styles.orderList}>
@@ -41,63 +46,64 @@ const OrderListSection: React.FC<OrderListProp> = ({
   if (!currentData || currentData.length === 0) {
     return (
       <div className={styles.orderList}>
-        <div className={styles.emptyOrder}>No data found</div>
+        <div className={styles.emptyOrder}>
+          {isOpenBetsTab
+            ? "No open bets for this lobby"
+            : "No data found"}
+        </div>
+        {isOpenBetsTab && otherLobbyCount > 0 && (
+          <div className={styles.otherLobbyNote}>
+            You have {otherLobbyCount} pending bet
+            {otherLobbyCount > 1 ? "s" : ""} in other lobb
+            {otherLobbyCount > 1 ? "ies" : "y"}. Switch the lobby tab above to
+            view {otherLobbyCount > 1 ? "them" : "it"}.
+          </div>
+        )}
       </div>
     );
   }
 
   /* ===================================================
-     GAME HISTORY — Only DECLARED results
+     GAME HISTORY — clean one-line result rows
   =================================================== */
   if (activeTab === "game") {
     const games = currentData as LobbyHistoryItem[];
     return (
-      <div className={styles.orderList}>
+      <div className={styles.gameList}>
         {games.map((item) => {
           const result = item.result;
 
           return (
-            <div key={item.lobby_uuid} className={styles.orderItem}>
-              <div className={styles.orderHeader}>
-                <div className={styles.orderTopRow}>
-                  <span className={styles.orderType}>GAME RESULT</span>
-
-                  <span
-                    className={result ? styles.statusWin : styles.statusPending}
-                  >
-                    {result ? "DECLARED" : "TO BE DECLARED"}
+            <div key={item.lobby_uuid} className={styles.gameRow}>
+              <div className={styles.gameRowLeft}>
+                <div className={styles.gameField}>
+                  <span className={styles.gameFieldLabel}>Result Time</span>
+                  <span className={styles.gameTime}>
+                    {formatDate(item.result_at)}
                   </span>
                 </div>
-
-                <div className={styles.metaRow}>
-                  <div className={styles.metaItem}>
-                    <span className={styles.metaLabel}>Result Time</span>
-                    <span className={styles.metaValue}>
-                      {formatDate(item.result_at)}
-                    </span>
-                  </div>
-
-                  <div className={styles.metaItem}>
-                    <span className={styles.metaLabel}>Lobby ID</span>
-                    <span className={styles.metaValue}>{item.lobby_uuid}</span>
-                  </div>
+                <div className={styles.gameField}>
+                  <span className={styles.gameFieldLabel}>Lobby ID</span>
+                  <span className={styles.gameLobbyId} title={item.lobby_uuid}>
+                    {item.lobby_uuid}
+                  </span>
                 </div>
               </div>
 
-              {result ? (
-                <div className={styles.resultBalls}>
-                  {(["a", "b", "c"] as const).map((key) => (
-                    <div key={key} className={styles.ballGroup}>
-                      <span className={styles.ballLabel}>
-                        {key.toUpperCase()}
+              <div className={styles.gameResultCol}>
+                <span className={styles.gameFieldLabel}>Result</span>
+                {result ? (
+                  <div className={styles.gameBalls}>
+                    {(["a", "b", "c"] as const).map((key) => (
+                      <span key={key} className={styles.gameBall}>
+                        {result[key]}
                       </span>
-                      <span className={styles.ball}>{result[key]}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className={styles.toBeDeclared}>TO BE DECLARED</div>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <span className={styles.gamePending}>—</span>
+                )}
+              </div>
             </div>
           );
         })}
@@ -332,6 +338,15 @@ const OrderListSection: React.FC<OrderListProp> = ({
           </div>
         );
       })}
+
+      {isPendingBet && otherLobbyCount > 0 && (
+        <div className={styles.otherLobbyNote}>
+          You also have {otherLobbyCount} pending bet
+          {otherLobbyCount > 1 ? "s" : ""} in other lobb
+          {otherLobbyCount > 1 ? "ies" : "y"}. Switch the lobby tab above to
+          view {otherLobbyCount > 1 ? "them" : "it"}.
+        </div>
+      )}
     </div>
   );
 };

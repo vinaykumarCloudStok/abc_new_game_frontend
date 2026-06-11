@@ -1,33 +1,26 @@
-/* BetRow.module.css — light theme */
+/* BetRow.module.css — light theme (compact single-line layout) */
 
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-xl);
-  padding: 12px;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
 }
 
-.fullAdd {
-  min-width: 119px;
-}
-
-.tripleCard {
-  display: flex !important;
-  align-items: flex-start !important;
-  flex-direction: column !important;
-}
+/* Double / Triple use the SAME single-line layout as single digit. */
 
 /* LEFT → BADGES + GUESS INPUTS */
 .topRow {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -35,7 +28,7 @@
 .leftInfo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 0 0 auto;
   min-width: 0;
 }
@@ -44,11 +37,12 @@
 .badgeGroup {
   display: flex;
   flex-shrink: 0;
+  gap: 2px;
 }
 
 .badge {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: var(--color-primary-container);
   border: 2px solid var(--color-primary);
@@ -57,7 +51,7 @@
   justify-content: center;
   font-family: var(--font-montserrat);
   font-weight: 800;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--color-on-primary-container);
   flex-shrink: 0;
 }
@@ -81,27 +75,23 @@
   color: #fff;
 }
 
-.badge:first-child { z-index: 3; }
-.badge:nth-child(2) { z-index: 2; }
-.badge:last-child { z-index: 1; }
-
 /* GUESS INPUTS */
 .guessBox {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
 .guessInput {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-outline-variant);
   background: var(--color-surface-container);
   text-align: center;
   font-family: var(--font-montserrat);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--color-on-surface);
   outline: none;
@@ -125,25 +115,27 @@
 /* RIGHT → STEPPER + ADD BUTTON */
 .actionSection {
   display: flex;
-  align-items: stretch;
-  gap: 8px;
+  /* align-items: center; */
+  gap: 6px;
   flex: 0 0 auto;
+  margin-left: auto;
 }
 
+/* COMPACT +/- STEPPER */
 .stepper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-width: 118px;
   background: var(--color-surface-container);
   border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-md);
   overflow: hidden;
+  height: 31px;
 }
 
 .stepBtn {
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 30px;
   background: none;
   border: none;
   cursor: pointer;
@@ -151,7 +143,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-on-surface);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   transition: background 150ms ease, transform 100ms ease;
 }
@@ -160,15 +152,15 @@
 .stepBtn:active { transform: scale(0.9); background: var(--color-surface-container-highest); }
 
 .qtyInput {
-  width: 38px;
+  width: 26px;
   background: transparent;
   border: none;
   outline: none;
   text-align: center;
   font-family: var(--font-montserrat);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   color: var(--color-on-surface);
   appearance: textfield;
   -moz-appearance: textfield;
@@ -181,14 +173,18 @@
 
 /* ADD BUTTON */
 .addBtn {
-  height: 32px;
-  padding: 0 14px;
+  height: 27px;
+  min-width: 92px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-secondary-container);
   color: var(--color-on-secondary-container);
   font-family: var(--font-montserrat);
   font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.04em;
+  font-size: 12px;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   border: none;
   border-radius: var(--radius-md);
@@ -218,23 +214,33 @@
   cursor: not-allowed;
 }
 
+/* small screens — shrink a touch more so triple still fits one line */
+@media (max-width:420px) {
+  .topRowFlexCol{
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
 @media (max-width: 380px) {
-  .stepper{
-    min-width: auto;
-  }
-  .fullAdd{
-    min-width: 98px;
-  }
-  .badge { width: 30px; height: 30px; font-size: 12px; }
-  .guessInput { width: 36px; height: 36px; font-size: 15px; }
-  .stepBtn { width: 30px; height: 32px; }
-  .qtyInput { width: 34px; }
+  .card { padding: 8px; gap: 6px; }
+  .topRow { gap: 6px; }
+  .badge { width: 28px; height: 28px; font-size: 12px; }
+  .guessInput { width: 28px; height: 28px; font-size: 14px; }
+  .stepBtn { width: 22px; height: 28px; font-size: 15px; }
+  .qtyInput { width: 22px; font-size: 13px; }
+  .addBtn { min-width: 82px; padding: 0 6px; font-size: 11px; }
 }
 
-/* QUICK GUESS (per row) */
+@media (max-width: 340px) {
+  .badge { width: 26px; height: 26px; font-size: 11px; }
+  .guessInput { width: 26px; height: 26px; font-size: 13px; }
+  .addBtn { min-width: 74px; padding: 0 5px; }
+}
+
+/* QUICK GUESS (per row) — retained */
 .quickGuessBtn {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -248,7 +254,7 @@
 }
 
 .quickGuessBtn span {
-  font-size: 22px !important;
+  font-size: 20px !important;
 }
 
 .quickGuessBtn:hover {
@@ -263,9 +269,4 @@
   opacity: 0.4;
   cursor: not-allowed;
   box-shadow: none;
-}
-
-@media (max-width: 380px) {
-  .quickGuessBtn { width: 36px; height: 36px; }
-  .quickGuessBtn span { font-size: 20px !important; }
 }

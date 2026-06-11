@@ -7,6 +7,7 @@ import type {
   InfoData,
   Lobby,
   LobbyResult,
+  SelectedResult,
   SocketState,
 } from "../../types";
 
@@ -28,6 +29,25 @@ const initialState: SocketState = {
   selectedLobby: null,
 
   latestResult: null,
+
+  // result the user opened by tapping a closed/resulted lobby tab
+  selectedResult: null,
+
+  // a freshly-resulted lobby kept on screen for a short window
+  stickyResultLobby: null,
+};
+
+// True while the currently-selected lobby is a just-resulted lobby that is
+// still inside its "keep on screen" window AND still present in the list.
+// While this holds, auto-switch logic must NOT move away from it.
+const STICKY_RESULT_MS = 5 * 60 * 1000; // 5 minutes
+
+const isStickyHeld = (state: SocketState): boolean => {
+  const s = state.stickyResultLobby;
+  if (!s) return false;
+  if (s.lobby_uuid !== state.selectedLobby) return false;
+  if (Date.now() >= s.until) return false;
+  return state.lobbies.some((l) => l.lobby_uuid === s.lobby_uuid);
 };
 
 const socketSlice = createSlice({
@@ -97,7 +117,8 @@ const socketSlice = createSlice({
           "cancelled",
         ].includes(currentLobby.status);
 
-      if (keepCurrentLobby) {
+      // Keep a freshly-resulted lobby on screen during its sticky window.
+      if (keepCurrentLobby || isStickyHeld(state)) {
         return;
       }
 
@@ -189,9 +210,25 @@ const socketSlice = createSlice({
             state.selectedLobby
         );
 
+      // When the SELECTED lobby has just resulted, keep it on screen for a
+      // short window (so the user can see the drawn result in the InfoCard)
+      // instead of instantly jumping to the next lobby. The switch happens
+      // later via expireStickyResult (5 min) or when the backend removes it.
+      if (
+        selectedLobbyData &&
+        selectedLobbyData.lobby_uuid === updatedLobby.lobby_uuid &&
+        updatedLobby.status === "resulted"
+      ) {
+        state.stickyResultLobby = {
+          lobby_uuid: selectedLobbyData.lobby_uuid,
+          until: Date.now() + STICKY_RESULT_MS,
+        };
+        return; // do NOT auto-switch yet
+      }
+
       // IMPORTANT:
       // DO NOT change active when bet_closed
-      // ONLY change when resulted/cancelled
+      // ONLY change when resulted/cancelled (and not while a result is held)
       if (
         selectedLobbyData &&
         [
@@ -199,7 +236,8 @@ const socketSlice = createSlice({
           "cancelled",
         ].includes(
           selectedLobbyData.status
-        )
+        ) &&
+        !isStickyHeld(state)
       ) {
         const nextOpenLobby =
           state.lobbies.find(
@@ -266,11 +304,12 @@ const socketSlice = createSlice({
 
       // only change if current lobby invalid
       if (
-        !currentLobby ||
-        [
-          "resulted",
-          "cancelled",
-        ].includes(currentLobby.status)
+        (!currentLobby ||
+          [
+            "resulted",
+            "cancelled",
+          ].includes(currentLobby.status)) &&
+        !isStickyHeld(state)
       ) {
         const nextOpenLobby =
           state.lobbies.find(
@@ -320,6 +359,21 @@ const socketSlice = createSlice({
     },
 
     // ------------------------------------------------------------
+    // SELECTED RESULT (tap a closed / resulted lobby tab to view
+    // its drawn number inside the InfoCard)
+    // ------------------------------------------------------------
+    setSelectedResult: (
+      state,
+      action: PayloadAction<SelectedResult>
+    ) => {
+      state.selectedResult = action.payload;
+    },
+
+    clearSelectedResult: (state) => {
+      state.selectedResult = null;
+    },
+
+    // ------------------------------------------------------------
     // REMOVE LOBBY
     // ------------------------------------------------------------
     removeLobby: (
@@ -332,6 +386,13 @@ const socketSlice = createSlice({
             lobby.lobby_uuid !==
             action.payload
         );
+
+      // backend removed this lobby → drop any sticky hold on it
+      if (
+        state.stickyResultLobby?.lobby_uuid === action.payload
+      ) {
+        state.stickyResultLobby = null;
+      }
 
       // if selected removed
       if (
@@ -361,6 +422,55 @@ const socketSlice = createSlice({
         }
       }
     },
+
+    // ------------------------------------------------------------
+    // EXPIRE STICKY RESULT
+    // Called ~5 min after a lobby resulted. Releases the hold and, if
+    // we are still sitting on that resulted lobby, advances to the next
+    // open one. Safe to call for an already-replaced sticky (no-op).
+    // ------------------------------------------------------------
+    expireStickyResult: (
+      state,
+      action: PayloadAction<string | undefined>
+    ) => {
+      const uuid = action.payload;
+
+      // If a newer result replaced this one, ignore this stale timer.
+      if (
+        uuid &&
+        state.stickyResultLobby &&
+        state.stickyResultLobby.lobby_uuid !== uuid
+      ) {
+        return;
+      }
+
+      state.stickyResultLobby = null;
+
+      const current = state.lobbies.find(
+        (lobby) => lobby.lobby_uuid === state.selectedLobby
+      );
+
+      // only advance if we are still on a resulted/cancelled/removed lobby
+      if (
+        !current ||
+        ["resulted", "cancelled"].includes(current.status)
+      ) {
+        const nextOpenLobby = state.lobbies.find(
+          (lobby) => lobby.status === "betting_open"
+        );
+
+        state.selectedLobby = nextOpenLobby
+          ? nextOpenLobby.lobby_uuid
+          : null;
+
+        if (nextOpenLobby) {
+          localStorage.setItem(
+            "selectedLobby",
+            nextOpenLobby.lobby_uuid
+          );
+        }
+      }
+    },
   },
 });
 
@@ -381,6 +491,9 @@ export const {
 
   setLobbyResult,
   clearLatestResult,
+  setSelectedResult,
+  clearSelectedResult,
+  expireStickyResult,
 } = socketSlice.actions;
 
 export default socketSlice.reducer;

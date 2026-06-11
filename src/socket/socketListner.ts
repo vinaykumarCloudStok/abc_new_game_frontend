@@ -9,8 +9,8 @@ import {
   updateLobby,
   addLobby,
   setLobbyResult,
-  removeLobby,
   clearLatestResult,
+  expireStickyResult,
 } from "../store/slices/socketSlice";
 
 import { createSocket, connectSocket } from "./socket";
@@ -106,19 +106,31 @@ export const initSocketListeners = (
       case "lobby_result":
         dispatch(setLobbyResult(data));
 
-        // mark lobby resulted
+        // mark lobby resulted AND persist the drawn numbers on the lobby
+        // itself, so the InfoCard can keep showing the result even after
+        // the short-lived live banner (latestResult) is cleared.
         dispatch(
           updateLobby({
             lobby_uuid: data.lobby_uuid,
             status: "resulted",
+            result: data.result ? JSON.stringify(data.result) : null,
           })
         );
 
-
+        // Clear only the auto live-banner after a short while.
+        // We DO NOT remove the lobby tab any more — a closed/resulted
+        // tab stays on the strip so the user can tap it later to
+        // re-view the drawn number inside the InfoCard.
         setTimeout(() => {
-          dispatch(removeLobby(data.lobby_uuid));
           dispatch(clearLatestResult());
         }, 12000);
+
+        // Keep the just-resulted lobby selected for ~5 minutes so the
+        // result stays visible, then advance to the next open lobby
+        // (unless the backend already removed it).
+        setTimeout(() => {
+          dispatch(expireStickyResult(data.lobby_uuid));
+        }, 5 * 60 * 1000);
 
         break;
       // ---------------------------------------------------------------------

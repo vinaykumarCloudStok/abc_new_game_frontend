@@ -162,7 +162,6 @@ const BettingSection: React.FC = () => {
         {DOUBLE_OPTIONS.map((opt) => (
           <BetRow
             key={`${selectedLobby}-${opt.type}`}
-            isTriple
             quickGuessTick={doubleTick}
             {...opt}
           />

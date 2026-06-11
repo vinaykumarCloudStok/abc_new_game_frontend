@@ -106,6 +106,12 @@
   box-shadow: 0 4px 14px rgba(147, 51, 234, 0.22);
 }
 
+/* tab currently being viewed in the InfoCard */
+.chipViewing {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
 /* LOBBY-WISE RESULT VIEW */
 .resultOverlay {
   position: fixed;

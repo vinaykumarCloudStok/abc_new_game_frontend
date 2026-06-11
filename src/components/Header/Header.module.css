@@ -41,15 +41,14 @@
   gap: 8px;
 }
 
-/* USER ID PILL — display only, non-interactive */
+/* USER ID — simple inline text, no pill */
 .userPill {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--color-surface-container-high);
-  padding: 6px 10px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-outline-variant);
+  gap: 4px;
+  background: none;
+  padding: 0;
+  border: none;
 }
 
 .userIcon {
@@ -61,8 +60,8 @@
   font-family: var(--font-montserrat);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--color-on-surface);
+  letter-spacing: 0.02em;
+  color: var(--color-on-surface-variant);
 }
 
 /* WALLET BUTTON — clickable, prominent */

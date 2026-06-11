@@ -16,9 +16,8 @@ interface BetRowProps extends BetOption {
 const BetRow: React.FC<BetRowProps> = ({
   label,
   pricePerTicket,
-  digits,
+  digits,isTriple,
   cat,
-  isTriple,
   quickGuessTick,
 }) => {
   const dispatch = useDispatch();
@@ -26,6 +25,10 @@ const BetRow: React.FC<BetRowProps> = ({
   const [qty, setQty] = useState(0);
 
   const [inputValue, setInputValue] = useState("");
+
+  // ₹2L cap per row → max tickets allowed for this row's price
+  const MAX_BET_AMOUNT = 200000;
+  const maxQty = Math.max(1, Math.floor(MAX_BET_AMOUNT / pricePerTicket));
 
   // ----------------------------------------------------------------
   // GET BETS
@@ -97,7 +100,7 @@ const BetRow: React.FC<BetRowProps> = ({
     )
       return;
 
-    setQty((prev) => prev + 1);
+    setQty((prev) => Math.min(prev + 1, maxQty));
   };
 
   // ----------------------------------------------------------------
@@ -173,7 +176,7 @@ const BetRow: React.FC<BetRowProps> = ({
         }`}
     >
       {/* TOP */}
-      <div className={`${styles.topRow} ${isTriple ? styles.tripleCard : ""}`}>
+      <div className={`${styles.topRow} ${isTriple?styles.topRowFlexCol:""}`}>
         <div className={`${styles.leftInfo}`}>
           <div className={styles.badgeGroup}>
             {digits.map((digit) => (
@@ -267,7 +270,7 @@ const BetRow: React.FC<BetRowProps> = ({
       </div>
 
       {/* ACTION */}
-      <div className={`${styles.actionSection} ${isTriple ? styles.tripleCard : ""}`}>
+      <div className={`${styles.actionSection}`}>
         <div className={styles.stepper}>
           {/* MINUS */}
           <button
@@ -340,7 +343,7 @@ const BetRow: React.FC<BetRowProps> = ({
                 !isNaN(parsed) &&
                 parsed >= 0
               ) {
-                setQty(parsed);
+                setQty(Math.min(parsed, maxQty));
               }
             }}
           />
@@ -369,7 +372,7 @@ const BetRow: React.FC<BetRowProps> = ({
 
         {/* ADD BUTTON */}
         <button
-          className={`${styles.addBtn} ${isTriple ? styles.fullAdd : ""}`}
+          className={styles.addBtn}
           onClick={handleAdd}
           disabled={
             isBetDisabled ||

@@ -43,6 +43,125 @@ background: #F3F0FF;
 }
 
 /* =========================================================
+   GAME HISTORY — compact one-line rows
+========================================================= */
+.gameList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Per-row labelled fields (Result Time / Lobby ID / Result) */
+.gameField {
+  display: flex;
+  align-items: baseline;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gameFieldLabel {
+  font-family: var(--font-inter);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-on-surface-variant);
+  flex-shrink: 0;
+  min-width: 62px;
+}
+
+.gameResultCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.gameResultCol .gameFieldLabel {
+  min-width: 0;
+  text-align: right;
+}
+
+.gameRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.gameRowLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.gameTime {
+  font-family: var(--font-montserrat);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  white-space: nowrap;
+}
+
+.gameLobbyId {
+  font-family: var(--font-montserrat), monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: black;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.gameBalls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.gameBall {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at top, #ffe38a, #ffb800);
+  color: #5a3d00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-montserrat);
+  font-weight: 800;
+  font-size: 14px;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    0 2px 6px rgba(255, 184, 0, 0.25);
+}
+
+.gamePending {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-on-surface-variant);
+  flex-shrink: 0;
+}
+
+@media (max-width: 380px) {
+  .gameBall { width: 27px; height: 27px; font-size: 13px; }
+  .gameFieldLabel { min-width: 56px; font-size: 8.5px; }
+}
+
+/* =========================================================
    EMPTY STATE
 ========================================================= */
 .emptyOrder {
@@ -58,6 +177,22 @@ background: #F3F0FF;
   font-size: 14px;
   font-family: var(--font-inter);
   box-shadow: var(--shadow-sm);
+}
+
+/* Note shown when pending bets exist in other (non-selected) lobbies */
+.otherLobbyNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--color-surface-container);
+  border: 1px dashed var(--color-outline-variant);
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-inter);
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 /* =========================================================

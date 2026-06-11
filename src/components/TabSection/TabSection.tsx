@@ -20,6 +20,9 @@ const TabSection: React.FC = () => {
   const [rollbackData, setRollbackData] = useState<BetHistoryItem[]>([]);
 
   const info = useSelector((state: RootState) => state.socketSlice.info);
+  const selectedLobby = useSelector(
+    (state: RootState) => state.socketSlice.selectedLobby
+  );
 
  const fetchGameHistory = async () => {
   try {
@@ -166,15 +169,41 @@ useEffect(() => {
     });
   }, [betData, settlementData, myOrderSubTab]);
 
+  // -------------------------------------------------------------------
+  // OPEN BETS — show LOBBY-WISE (only the currently selected lobby).
+  // Bets are always placed against the selected lobby, so the Open Bets
+  // tab should reflect the lobby tab you are viewing. Pending bets in
+  // other lobbies are still counted so they are never silently hidden.
+  // -------------------------------------------------------------------
+  const openBetsForSelectedLobby = useMemo(() => {
+    if (!selectedLobby) return myOrderData;
+    return myOrderData.filter((b) => b.lobby_id === selectedLobby);
+  }, [myOrderData, selectedLobby]);
+
+  const otherLobbyOpenBetCount = useMemo(() => {
+    if (myOrderSubTab !== "bet" || !selectedLobby) return 0;
+    return myOrderData.filter((b) => b.lobby_id !== selectedLobby).length;
+  }, [myOrderData, selectedLobby, myOrderSubTab]);
+
  const currentData = useMemo(() => {
   if (activeTab === "game") {
     return gameHistoryData;
   }
 
-  if (activeTab === "myorder") return myOrderData;
+  if (activeTab === "myorder") {
+    // Open Bets → scoped to the selected lobby; Settlement → unchanged
+    return myOrderSubTab === "bet" ? openBetsForSelectedLobby : myOrderData;
+  }
 
   return rollbackData;
-}, [activeTab, gameHistoryData, myOrderData, rollbackData]);
+}, [
+  activeTab,
+  gameHistoryData,
+  myOrderData,
+  openBetsForSelectedLobby,
+  myOrderSubTab,
+  rollbackData,
+]);
 
   return (
     <div className={styles.container}>
@@ -228,6 +257,7 @@ useEffect(() => {
         loading={loading}
         activeTab={activeTab}
         myOrderSubTab={activeTab === "myorder" ? myOrderSubTab : undefined}
+        otherLobbyCount={otherLobbyOpenBetCount}
         currentData={currentData as any}
       />
     </div>
