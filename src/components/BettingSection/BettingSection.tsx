@@ -7,10 +7,7 @@ import BetRow from "../BetRow/BetRow";
 import type { BetOption } from "../../types";
 
 const formatINR = (value: number) =>
-  `₹${new Intl.NumberFormat("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value)}`;
+  `₹${new Intl.NumberFormat("en-IN").format(value)}`;
 
 const SectionHeader: React.FC<{
   title: string;

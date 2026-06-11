@@ -115,7 +115,6 @@
 /* RIGHT → STEPPER + ADD BUTTON */
 .actionSection {
   display: flex;
-  /* align-items: center; */
   gap: 6px;
   flex: 0 0 auto;
   margin-left: auto;
@@ -151,8 +150,15 @@
 .stepBtn:hover { background: var(--color-surface-container-high); }
 .stepBtn:active { transform: scale(0.9); background: var(--color-surface-container-highest); }
 
+.stepBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* QTY INPUT — base size; inline style grows width per digit (up to max) */
 .qtyInput {
-  width: 26px;
+  min-width: 26px;
+  max-width: 52px; /* fits 4 digits (e.g. 1000) */
   background: transparent;
   border: none;
   outline: none;
@@ -166,16 +172,22 @@
   -moz-appearance: textfield;
 }
 
+.qtyInput::placeholder {
+  color: var(--color-on-surface-variant);
+  opacity: 0.6;
+}
+
 .qtyInput::-webkit-outer-spin-button,
 .qtyInput::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
-/* ADD BUTTON */
+/* ADD BUTTON — supports two-line content (ADD + amount) */
 .addBtn {
-  height: 27px;
-  min-width: 92px;
-  padding: 0 8px;
+   height: 27px;/* matches stepper height */
+  min-width: 78px;
+  max-width: 110px;
+  padding: 3px 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -191,6 +203,19 @@
   cursor: pointer;
   box-shadow: 0 4px 0 #97b800;
   transition: transform 100ms ease, box-shadow 100ms ease;
+}
+
+.addBtnContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+}
+
+.addAmt {
+  font-size: 10px;
+  font-weight: 700;
+  opacity: 0.9;
 }
 
 .addBtn:active {
@@ -215,26 +240,28 @@
 }
 
 /* small screens — shrink a touch more so triple still fits one line */
-@media (max-width:420px) {
-  .topRowFlexCol{
+@media (max-width: 420px) {
+  .topRowFlexCol {
     flex-direction: column !important;
     align-items: flex-start !important;
   }
 }
+
 @media (max-width: 380px) {
   .card { padding: 8px; gap: 6px; }
   .topRow { gap: 6px; }
   .badge { width: 28px; height: 28px; font-size: 12px; }
   .guessInput { width: 28px; height: 28px; font-size: 14px; }
   .stepBtn { width: 22px; height: 28px; font-size: 15px; }
-  .qtyInput { width: 22px; font-size: 13px; }
-  .addBtn { min-width: 82px; padding: 0 6px; font-size: 11px; }
+  .qtyInput { min-width: 22px; font-size: 13px; }
+  .addBtn { min-width: 70px; max-width: 100px; padding: 3px 6px; font-size: 11px; }
+  .addAmt { font-size: 9px; }
 }
 
 @media (max-width: 340px) {
   .badge { width: 26px; height: 26px; font-size: 11px; }
   .guessInput { width: 26px; height: 26px; font-size: 13px; }
-  .addBtn { min-width: 74px; padding: 0 5px; }
+  .addBtn { min-width: 64px; padding: 3px 5px; }
 }
 
 /* QUICK GUESS (per row) — retained */

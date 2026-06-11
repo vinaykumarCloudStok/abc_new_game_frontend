@@ -44,17 +44,39 @@
 .winPill {
   display: inline-flex;
   align-items: center;
-  padding: 0;
+  gap: 4px;
+
   font-family: var(--font-montserrat);
-  font-weight: 700;
-  font-size: 12.5px;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  color: var(--color-tertiary);
-  background: none;
-  border: none;
-  box-shadow: none;
-  text-shadow: none;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+
+  color: #7b3ff2;
+
+  position: relative;
+
+  text-shadow: 0 1px 1px rgba(123, 63, 242, 0.08);
+}
+
+/* soft accent line */
+.winPill::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+
+  width: 100%;
+  height: 2px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(
+    90deg,
+    rgba(123, 63, 242, 0.1),
+    rgba(123, 63, 242, 0.9),
+    rgba(123, 63, 242, 0.1)
+  );
 }
 
 .sectionPrice {

@@ -94,23 +94,13 @@
 
 /* RESULTED CHIP — clickable (tap to view result) */
 .chipResulted {
-  background: rgba(147, 51, 234, 0.1);
-  color: #7e22ce;
-  border: 1px solid rgba(147, 51, 234, 0.4);
-  cursor: pointer;
-  position: relative;
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+  box-shadow: 0 4px 16px rgba(171, 214, 0, 0.5);
+  cursor: default;
 }
 
-.chipResulted:hover {
-  background: rgba(147, 51, 234, 0.16);
-  box-shadow: 0 4px 14px rgba(147, 51, 234, 0.22);
-}
 
-/* tab currently being viewed in the InfoCard */
-.chipViewing {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-}
 
 /* LOBBY-WISE RESULT VIEW */
 .resultOverlay {

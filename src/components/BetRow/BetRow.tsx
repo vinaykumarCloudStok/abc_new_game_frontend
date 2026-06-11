@@ -5,7 +5,9 @@ import type { BetOption } from "../../types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addBet } from "../../store/slices/betSlipSlice";
+import { showPopup } from "../../store/slices/popupSlice";
 import type { RootState } from "../../store";
+
 interface BetRowProps extends BetOption {
   isTriple?: boolean;
   // Incrementing counter from the section header "Quick Guess" button.
@@ -16,19 +18,19 @@ interface BetRowProps extends BetOption {
 const BetRow: React.FC<BetRowProps> = ({
   label,
   pricePerTicket,
-  digits,isTriple,
+  digits,
+  isTriple,
   cat,
   quickGuessTick,
 }) => {
   const dispatch = useDispatch();
 
-  const [qty, setQty] = useState(0);
+  // qty kept as TEXT so a typed "0" shows in the field
+  // and backspace can fully clear it
+  const [qtyText, setQtyText] = useState("");
+  const qty = qtyText === "" ? 0 : Number(qtyText);
 
   const [inputValue, setInputValue] = useState("");
-
-  // ₹2L cap per row → max tickets allowed for this row's price
-  const MAX_BET_AMOUNT = 200000;
-  const maxQty = Math.max(1, Math.floor(MAX_BET_AMOUNT / pricePerTicket));
 
   // ----------------------------------------------------------------
   // GET BETS
@@ -38,9 +40,9 @@ const BetRow: React.FC<BetRowProps> = ({
   );
 
   // ----------------------------------------------------------------
-  // GET SELECTED LOBBY
+  // GET SELECTED LOBBY + USER INFO (balance)
   // ----------------------------------------------------------------
-  const { lobbies, selectedLobby } = useSelector(
+  const { lobbies, selectedLobby, info } = useSelector(
     (state: RootState) => state.socketSlice
   );
 
@@ -49,6 +51,31 @@ const BetRow: React.FC<BetRowProps> = ({
       (item) => item.lobby_uuid === selectedLobby
     );
   }, [lobbies, selectedLobby]);
+
+  // ----------------------------------------------------------------
+  // MAX BET → limited by ₹2L cap AND user's balance
+  // (info.balance comes from the socket as a STRING e.g. "300.00")
+  // Amount already sitting in the bet slip is subtracted, so the
+  // user can never build a slip bigger than their balance.
+  // ----------------------------------------------------------------
+  const HARD_CAP = 200000;
+
+  const balance = Number(info?.balance) || 0;
+
+  const usedAmount = useMemo(
+    () => bets.reduce((sum, bet) => sum + bet.amt, 0),
+    [bets]
+  );
+
+  const maxBetAmount = Math.min(
+    HARD_CAP,
+    Math.max(0, balance - usedAmount)
+  );
+
+  const maxQty = Math.max(
+    0,
+    Math.floor(maxBetAmount / pricePerTicket)
+  );
 
   // ----------------------------------------------------------------
   // CHIP VALUE
@@ -90,31 +117,59 @@ const BetRow: React.FC<BetRowProps> = ({
   );
 
   // ----------------------------------------------------------------
-  // HANDLE INCREASE
+  // COMMON DISABLE FLAG (stepper + inputs)
   // ----------------------------------------------------------------
-  const handleIncrease = () => {
-    if (
-      isBetDisabled ||
-      alreadyExists ||
-      !hasEnteredNumber
-    )
-      return;
+  const isRowLocked =
+    isBetDisabled || alreadyExists || !hasEnteredNumber;
 
-    setQty((prev) => Math.min(prev + 1, maxQty));
+  // can't afford even 1 ticket
+  const insufficientBalance = maxQty === 0;
+
+  // ----------------------------------------------------------------
+  // TOTAL AMOUNT (formatted Indian style: 2,00,000)
+  // ----------------------------------------------------------------
+  const totalAmount = qty * pricePerTicket;
+  const formattedAmount = totalAmount.toLocaleString("en-IN");
+
+  // ----------------------------------------------------------------
+  // LIMIT REACHED → show popup error
+  // (balance-limited → insufficient balance, else ₹2L cap message)
+  // ----------------------------------------------------------------
+  const showLimitError = () => {
+    const capQty = Math.floor(HARD_CAP / pricePerTicket);
+
+    dispatch(
+      showPopup({
+        type: "error",
+        message:
+          maxQty < capQty
+            ? "Insufficient balance"
+            : `Max bet limit ₹${HARD_CAP.toLocaleString("en-IN")} reached`,
+      })
+    );
   };
 
   // ----------------------------------------------------------------
-  // HANDLE DECREASE
+  // HANDLE INCREASE
+  // ----------------------------------------------------------------
+  const handleIncrease = () => {
+    if (isRowLocked) return;
+
+    if (qty >= maxQty) {
+      showLimitError();
+      return;
+    }
+
+    setQtyText(String(Math.min(qty + 1, maxQty)));
+  };
+
+  // ----------------------------------------------------------------
+  // HANDLE DECREASE (goes down to 0)
   // ----------------------------------------------------------------
   const handleDecrease = () => {
-    if (
-      isBetDisabled ||
-      alreadyExists ||
-      !hasEnteredNumber
-    )
-      return;
+    if (isRowLocked) return;
 
-    setQty((prev) => (prev > 0 ? prev - 1 : 0));
+    setQtyText(qty > 0 ? String(qty - 1) : "0");
   };
 
   // ----------------------------------------------------------------
@@ -128,7 +183,7 @@ const BetRow: React.FC<BetRowProps> = ({
       .join("");
 
     setInputValue(random);
-    setQty(1);
+    setQtyText(maxQty > 0 ? "1" : "0");
   };
 
   // Trigger quick guess when the section header button is pressed
@@ -144,14 +199,15 @@ const BetRow: React.FC<BetRowProps> = ({
   // HANDLE ADD
   // ----------------------------------------------------------------
   const handleAdd = () => {
-    if (
-      isBetDisabled ||
-      alreadyExists ||
-      !hasEnteredNumber
-    )
-      return;
+    if (isRowLocked) return;
 
     if (!qty) return;
+
+    // safety: never allow adding more than balance / cap allows
+    if (qty * pricePerTicket > maxBetAmount) {
+      showLimitError();
+      return;
+    }
 
     dispatch(
       addBet({
@@ -164,7 +220,7 @@ const BetRow: React.FC<BetRowProps> = ({
       })
     );
 
-    setQty(0);
+    setQtyText("");
     setInputValue("");
   };
 
@@ -176,7 +232,7 @@ const BetRow: React.FC<BetRowProps> = ({
         }`}
     >
       {/* TOP */}
-      <div className={`${styles.topRow} ${isTriple?styles.topRowFlexCol:""}`}>
+      <div className={`${styles.topRow} ${isTriple ? styles.topRowFlexCol : ""}`}>
         <div className={`${styles.leftInfo}`}>
           <div className={styles.badgeGroup}>
             {digits.map((digit) => (
@@ -192,7 +248,6 @@ const BetRow: React.FC<BetRowProps> = ({
         </div>
 
         {/* INPUTS */}
-        {/* // inside INPUTS */}
         <div className={styles.guessBox}>
           {digits.map((digit, index) => (
             <input
@@ -238,12 +293,12 @@ const BetRow: React.FC<BetRowProps> = ({
                     updated[i] !== ""
                 );
 
-                if (isComplete && qty === 0) {
-                  setQty(1);
+                if (isComplete && qty === 0 && maxQty > 0) {
+                  setQtyText("1");
                 }
 
                 if (!isComplete) {
-                  setQty(0);
+                  setQtyText("");
                 }
               }}
               onKeyDown={(e) => {
@@ -263,107 +318,69 @@ const BetRow: React.FC<BetRowProps> = ({
               }}
             />
           ))}
-
-          {/* PER-ROW QUICK GUESS */}
-       
         </div>
       </div>
 
       {/* ACTION */}
       <div className={`${styles.actionSection}`}>
         <div className={styles.stepper}>
-          {/* MINUS */}
+          {/* MINUS — clickable till 0 */}
           <button
             className={styles.stepBtn}
             onClick={handleDecrease}
-            disabled={
-              qty <= 1 ||
-              isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber
-            }
+            disabled={qty <= 0 || isRowLocked}
             style={{
-              pointerEvents: isBetDisabled ||
-                alreadyExists ||
-                !hasEnteredNumber ? "none" : "auto",
-              opacity: isBetDisabled ||
-                alreadyExists ||
-                !hasEnteredNumber ? ".5" : ""
+              pointerEvents: isRowLocked ? "none" : "auto",
+              opacity: isRowLocked ? ".5" : "",
             }}
           >
             -
           </button>
 
-          {/* QTY INPUT */}
+          {/* QTY INPUT — text state: typed "0" shows, backspace clears */}
           <input
-            type="number"
-            min={0}
+            type="text"
+            inputMode="numeric"
             className={styles.qtyInput}
-            value={qty}
-            disabled={
-              isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber
-            }
+            value={qtyText}
+            placeholder="0"
+            disabled={isRowLocked}
             style={{
-              opacity: isBetDisabled ||
-                alreadyExists ||
-                !hasEnteredNumber ? ".5" : ""
-            }}
-            onFocus={(e) => {
-              // remove 0 on focus
-              if (qty === 0) {
-                e.target.value = "";
-              }
-            }}
-            onBlur={(e) => {
-              // show 0 again if empty
-              if (e.target.value === "") {
-                setQty(0);
-              }
+              width: `${Math.max(qtyText.length, 1) + 1.5}ch`,
+              opacity: isRowLocked ? ".5" : "",
             }}
             onChange={(e) => {
-              if (
-                isBetDisabled ||
-                alreadyExists ||
-                !hasEnteredNumber
-              )
-                return;
+              if (isRowLocked) return;
 
-              const value = e.target.value;
+              // digits only
+              const raw = e.target.value.replace(/\D/g, "");
 
-              if (value === "") {
-                setQty(0);
+              if (raw === "") {
+                setQtyText("");
                 return;
               }
 
-              const parsed = Number(value);
+              const parsed = Number(raw);
 
-              if (
-                !isNaN(parsed) &&
-                parsed >= 0
-              ) {
-                setQty(Math.min(parsed, maxQty));
+              // clamp to max allowed by balance / ₹2L cap
+              if (parsed > maxQty) {
+                setQtyText(String(maxQty));
+                showLimitError();
+              } else {
+                // normalize leading zeros: "007" → "7", "00" → "0"
+                setQtyText(String(parsed));
               }
             }}
           />
 
-          {/* PLUS */}
+          {/* PLUS — stays clickable at max so the error popup can show */}
           <button
             className={styles.stepBtn}
             onClick={handleIncrease}
-            disabled={
-              isBetDisabled ||
-              alreadyExists ||
-              !hasEnteredNumber
-            }
+            disabled={isRowLocked}
             style={{
-              pointerEvents: isBetDisabled ||
-                alreadyExists ||
-                !hasEnteredNumber ? "none" : "auto",
-              opacity: isBetDisabled ||
-                alreadyExists ||
-                !hasEnteredNumber ? ".5" : ""
+              pointerEvents: isRowLocked ? "none" : "auto",
+              opacity: isRowLocked ? ".5" : "",
             }}
           >
             +
@@ -374,20 +391,22 @@ const BetRow: React.FC<BetRowProps> = ({
         <button
           className={styles.addBtn}
           onClick={handleAdd}
-          disabled={
-            isBetDisabled ||
-            alreadyExists ||
-            !hasEnteredNumber ||
-            qty <= 0
-          }
+          disabled={isRowLocked || qty <= 0 || insufficientBalance}
         >
-          {isBetDisabled
-            ? "BET CLOSED"
-            : alreadyExists
-              ? "ADDED"
-              : qty > 0
-                ? `ADD ₹${qty * pricePerTicket}`
-                : "ADD"}
+          {isBetDisabled ? (
+            "BET CLOSED"
+          ) : alreadyExists ? (
+            "ADDED"
+          ) : insufficientBalance ? (
+            "LOW BALANCE"
+          ) : qty > 0 ? (
+            <span className={styles.addBtnContent}>
+              <span>ADD</span>
+              <span className={styles.addAmt}>₹{formattedAmount}</span>
+            </span>
+          ) : (
+            "ADD"
+          )}
         </button>
       </div>
     </div>

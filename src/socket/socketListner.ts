@@ -123,7 +123,7 @@ export const initSocketListeners = (
         // re-view the drawn number inside the InfoCard.
         setTimeout(() => {
           dispatch(clearLatestResult());
-        }, 12000);
+        }, 20000);
 
         // Keep the just-resulted lobby selected for ~5 minutes so the
         // result stays visible, then advance to the next open lobby

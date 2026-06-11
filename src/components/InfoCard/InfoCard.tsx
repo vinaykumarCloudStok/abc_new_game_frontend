@@ -172,20 +172,6 @@ const InfoCard: React.FC = () => {
               How to play
             </button>
           </div>
-          {/* {resultLobbyId && (
-            <span
-              className={styles.lobbyId}
-              title="Click to copy"
-              onClick={() => copyId(resultLobbyId, "result")}
-            >
-              {copiedKey === "result" ? "Copied!" : resultLobbyId}
-            </span>
-          )} */}
-
-          {showResult && (
-            <span className={styles.resultLabel}>Result</span>
-          )}
-
           <div className={styles.digits}>
             {showResult ? (
               resultBalls.map((digit, index) => (
@@ -209,7 +195,7 @@ const InfoCard: React.FC = () => {
         {showResult ? (
           <div className={styles.rightCol}>
             <span className={styles.timeLabel}>Drawn</span>
-            <span className={styles.resultTime}>
+            <span className={styles.resultTime} style={{textTransform:"uppercase"}}>
               {formatResultTime(selectedLobbyData?.result_at)}
             </span>
           </div>
@@ -247,7 +233,7 @@ const InfoCard: React.FC = () => {
           onClick={() => copyId(bottomLobbyId, "next")}
         >
           <span>Lobby Id:</span>
-          <span>      {copiedKey === "next" ? "Copied!" : bottomLobbyId}</span>
+          <span>      {copiedKey === "next" ? "Copied!" : bottomLobbyId.slice(0,22)}</span>
         </p>
       )}
     </section>

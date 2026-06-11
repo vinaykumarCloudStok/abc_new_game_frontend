@@ -255,7 +255,7 @@ const LobbySelector: React.FC = () => {
                 ${isViewing ? styles.chipViewing : ""}
               `}
             >
-              <span>{formatTime(lobby.result_at)}</span>
+              <span >{formatTime(lobby.result_at)}</span>
 
               {isOpen && <span className={styles.openBadge}>Open</span>}
 
