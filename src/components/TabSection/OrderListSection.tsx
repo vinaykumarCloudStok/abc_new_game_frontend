@@ -266,27 +266,50 @@ const OrderListSection: React.FC<OrderListProp> = ({
                     : "Bets placed"}
                 </div>
 
-                <div className={styles.chipGrid}>
+                <div className={styles.resultTable}>
+                  {/* COLUMN HEADER — keeps every row aligned */}
+                  <div className={styles.resultHead}>
+                    <span>Bet</span>
+                    <span>Status</span>
+                    <span>{isRollback ? "Refund" : "Amount"}</span>
+                  </div>
+
                   {betResults.map((bet: BetResult, i: number) => {
                     const chipParts = parseChip(bet.chip || "");
                     const isWin = bet.status === "win";
                     const isLoss = bet.status === "loss";
                     const betAmt = bet.btAmt ?? bet.amt ?? 0;
 
-                    const tileClass = [
-                      styles.chipTile,
+                    const rowClass = [
+                      styles.resultRow,
                       isRollback
-                        ? styles.chipRefund
+                        ? styles.rowRefund
                         : isWin
-                        ? styles.chipWin
+                        ? styles.rowWin
                         : isLoss
-                        ? styles.chipLoss
-                        : styles.chipNeutral,
+                        ? styles.rowLoss
+                        : styles.rowNeutral,
                     ].join(" ");
 
+                    let statusText = "—";
+                    let statusClass = styles.rtBadgeNeutral;
+                    if (isRollback) {
+                      statusText = "REFUNDED";
+                      statusClass = styles.rtBadgeRefund;
+                    } else if (isPendingBet) {
+                      statusText = "PENDING";
+                      statusClass = styles.rtBadgePending;
+                    } else if (isSettlement) {
+                      statusText = isWin ? "WIN" : "LOSS";
+                      statusClass = isWin
+                        ? styles.rtBadgeWin
+                        : styles.rtBadgeLoss;
+                    }
+
                     return (
-                      <div key={i} className={tileClass}>
-                        <div className={styles.chipBoxes}>
+                      <div key={i} className={rowClass}>
+                        {/* BET — letter/number chips */}
+                        <div className={styles.rtBet}>
                           {chipParts.map((part, pi) => (
                             <React.Fragment key={pi}>
                               {pi > 0 && (
@@ -302,33 +325,21 @@ const OrderListSection: React.FC<OrderListProp> = ({
                           ))}
                         </div>
 
-                        <div className={styles.chipInfo}>
-                          {isSettlement && (
-                            <span
-                              className={`${styles.chipStatus} ${
-                                isWin
-                                  ? styles.chipStatusWin
-                                  : styles.chipStatusLoss
-                              }`}
-                            >
-                              {isWin ? "WIN" : "LOSS"}
-                            </span>
-                          )}
-                          {isRollback && (
-                            <span className={styles.chipStatusRefund}>
-                              REFUNDED
-                            </span>
-                          )}
-                          {isPendingBet && (
-                            <span className={styles.chipStatusPending}>
-                              PENDING
-                            </span>
-                          )}
+                        {/* STATUS */}
+                        <div className={styles.rtStatusCell}>
+                          <span className={`${styles.rtBadge} ${statusClass}`}>
+                            {statusText}
+                          </span>
                         </div>
 
-                        <span className={styles.chipAmt}>
+                        {/* AMOUNT */}
+                        <div
+                          className={`${styles.rtAmt} ${
+                            isWin ? styles.rtAmtWin : ""
+                          } ${isRollback ? styles.rtAmtRefund : ""}`}
+                        >
                           {formatRs(betAmt)}
-                        </span>
+                        </div>
                       </div>
                     );
                   })}

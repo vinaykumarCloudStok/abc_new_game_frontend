@@ -389,36 +389,41 @@ background: #F3F0FF;
 }
 
 /* =========================================================
-   AMOUNT GRID
+   AMOUNT GRID — even, aligned stat cells (2 or 3 up)
 ========================================================= */
 .amountGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  display: flex;
+  gap: 10px;
   margin-bottom: 14px;
 }
 
 .amountCard {
+  flex: 1 1 0;
+  min-width: 0;
   background: var(--color-surface-container);
   border: 1px solid var(--color-outline-variant);
-  border-radius: 16px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 10px 12px;
 }
 
 .amountLabel {
-  font-size: 11px;
+  font-size: 9.5px;
   color: var(--color-on-surface-variant);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 600;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .amountValue {
   font-family: var(--font-montserrat);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--color-on-surface);
+  line-height: 1.1;
 }
 
 .amountWin {
@@ -486,7 +491,7 @@ background: #F3F0FF;
 }
 
 /* =========================================================
-   CHIP SECTION
+   BET RESULTS — section label + aligned table
 ========================================================= */
 .chipSection {
   margin-top: 4px;
@@ -501,154 +506,162 @@ background: #F3F0FF;
   font-weight: 700;
 }
 
-.chipGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.resultTable {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-surface);
 }
 
-/* =========================================================
-   CHIP TILE
-========================================================= */
-.chipTile {
+/* shared column template keeps header + every row perfectly aligned */
+.resultHead,
+.resultRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 76px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+}
+
+.resultHead {
+  background: var(--color-surface-container-high);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.resultHead span {
+  font-family: var(--font-montserrat);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.resultHead span:nth-child(2) { text-align: center; }
+.resultHead span:nth-child(3) { text-align: right; }
+
+.resultRow {
+  border-bottom: 1px solid var(--color-outline-variant);
+  transition: background 140ms ease;
+}
+
+.resultRow:last-child { border-bottom: none; }
+
+/* subtle per-status row tint */
+.rowWin    { background: rgba(22, 163, 74, 0.06); }
+.rowLoss   { background: rgba(239, 68, 68, 0.05); }
+.rowRefund { background: rgba(59, 130, 246, 0.05); }
+.rowNeutral { background: transparent; }
+
+/* BET cell — letter/number chips, wraps gracefully for triple */
+.rtBet {
   display: flex;
   align-items: center;
-  gap: 10px;
-  border-radius: 14px;
-  padding: 10px 12px;
+  gap: 4px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* STATUS cell */
+.rtStatusCell {
+  display: flex;
+  justify-content: center;
+}
+
+.rtBadge {
+  font-family: var(--font-montserrat);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 3px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.rtBadgeWin {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.28);
+}
+
+.rtBadgeLoss {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.26);
+}
+
+.rtBadgeRefund {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.26);
+}
+
+.rtBadgePending {
+  background: rgba(217, 119, 6, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.28);
+}
+
+.rtBadgeNeutral {
+  background: var(--color-surface-container-highest);
+  color: var(--color-on-surface-variant);
   border: 1px solid var(--color-outline-variant);
-  transition: transform 120ms ease;
 }
 
-.chipTile:active {
-  transform: scale(0.98);
+/* AMOUNT cell — right aligned money column */
+.rtAmt {
+  text-align: right;
+  font-family: var(--font-montserrat);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  white-space: nowrap;
 }
 
-.chipNeutral {
-  background: var(--color-surface-container);
-  border-color: var(--color-outline-variant);
-}
-
-.chipWin {
-  background: rgba(22, 163, 74, 0.07);
-  border-color: rgba(22, 163, 74, 0.22);
-}
-
-.chipLoss {
-  background: rgba(239, 68, 68, 0.06);
-  border-color: rgba(239, 68, 68, 0.2);
-}
-
-.chipRefund {
-  background: rgba(59, 130, 246, 0.06);
-  border-color: rgba(59, 130, 246, 0.22);
-}
+.rtAmtWin    { color: #15803d; }
+.rtAmtRefund { color: #2563eb; }
 
 /* =========================================================
    CHIP BOXES — Letter A/B/C + Number side by side
 ========================================================= */
-.chipBoxes {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
-  flex-wrap: wrap;
-}
-
 .chipLetterBox {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
   background: rgba(255, 184, 0, 0.16);
   border: 1px solid rgba(255, 184, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-montserrat);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   color: #b45309;
+  flex-shrink: 0;
 }
 
 .chipNumberBox {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
   background: var(--color-surface-container-highest);
   border: 1px solid var(--color-outline-variant);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-montserrat);
-  font-size: 17px;
-  font-weight: 800;
-  color: var(--color-on-surface);
-}
-
-.chipSep {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-on-surface-variant);
-  margin: 0 2px;
-  font-family: var(--font-montserrat);
-}
-
-/* =========================================================
-   CHIP INFO
-========================================================= */
-.chipInfo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.chipType {
-  font-size: 11px;
-  color: var(--color-on-surface-variant);
-  font-family: var(--font-inter);
-  letter-spacing: 0.04em;
-}
-
-.chipStatus {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
-
-.chipStatusWin {
-  color: #15803d;
-}
-
-.chipStatusLoss {
-  color: #dc2626;
-}
-
-.chipStatusRefund {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #2563eb;
-}
-
-.chipStatusPending {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #b45309;
-}
-
-/* =========================================================
-   CHIP AMOUNT
-========================================================= */
-.chipAmt {
-  font-family: var(--font-montserrat);
   font-size: 15px;
   font-weight: 800;
   color: var(--color-on-surface);
-  white-space: nowrap;
   flex-shrink: 0;
+}
+
+.chipSep {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  margin: 0 1px;
+  font-family: var(--font-montserrat);
 }
 
 /* =========================================================
@@ -690,14 +703,26 @@ background: #F3F0FF;
 
   .chipLetterBox,
   .chipNumberBox {
-    width: 30px;
-    height: 30px;
-    font-size: 15px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
     border-radius: 8px;
   }
 
-  .chipAmt {
-    font-size: 14px;
+  .resultHead,
+  .resultRow {
+    grid-template-columns: minmax(0, 1fr) 58px 68px;
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .rtAmt {
+    font-size: 13px;
+  }
+
+  .rtBadge {
+    font-size: 9px;
+    padding: 3px 5px;
   }
 
   .metaRow {
@@ -754,10 +779,5 @@ background: #F3F0FF;
   .subTabBtn {
     height: 36px;
     font-size: 11px;
-  }
-  .chipTile {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
   }
 }

@@ -23,6 +23,21 @@ const TabSection: React.FC = () => {
   const selectedLobby = useSelector(
     (state: RootState) => state.socketSlice.selectedLobby
   );
+  const lobbies = useSelector(
+    (state: RootState) => state.socketSlice.lobbies
+  );
+
+  // Lobbies that are still accepting bets. Open Bets should only ever show
+  // bets that belong to one of these — once a lobby closes its bets move on.
+  const openLobbyIds = useMemo(
+    () =>
+      new Set(
+        lobbies
+          .filter((l) => l.status === "betting_open")
+          .map((l) => l.lobby_uuid)
+      ),
+    [lobbies]
+  );
 
  const fetchGameHistory = async () => {
   try {
@@ -176,14 +191,23 @@ useEffect(() => {
   // other lobbies are still counted so they are never silently hidden.
   // -------------------------------------------------------------------
   const openBetsForSelectedLobby = useMemo(() => {
-    if (!selectedLobby) return myOrderData;
-    return myOrderData.filter((b) => b.lobby_id === selectedLobby);
-  }, [myOrderData, selectedLobby]);
+    // Only bets in lobbies that are still OPEN qualify as "open bets".
+    const stillOpen = myOrderData.filter(
+      (b) => b.lobby_id && openLobbyIds.has(b.lobby_id)
+    );
+    if (!selectedLobby) return stillOpen;
+    return stillOpen.filter((b) => b.lobby_id === selectedLobby);
+  }, [myOrderData, selectedLobby, openLobbyIds]);
 
   const otherLobbyOpenBetCount = useMemo(() => {
-    if (myOrderSubTab !== "bet" || !selectedLobby) return 0;
-    return myOrderData.filter((b) => b.lobby_id !== selectedLobby).length;
-  }, [myOrderData, selectedLobby, myOrderSubTab]);
+    if (myOrderSubTab !== "bet") return 0;
+    return myOrderData.filter(
+      (b) =>
+        b.lobby_id &&
+        b.lobby_id !== selectedLobby &&
+        openLobbyIds.has(b.lobby_id)
+    ).length;
+  }, [myOrderData, selectedLobby, myOrderSubTab, openLobbyIds]);
 
  const currentData = useMemo(() => {
   if (activeTab === "game") {

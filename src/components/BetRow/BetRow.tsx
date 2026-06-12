@@ -226,13 +226,12 @@ const BetRow: React.FC<BetRowProps> = ({
 
   return (
     <div
-      className={`${styles.card}
-
-       ${isBetDisabled ? styles.disabledCard : ""
-        }`}
+      className={`${styles.card} ${isTriple ? styles.tripleCard : ""} ${
+        isBetDisabled ? styles.disabledCard : ""
+      }`}
     >
       {/* TOP */}
-      <div className={`${styles.topRow} ${isTriple ? styles.topRowFlexCol : ""}`}>
+      <div className={styles.topRow}>
         <div className={`${styles.leftInfo}`}>
           <div className={styles.badgeGroup}>
             {digits.map((digit) => (
@@ -394,7 +393,7 @@ const BetRow: React.FC<BetRowProps> = ({
           disabled={isRowLocked || qty <= 0 || insufficientBalance}
         >
           {isBetDisabled ? (
-            "BET CLOSED"
+            "ADD"
           ) : alreadyExists ? (
             "ADDED"
           ) : insufficientBalance ? (

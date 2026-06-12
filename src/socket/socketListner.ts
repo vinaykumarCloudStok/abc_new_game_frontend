@@ -92,6 +92,15 @@ export const initSocketListeners = (
       case "lobby_updated":
         dispatch(updateLobby(data));
 
+        // A lobby moving OUT of the open state (closed / resulted / cancelled)
+        // means its pending bets are no longer "open". Refresh the bet history
+        // so the Open Bets tab immediately drops them.
+        if (
+          ["bet_closed", "resulted", "cancelled"].includes(data.status)
+        ) {
+          window.dispatchEvent(new Event("refreshBetHistory"));
+        }
+
         // SHOW ROLLBACK POPUP
         if (data.status === "cancelled") {
           dispatch(
