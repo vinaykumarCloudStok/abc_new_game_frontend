@@ -51,6 +51,7 @@
   color: var(--color-on-surface-variant);
   display: flex;
   align-items: center;
+  font-size: 22px;
   padding: 4px;
   border-radius: var(--radius-full);
   transition: background 150ms, color 150ms;

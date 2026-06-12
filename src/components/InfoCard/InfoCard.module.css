@@ -278,14 +278,13 @@
 
 /* ---------------- RESPONSIVE ---------------- */
 
-/* On narrow widths the result balls + an HH:MM:SS timer cannot sit
-   side-by-side, so stack the timer into its own full-width row below
-   the balls. This guarantees the countdown never overlaps the balls. */
+/* Keep the laptop layout on small screens too: result balls on the left
+   and the Next Draw timer on the right, side by side. The grid is allowed
+   to wrap only as a last resort on extremely narrow widths. */
 @media (max-width: 480px) {
   .grid {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
+    align-items: center;
+    gap: 12px;
   }
 
   .digits {
@@ -293,14 +292,8 @@
   }
 
   .rightCol {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 100%;
-    gap: 10px;
-    padding-top: 12px;
-    border-top: 1px solid var(--color-outline-variant);
+    align-items: flex-end;
+    max-width: 52%;
   }
 
   .timeLabel {
@@ -323,12 +316,12 @@
     padding: 10px;
     border-radius: var(--radius-lg, 12px);
   }
-  .rightCol { padding-top: 10px; }
+  .grid { gap: 8px; }
   .timeLabel { font-size: 12px; }
   .digits { gap: 6px; }
-  .digitBall { width: 38px; height: 38px; font-size: 17px; }
-  .flipDigit { min-width: 22px; height: 30px; font-size: 16px; }
-  .colon { font-size: 15px; }
+  .digitBall { width: 36px; height: 36px; font-size: 16px; }
+  .flipDigit { min-width: 18px; height: 28px; font-size: 15px; padding: 0 2px; }
+  .colon { font-size: 14px; }
   .nextLobbyId { font-size: 11px; }
   .title { font-size: 12px; }
   .howBtn { padding: 4px 8px; }

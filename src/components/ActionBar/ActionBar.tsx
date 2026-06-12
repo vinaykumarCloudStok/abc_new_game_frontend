@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ActionBar.module.css";
+import { MdClose, MdDelete, MdShoppingCart } from "react-icons/md";
 
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store";
@@ -157,7 +158,7 @@ const MAX_BET_AMOUNT = 200000; // ₹2L cap
                 onClick={() => setShowBets(false)}
                 aria-label="Close"
               >
-                <span className="material-symbols-outlined">close</span>
+                <MdClose />
               </button>
             </div>
           </div>
@@ -203,9 +204,7 @@ const MAX_BET_AMOUNT = 200000; // ₹2L cap
                       aria-label="Delete bet"
                       title="Remove this bet"
                     >
-                      <span className="material-symbols-outlined">
-                        delete
-                      </span>
+                      <MdDelete />
                     </button>
                   </div>
                 </div>
@@ -226,11 +225,7 @@ const MAX_BET_AMOUNT = 200000; // ₹2L cap
           onClick={() => setShowBets((prev) => !prev)}
         >
           <div className={styles.cartIconWrapper}>
-            <span
-              className={`material-symbols-outlined ${styles.cartIcon}`}
-            >
-              shopping_cart
-            </span>
+            <MdShoppingCart className={styles.cartIcon} />
 
             {totalBets > 0 && (
               <div className={styles.badge}>{totalBets}</div>

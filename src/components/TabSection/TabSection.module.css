@@ -1,6 +1,6 @@
 .container{
 background: #F3F0FF;
-  padding: 10px;
+  padding: 6px;
   border: 1px solid #E4D9FF;
   border-radius: 10px;
 }
@@ -17,7 +17,7 @@ background: #F3F0FF;
 
 .tabBtn {
   flex: 1;
-  height: 40px;
+  height: 34px;
   border: 1px solid var(--color-outline-variant);
   border-radius: 14px;
   background: var(--color-surface);
@@ -130,6 +130,21 @@ background: #F3F0FF;
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
+}
+
+.gameBallGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.gameBallLabel {
+  font-family: var(--font-montserrat);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #b8800a;
 }
 
 .gameBall {
@@ -267,9 +282,10 @@ background: #F3F0FF;
    META ROW — Lobby ID + Time with labels
 ========================================================= */
 .metaRow {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
   margin-top: 10px;
   padding: 10px 12px;
   background: var(--color-surface-container);
@@ -280,10 +296,19 @@ background: #F3F0FF;
 .metaItem {
   display: flex;
   flex-direction: column;
-  gap: 3px;
   min-width: 0;
 }
-
+.metaItemflex{
+   display: flex;
+  flex-direction: column;
+gap: 4px;
+}
+.metaItemnew{
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  width: 100%;
+}
 .metaItem:last-child {
   align-items: flex-end;
   text-align: right;
@@ -337,17 +362,18 @@ background: #F3F0FF;
   font-weight: 600;
 }
 
-.refundBanner .material-symbols-outlined {
+.refundIcon {
   font-size: 18px;
+  flex-shrink: 0;
 }
 
 /* =========================================================
    STATUS BADGES
 ========================================================= */
 .statusWin {
-  background: rgba(22, 163, 74, 0.12);
-  color: #15803d;
-  border: 1px solid rgba(22, 163, 74, 0.28);
+  background: rgba(255, 184, 0, 0.16);
+  color: #b8800a;
+  border: 1px solid rgba(255, 184, 0, 0.45);
   font-size: 11px;
   font-weight: 700;
   padding: 3px 10px;
@@ -393,12 +419,13 @@ background: #F3F0FF;
 ========================================================= */
 .amountGrid {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 14px;
 }
 
 .amountCard {
-  flex: 1 1 0;
+  flex: 1 1 92px;
   min-width: 0;
   background: var(--color-surface-container);
   border: 1px solid var(--color-outline-variant);
@@ -427,7 +454,7 @@ background: #F3F0FF;
 }
 
 .amountWin {
-  color: #15803d;
+  color: #c8920a;
 }
 
 .amountRefund {
@@ -548,7 +575,7 @@ background: #F3F0FF;
 .resultRow:last-child { border-bottom: none; }
 
 /* subtle per-status row tint */
-.rowWin    { background: rgba(22, 163, 74, 0.06); }
+.rowWin    { background: rgba(255, 184, 0, 0.08); }
 .rowLoss   { background: rgba(239, 68, 68, 0.05); }
 .rowRefund { background: rgba(59, 130, 246, 0.05); }
 .rowNeutral { background: transparent; }
@@ -579,9 +606,9 @@ background: #F3F0FF;
 }
 
 .rtBadgeWin {
-  background: rgba(22, 163, 74, 0.12);
-  color: #15803d;
-  border: 1px solid rgba(22, 163, 74, 0.28);
+  background: rgba(255, 184, 0, 0.16);
+  color: #b8800a;
+  border: 1px solid rgba(255, 184, 0, 0.45);
 }
 
 .rtBadgeLoss {
@@ -618,7 +645,7 @@ background: #F3F0FF;
   white-space: nowrap;
 }
 
-.rtAmtWin    { color: #15803d; }
+.rtAmtWin    { color: #c8920a; }
 .rtAmtRefund { color: #2563eb; }
 
 /* =========================================================
@@ -664,6 +691,16 @@ background: #F3F0FF;
   font-family: var(--font-montserrat);
 }
 
+/* per-bet ticket quantity pill (e.g. ×5) shown next to the chips */
+.qtyTag {
+   text-align: center;
+  font-family: var(--font-montserrat);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  white-space: nowrap;
+}
+
 /* =========================================================
    ANIMATIONS
 ========================================================= */
@@ -678,7 +715,6 @@ background: #F3F0FF;
 @media (max-width: 480px) {
   .tabBtn {
     font-size: 12px;
-    height: 42px;
   }
 
   .orderItem {
@@ -725,12 +761,6 @@ background: #F3F0FF;
     padding: 3px 5px;
   }
 
-  .metaRow {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 9px 10px;
-  }
-
   .metaItem:last-child {
     align-items: flex-start;
     text-align: left;
@@ -738,6 +768,74 @@ background: #F3F0FF;
 
   .metaValue {
     font-size: 11px;
+  }
+}
+
+/* =========================================================
+   EXTRA-SMALL SCREENS — keep Settlement readable & aligned
+========================================================= */
+@media (max-width: 360px) {
+  /* amount cards: allow labels to wrap fully instead of truncating */
+  .amountLabel {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .amountValue {
+    font-size: 16px;
+  }
+
+  .amountCard {
+    flex: 1 1 84px;
+    padding: 9px 10px;
+  }
+
+  /* result balls shrink a touch */
+  .ball,
+  .ballSum {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  /* settlement table: tighter columns + smaller chips so nothing clips */
+  .resultHead,
+  .resultRow {
+    grid-template-columns: minmax(0, 1fr) 50px 60px;
+    gap: 5px;
+    padding: 8px 8px;
+  }
+
+  .chipLetterBox,
+  .chipNumberBox {
+    width: 25px;
+    height: 25px;
+    font-size: 13px;
+    border-radius: 7px;
+  }
+
+  .rtBet {
+    gap: 3px;
+  }
+
+  .rtBadge {
+    font-size: 8.5px;
+    padding: 2px 4px;
+  }
+
+  .qtyTag {
+   font-size: 12px;
+  }
+
+  .rtAmt {
+    font-size: 12px;
+  }
+
+  .resultHead span {
+    font-size: 8px;
   }
 }
 
@@ -777,7 +875,6 @@ background: #F3F0FF;
 
 @media (max-width: 480px) {
   .subTabBtn {
-    height: 36px;
     font-size: 11px;
   }
 }

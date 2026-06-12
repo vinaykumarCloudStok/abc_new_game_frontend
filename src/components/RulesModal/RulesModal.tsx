@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './RulesModal.module.css';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { toggleRulesModal } from '../../store/slices/socketSlice';
+import { MdClose } from 'react-icons/md';
 
 
 const RulesModal: React.FC = () => {
@@ -21,7 +22,7 @@ const RulesModal: React.FC = () => {
             onClick={() => dispatch(toggleRulesModal())}
             aria-label="Close modal"
           >
-            <span className="material-symbols-outlined">close</span>
+            <MdClose />
           </button>
         </div>
 
@@ -38,8 +39,13 @@ const RulesModal: React.FC = () => {
             <span className={styles.ruleKey}>Triple Digit:</span> Predict all three digits
             (ABC). Win <strong>10000 per ticket</strong>.
           </p>
+          <p>
+            <span className={styles.ruleKey}>Maximum Bet:</span> The highest amount you can
+            place on a single draw is <strong>₹2,00,000</strong>.
+          </p>
           <p className={styles.divider}>
-            Draws happen every hour. Bets close 5 minutes before the draw.
+            Draws happen every hour. <strong>Betting closes 5 minutes before the draw</strong>,
+            so place your bets before the cut-off time.
           </p>
         </div>
 

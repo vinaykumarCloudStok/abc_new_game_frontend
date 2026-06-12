@@ -12,6 +12,7 @@ import { getQueryParams } from '../../utils/helper'
 
 import { initSocketListeners } from '../../socket/socketListner'
 import CommonPopup from '../modal/CommonPopup'
+import BetsClosedModal from '../modal/BetsClosedModal'
 import LoaderSocket from '../Loader/LoaderSocket'
 const mainStyle: React.CSSProperties = {
   marginTop: '80px',
@@ -38,6 +39,7 @@ const HomeLayout = () => {
     <>
 
       <RulesModal />
+      <BetsClosedModal />
       <Header />
 
       <main style={mainStyle}>

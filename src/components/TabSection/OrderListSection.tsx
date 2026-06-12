@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
 import {
   formatDate,
   parseChip,
@@ -9,6 +11,7 @@ import {
   type TabType,
 } from "../../types";
 import styles from "./TabSection.module.css";
+import { MdUndo } from "react-icons/md";
 
 interface OrderListProp {
   loading: boolean;
@@ -26,6 +29,26 @@ const rsFormatter = new Intl.NumberFormat("en-IN", {
 const formatRs = (val: number | string | undefined | null) =>
   `₹${rsFormatter.format(Number(val ?? 0))}`;
 
+/* ---------------------------------------------------------------
+   TICKET QUANTITY HELPERS
+   A placed bet is stored as a single row with the TOTAL amount
+   (qty * pricePerTicket). The number of digits in the chip tells us
+   the category (single / double / triple) and therefore the per-ticket
+   price, so quantity = totalAmount / pricePerTicket.
+--------------------------------------------------------------- */
+const ticketPriceFor = (parts: number, isAgent: boolean) => {
+  if (parts >= 3) return isAgent ? 20 : 25; // triple
+  if (parts === 2) return isAgent ? 12 : 15; // double
+  return isAgent ? 10 : 12; // single
+};
+
+const qtyOf = (bet: BetResult, isAgent: boolean) => {
+  const parts = parseChip(bet.chip || "").length || 1;
+  const amt = Number(bet.btAmt ?? bet.amt ?? 0);
+  const price = ticketPriceFor(parts, isAgent);
+  return price > 0 ? Math.max(1, Math.round(amt / price)) : 1;
+};
+
 const OrderListSection: React.FC<OrderListProp> = ({
   loading,
   currentData,
@@ -33,6 +56,9 @@ const OrderListSection: React.FC<OrderListProp> = ({
   myOrderSubTab,
   otherLobbyCount = 0,
 }) => {
+  const isAgent = useSelector(
+    (s: RootState) => Number(s.socketSlice.info?.isAgent) === 1
+  );
   const isOpenBetsTab = activeTab === "myorder" && myOrderSubTab === "bet";
 
   if (loading) {
@@ -95,9 +121,12 @@ const OrderListSection: React.FC<OrderListProp> = ({
                 {result ? (
                   <div className={styles.gameBalls}>
                     {(["a", "b", "c"] as const).map((key) => (
-                      <span key={key} className={styles.gameBall}>
-                        {result[key]}
-                      </span>
+                      <div key={key} className={styles.gameBallGroup}>
+                        <span className={styles.gameBallLabel}>
+                          {key.toUpperCase()}
+                        </span>
+                        <span className={styles.gameBall}>{result[key]}</span>
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -128,7 +157,9 @@ const OrderListSection: React.FC<OrderListProp> = ({
           ? safeParse(item.bet_results)
           : safeParse(item.userBets || item.bets);
 
-        const totalBetsCount = betResults?.length || 0;
+        const totalQty =
+          betResults?.reduce((sum, b) => sum + qtyOf(b, isAgent), 0) || 0;
+
         const isOverallWin = isSettlement && Number(item.win_amount) > 0;
 
         let statusLabel = "";
@@ -150,15 +181,14 @@ const OrderListSection: React.FC<OrderListProp> = ({
         const headingLabel = isRollback
           ? "ROLLBACK"
           : isSettlement
-          ? "SETTLEMENT"
-          : "BET PLACED";
+            ? "SETTLEMENT"
+            : "BET PLACED";
 
         return (
           <div
             key={item.id || item.settlement_id || item.lobby_id}
-            className={`${styles.orderItem} ${
-              isRollback ? styles.orderItemRollback : ""
-            }`}
+            className={`${styles.orderItem} ${isRollback ? styles.orderItemRollback : ""
+              }`}
           >
             <div className={styles.orderHeader}>
               <div className={styles.orderTopRow}>
@@ -167,32 +197,43 @@ const OrderListSection: React.FC<OrderListProp> = ({
               </div>
 
               <div className={styles.metaRow}>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>
-                    Result Time
-                  </span>
-                  <span className={styles.metaValue}>
-                    {formatDate(
-                      isPendingBet ? item.result_at : item.created_at
-                    )}
-                  </span>
+                <div className={`${styles.metaItemflex} ${isPendingBet ? styles.metaItemnew : ""}`}>
+                  <div className={`${styles.metaItem}`}>
+                    <span className={styles.metaLabel}>
+                      Result Time
+                    </span>
+                    <span className={styles.metaValue}>
+                      {formatDate(
+                        isPendingBet ? item.result_at : item.created_at
+                      )}
+                    </span>
+                  </div>
+                  <div className={styles.metaItem}>
+                    <span className={styles.metaLabel}>Lobby ID</span>
+                    <span className={styles.metaValue}>{item.lobby_id.slice(0, 12)}</span>
+                  </div>
                 </div>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Lobby ID</span>
-                  <span className={styles.metaValue}>{item.lobby_id}</span>
-                </div>
+                {result && result.a !== undefined && (
+                  <div className={styles.resultBalls}>
+                    {(["a", "b", "c"] as const).map((key) => (
+                      <div key={key} className={styles.ballGroup}>
+                        <span className={styles.ballLabel}>{key.toUpperCase()}</span>
+                        <span className={styles.ball}>{result[key]}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             {/* ROLLBACK refund summary banner */}
             {isRollback && (
               <div className={styles.refundBanner}>
-                <span className="material-symbols-outlined">undo</span>
+                <MdUndo className={styles.refundIcon} />
                 <span>
-                  {totalBetsCount > 0
-                    ? `${totalBetsCount} ticket${
-                        totalBetsCount > 1 ? "s" : ""
-                      } refunded to your wallet`
+                  {totalQty > 0
+                    ? `${totalQty} ticket${totalQty > 1 ? "s" : ""
+                    } refunded to your wallet`
                     : "Amount refunded to your wallet"}
                 </span>
               </div>
@@ -209,8 +250,8 @@ const OrderListSection: React.FC<OrderListProp> = ({
               {/* Settlement → Total Tickets */}
               {isSettlement && (
                 <div className={styles.amountCard}>
-                  <div className={styles.amountLabel}>Total Tickets</div>
-                  <div className={styles.amountValue}>{totalBetsCount}</div>
+                  <div className={styles.amountLabel}>Total Bets</div>
+                  <div className={styles.amountValue}>{totalQty}</div>
                 </div>
               )}
 
@@ -218,7 +259,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
               {isRollback && (
                 <div className={styles.amountCard}>
                   <div className={styles.amountLabel}>Refunded Tickets</div>
-                  <div className={styles.amountValue}>{totalBetsCount}</div>
+                  <div className={styles.amountValue}>{totalQty}</div>
                 </div>
               )}
 
@@ -227,34 +268,24 @@ const OrderListSection: React.FC<OrderListProp> = ({
                   {isRollback
                     ? "Refund Amount"
                     : isSettlement
-                    ? "Win Amount"
-                    : "Total Tickets"}
+                      ? "Win Amount"
+                      : "Total Tickets"}
                 </div>
 
                 <div
-                  className={`${styles.amountValue} ${
-                    isOverallWin ? styles.amountWin : ""
-                  } ${isRollback ? styles.amountRefund : ""}`}
+                  className={`${styles.amountValue} ${isOverallWin ? styles.amountWin : ""
+                    } ${isRollback ? styles.amountRefund : ""}`}
                 >
                   {isRollback
                     ? formatRs(item.refund_amount || 0)
                     : isSettlement
-                    ? formatRs(item.win_amount || 0)
-                    : totalBetsCount}
+                      ? formatRs(item.win_amount || 0)
+                      : totalQty}
                 </div>
               </div>
             </div>
 
-            {result && result.a !== undefined && (
-              <div className={styles.resultBalls}>
-                {(["a", "b", "c"] as const).map((key) => (
-                  <div key={key} className={styles.ballGroup}>
-                    <span className={styles.ballLabel}>{key.toUpperCase()}</span>
-                    <span className={styles.ball}>{result[key]}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+
 
             {betResults?.length > 0 && (
               <div className={styles.chipSection}>
@@ -262,15 +293,17 @@ const OrderListSection: React.FC<OrderListProp> = ({
                   {isRollback
                     ? "Refunded bets"
                     : isSettlement
-                    ? "Bet results"
-                    : "Bets placed"}
+                      ? "Bet results"
+                      : "Bets placed"}
                 </div>
 
                 <div className={styles.resultTable}>
                   {/* COLUMN HEADER — keeps every row aligned */}
                   <div className={styles.resultHead}>
                     <span>Bet</span>
-                    <span>Status</span>
+                    {
+                      isPendingBet ? <span>Qty</span> : <span>Status</span>
+                    }
                     <span>{isRollback ? "Refund" : "Amount"}</span>
                   </div>
 
@@ -279,16 +312,17 @@ const OrderListSection: React.FC<OrderListProp> = ({
                     const isWin = bet.status === "win";
                     const isLoss = bet.status === "loss";
                     const betAmt = bet.btAmt ?? bet.amt ?? 0;
+                    const rowQty = qtyOf(bet, isAgent);
 
                     const rowClass = [
                       styles.resultRow,
                       isRollback
                         ? styles.rowRefund
                         : isWin
-                        ? styles.rowWin
-                        : isLoss
-                        ? styles.rowLoss
-                        : styles.rowNeutral,
+                          ? styles.rowWin
+                          : isLoss
+                            ? styles.rowLoss
+                            : styles.rowNeutral,
                     ].join(" ");
 
                     let statusText = "—";
@@ -323,20 +357,22 @@ const OrderListSection: React.FC<OrderListProp> = ({
                               </div>
                             </React.Fragment>
                           ))}
+
                         </div>
 
                         {/* STATUS */}
-                        <div className={styles.rtStatusCell}>
-                          <span className={`${styles.rtBadge} ${statusClass}`}>
-                            {statusText}
-                          </span>
-                        </div>
+                        {
+                          isPendingBet ? <span className={styles.qtyTag}>×{rowQty}</span> : <div className={styles.rtStatusCell}>
+                            <span className={`${styles.rtBadge} ${statusClass}`}>
+                              {statusText}
+                            </span>
+                          </div>
+                        }
 
                         {/* AMOUNT */}
                         <div
-                          className={`${styles.rtAmt} ${
-                            isWin ? styles.rtAmtWin : ""
-                          } ${isRollback ? styles.rtAmtRefund : ""}`}
+                          className={`${styles.rtAmt} ${isWin ? styles.rtAmtWin : ""
+                            } ${isRollback ? styles.rtAmtRefund : ""}`}
                         >
                           {formatRs(betAmt)}
                         </div>

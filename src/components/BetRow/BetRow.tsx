@@ -164,12 +164,21 @@ const BetRow: React.FC<BetRowProps> = ({
   };
 
   // ----------------------------------------------------------------
-  // HANDLE DECREASE (goes down to 0)
+  // HANDLE DECREASE (goes down to 0). When it reaches 0 we also clear
+  // the typed digit(s) so the row fully resets instead of leaving a
+  // number behind with 0 quantity.
   // ----------------------------------------------------------------
   const handleDecrease = () => {
     if (isRowLocked) return;
 
-    setQtyText(qty > 0 ? String(qty - 1) : "0");
+    const next = qty > 0 ? qty - 1 : 0;
+
+    if (next === 0) {
+      setQtyText("");
+      setInputValue("");
+    } else {
+      setQtyText(String(next));
+    }
   };
 
   // ----------------------------------------------------------------

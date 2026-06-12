@@ -2,7 +2,6 @@
 
 .card {
   background: var(--color-surface);
-  border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-xl);
   padding: 10px;
   display: flex;
@@ -325,14 +324,7 @@
   .addAmt { font-size: 9px; }
 }
 
-@media (max-width: 340px) {
-  .badge { width: 26px; height: 26px; font-size: 11px; }
-  .guessInput { width: 26px; height: 26px; font-size: 13px; }
-  .stepper{
-    height: 26px;
-  }
-  .addBtn { min-width: 64px; padding: 0;height: 22px; }
-}
+
 
 /* QUICK GUESS (per row) — retained */
 .quickGuessBtn {
@@ -366,4 +358,13 @@
   opacity: 0.4;
   cursor: not-allowed;
   box-shadow: none;
+}
+@media (max-width: 340px) {
+  .badge { width: 26px; height: 26px; font-size: 11px; }
+  .guessInput { width: 26px; height: 26px; font-size: 13px; }
+  .stepper{
+    height: 26px;
+  }
+  .addBtn { min-width: 64px; padding: 0;height: 22px; }
+  
 }

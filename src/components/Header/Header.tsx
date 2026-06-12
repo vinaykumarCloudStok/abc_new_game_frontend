@@ -3,6 +3,7 @@ import styles from './Header.module.css';
 import { useAppSelector } from '../../hooks/redux';
 import logo from '../../assets/logo.png';
 import { formatBalance } from '../../utils/helper';
+import { MdPerson, MdAccountBalanceWallet, MdChevronRight } from 'react-icons/md';
 
 const Header: React.FC = () => {
   const info = useAppSelector((s) => s.socketSlice.info);
@@ -24,9 +25,7 @@ const Header: React.FC = () => {
       <div className={styles.right}>
         {/* User ID pill — display only */}
         <div className={styles.userPill}>
-          <span className={`material-symbols-outlined ${styles.userIcon}`}>
-            person
-          </span>
+          <MdPerson className={styles.userIcon} />
           <span className={styles.userId}>{info.user_id}</span>
         </div>
 
@@ -37,15 +36,11 @@ const Header: React.FC = () => {
           onClick={handleWalletClick}
           aria-label="Go to wallet"
         >
-          <span className={`material-symbols-outlined ${styles.walletIcon}`}>
-            account_balance_wallet
-          </span>
+          <MdAccountBalanceWallet className={styles.walletIcon} />
           <span className={styles.walletAmount}>
             {formatBalance(Number(info.balance))}
           </span>
-          <span className={`material-symbols-outlined ${styles.chevron}`}>
-            chevron_right
-          </span>
+          <MdChevronRight className={styles.chevron} />
         </button>
       </div>
     </header>
