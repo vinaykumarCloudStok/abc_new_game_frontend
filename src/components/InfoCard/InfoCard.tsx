@@ -233,7 +233,7 @@ const InfoCard: React.FC = () => {
           onClick={() => copyId(bottomLobbyId, "next")}
         >
           <span>Lobby Id:</span>
-          <span>      {copiedKey === "next" ? "Copied!" : bottomLobbyId.slice(0,22)}</span>
+          <span>      {copiedKey === "next" ? "Copied!" : bottomLobbyId}</span>
         </p>
       )}
     </section>
