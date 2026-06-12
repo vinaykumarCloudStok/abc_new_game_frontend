@@ -148,6 +148,13 @@ const OrderListSection: React.FC<OrderListProp> = ({
   const isSettlement = activeTab === "myorder" && myOrderSubTab === "settlement";
   const isPendingBet = activeTab === "myorder" && myOrderSubTab === "bet";
 
+  // Which optional columns the results table renders.
+  //   Open Bets   -> Bet | Qty | Amount
+  //   Settlement  -> Bet | Qty | Status | Amount
+  //   Rollback    -> Bet | Status | Refund
+  const showQtyCol = isPendingBet || isSettlement;
+  const showStatusCol = !isPendingBet; // settlement + rollback
+
   return (
     <div className={styles.orderList}>
       {bets.map((item) => {
@@ -196,7 +203,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
                 <span className={statusClass}>{statusLabel}</span>
               </div>
 
-              <div className={styles.metaRow}>
+                <div className={styles.metaRow}>
                 <div className={`${styles.metaItemflex} ${isPendingBet ? styles.metaItemnew : ""}`}>
                   <div className={`${styles.metaItem}`}>
                     <span className={styles.metaLabel}>
@@ -247,7 +254,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
                 </div>
               </div>
 
-              {/* Settlement → Total Tickets */}
+              {/* Settlement -> Total Bets */}
               {isSettlement && (
                 <div className={styles.amountCard}>
                   <div className={styles.amountLabel}>Total Bets</div>
@@ -255,7 +262,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
                 </div>
               )}
 
-              {/* Rollback → Refunded Tickets count */}
+              {/* Rollback -> Refunded Tickets count */}
               {isRollback && (
                 <div className={styles.amountCard}>
                   <div className={styles.amountLabel}>Refunded Tickets</div>
@@ -298,12 +305,14 @@ const OrderListSection: React.FC<OrderListProp> = ({
                 </div>
 
                 <div className={styles.resultTable}>
-                  {/* COLUMN HEADER — keeps every row aligned */}
-                  <div className={styles.resultHead}>
+                  {/* COLUMN HEADER -- keeps every row aligned */}
+                  <div
+                    className={`${styles.resultHead} ${isSettlement ? styles.settlementGrid : ""
+                      }`}
+                  >
                     <span>Bet</span>
-                    {
-                      isPendingBet ? <span>Qty</span> : <span>Status</span>
-                    }
+                    {showQtyCol && <span>Qty</span>}
+                    {showStatusCol && <span>Status</span>}
                     <span>{isRollback ? "Refund" : "Amount"}</span>
                   </div>
 
@@ -316,6 +325,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
 
                     const rowClass = [
                       styles.resultRow,
+                      isSettlement ? styles.settlementGrid : "",
                       isRollback
                         ? styles.rowRefund
                         : isWin
@@ -330,9 +340,6 @@ const OrderListSection: React.FC<OrderListProp> = ({
                     if (isRollback) {
                       statusText = "REFUNDED";
                       statusClass = styles.rtBadgeRefund;
-                    } else if (isPendingBet) {
-                      statusText = "PENDING";
-                      statusClass = styles.rtBadgePending;
                     } else if (isSettlement) {
                       statusText = isWin ? "WIN" : "LOSS";
                       statusClass = isWin
@@ -342,7 +349,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
 
                     return (
                       <div key={i} className={rowClass}>
-                        {/* BET — letter/number chips */}
+                        {/* BET -- letter/number chips */}
                         <div className={styles.rtBet}>
                           {chipParts.map((part, pi) => (
                             <React.Fragment key={pi}>
@@ -357,17 +364,23 @@ const OrderListSection: React.FC<OrderListProp> = ({
                               </div>
                             </React.Fragment>
                           ))}
-
                         </div>
 
-                        {/* STATUS */}
-                        {
-                          isPendingBet ? <span className={styles.qtyTag}>×{rowQty}</span> : <div className={styles.rtStatusCell}>
+                        {/* QTY -- open bets + settlement */}
+                        {showQtyCol && (
+                          <div className={styles.rtQtyCell}>
+                            <span className={styles.qtyTag}>×{rowQty}</span>
+                          </div>
+                        )}
+
+                        {/* STATUS -- settlement + rollback */}
+                        {showStatusCol && (
+                          <div className={styles.rtStatusCell}>
                             <span className={`${styles.rtBadge} ${statusClass}`}>
                               {statusText}
                             </span>
                           </div>
-                        }
+                        )}
 
                         {/* AMOUNT */}
                         <div

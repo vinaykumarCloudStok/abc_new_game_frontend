@@ -1,6 +1,6 @@
 .container{
 background: #F3F0FF;
-  padding: 6px;
+  padding: 4px;
   border: 1px solid #E4D9FF;
   border-radius: 10px;
 }
@@ -43,7 +43,7 @@ background: #F3F0FF;
 }
 
 /* =========================================================
-   GAME HISTORY — compact one-line rows
+   GAME HISTORY â€” compact one-line rows
 ========================================================= */
 .gameList {
   display: flex;
@@ -279,7 +279,7 @@ background: #F3F0FF;
 }
 
 /* =========================================================
-   META ROW — Lobby ID + Time with labels
+   META ROW â€” Lobby ID + Time with labels
 ========================================================= */
 .metaRow {
   display: flex;
@@ -309,6 +309,7 @@ gap: 4px;
   justify-content: space-between !important;
   width: 100%;
 }
+
 .metaItem:last-child {
   align-items: flex-end;
   text-align: right;
@@ -415,7 +416,7 @@ gap: 4px;
 }
 
 /* =========================================================
-   AMOUNT GRID — even, aligned stat cells (2 or 3 up)
+   AMOUNT GRID â€” even, aligned stat cells (2 or 3 up)
 ========================================================= */
 .amountGrid {
   display: flex;
@@ -518,7 +519,7 @@ gap: 4px;
 }
 
 /* =========================================================
-   BET RESULTS — section label + aligned table
+   BET RESULTS â€” section label + aligned table
 ========================================================= */
 .chipSection {
   margin-top: 4px;
@@ -567,6 +568,22 @@ gap: 4px;
 .resultHead span:nth-child(2) { text-align: center; }
 .resultHead span:nth-child(3) { text-align: right; }
 
+/* SETTLEMENT â€” 4 columns: Bet | Qty | Status | Amount */
+.settlementGrid {
+  grid-template-columns: minmax(0, 1fr) 42px 60px 72px;
+}
+
+.resultHead.settlementGrid span:nth-child(2) { text-align: center; } /* Qty */
+.resultHead.settlementGrid span:nth-child(3) { text-align: center; } /* Status */
+.resultHead.settlementGrid span:nth-child(4) { text-align: right; }  /* Amount */
+
+/* QTY cell â€” centered Ã—N pill */
+.rtQtyCell {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
 .resultRow {
   border-bottom: 1px solid var(--color-outline-variant);
   transition: background 140ms ease;
@@ -580,7 +597,7 @@ gap: 4px;
 .rowRefund { background: rgba(59, 130, 246, 0.05); }
 .rowNeutral { background: transparent; }
 
-/* BET cell — letter/number chips, wraps gracefully for triple */
+/* BET cell â€” letter/number chips, wraps gracefully for triple */
 .rtBet {
   display: flex;
   align-items: center;
@@ -635,7 +652,7 @@ gap: 4px;
   border: 1px solid var(--color-outline-variant);
 }
 
-/* AMOUNT cell — right aligned money column */
+/* AMOUNT cell â€” right aligned money column */
 .rtAmt {
   text-align: right;
   font-family: var(--font-montserrat);
@@ -649,7 +666,7 @@ gap: 4px;
 .rtAmtRefund { color: #2563eb; }
 
 /* =========================================================
-   CHIP BOXES — Letter A/B/C + Number side by side
+   CHIP BOXES â€” Letter A/B/C + Number side by side
 ========================================================= */
 .chipLetterBox {
   width: 30px;
@@ -691,14 +708,18 @@ gap: 4px;
   font-family: var(--font-montserrat);
 }
 
-/* per-bet ticket quantity pill (e.g. ×5) shown next to the chips */
+/* per-bet ticket quantity pill (e.g. Ã—5) shown in the Qty column */
 .qtyTag {
-   text-align: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
   font-family: var(--font-montserrat);
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 800;
-  color: var(--color-on-surface);
+  letter-spacing: 0.02em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* =========================================================
@@ -715,6 +736,7 @@ gap: 4px;
 @media (max-width: 480px) {
   .tabBtn {
     font-size: 12px;
+  
   }
 
   .orderItem {
@@ -752,6 +774,10 @@ gap: 4px;
     padding: 8px 10px;
   }
 
+  .settlementGrid {
+    grid-template-columns: minmax(0, 1fr) 34px 52px 62px;
+  }
+
   .rtAmt {
     font-size: 13px;
   }
@@ -759,6 +785,12 @@ gap: 4px;
   .rtBadge {
     font-size: 9px;
     padding: 3px 5px;
+  }
+
+  .metaRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 9px 10px;
   }
 
   .metaItem:last-child {
@@ -772,7 +804,7 @@ gap: 4px;
 }
 
 /* =========================================================
-   EXTRA-SMALL SCREENS — keep Settlement readable & aligned
+   EXTRA-SMALL SCREENS â€” keep Settlement readable & aligned
 ========================================================= */
 @media (max-width: 360px) {
   /* amount cards: allow labels to wrap fully instead of truncating */
@@ -809,6 +841,10 @@ gap: 4px;
     padding: 8px 8px;
   }
 
+  .settlementGrid {
+    grid-template-columns: minmax(0, 1fr) 28px 46px 54px;
+  }
+
   .chipLetterBox,
   .chipNumberBox {
     width: 25px;
@@ -827,7 +863,8 @@ gap: 4px;
   }
 
   .qtyTag {
-   font-size: 12px;
+    font-size: 9.5px;
+    padding: 1px 5px;
   }
 
   .rtAmt {
