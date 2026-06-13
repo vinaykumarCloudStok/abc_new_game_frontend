@@ -2,10 +2,9 @@
   background: var(--color-surface);
   border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-2xl);
-  padding: var(--spacing-sm);
+  padding:8px;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
 }
 
 /* subtle top accent line */

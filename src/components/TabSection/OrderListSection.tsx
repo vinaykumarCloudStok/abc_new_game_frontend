@@ -204,7 +204,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
               </div>
 
                 <div className={styles.metaRow}>
-                <div className={`${styles.metaItemflex} ${isPendingBet ? styles.metaItemnew : ""}`}>
+                <div className={`${styles.metaItemflex} ${isPendingBet||isRollback ? styles.metaItemnew : ""}`}>
                   <div className={`${styles.metaItem}`}>
                     <span className={styles.metaLabel}>
                       Result Time

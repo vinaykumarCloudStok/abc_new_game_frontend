@@ -18,8 +18,10 @@ const SectionHeader: React.FC<{
   originalPrice?: number;
   onQuickGuess: () => void;
 }> = ({ title, win, price, originalPrice, onQuickGuess }) => {
-  const showDiscount =
-    originalPrice != null && originalPrice > price;
+  // Show the struck-through regular price for agents whenever it differs
+  // from what they pay — whether their price is lower OR higher.
+  const showOriginal =
+    originalPrice != null && originalPrice !== price;
 
   return (
     <div className={styles.sectionHeader}>
@@ -30,12 +32,12 @@ const SectionHeader: React.FC<{
         </div>
 
         <p className={styles.sectionPrice}>
-          {showDiscount && (
+          {showOriginal && (
             <span className={styles.priceStrike}>
               {formatINR(originalPrice!)}
             </span>
           )}
-          <span className={showDiscount ? styles.priceAgent : undefined}>
+          <span className={showOriginal ? styles.priceAgent : undefined}>
             {formatINR(price)}
           </span>
           /Per Ticket
@@ -64,33 +66,46 @@ const BettingSection: React.FC = () => {
 
   const isAgent = Number(info?.isAgent) === 1;
 
-  // Ticket prices now come from the backend on the `info` event:
-  // regular users get the fixed in-game prices, agents get the
-  // admin-set per-agent/per-game prices. The hardcoded values below are
-  // only a fallback for older sessions/sockets that didn't send them.
-  const FALLBACK_SINGLE = isAgent ? 10 : 12;
-  const FALLBACK_DOUBLE = isAgent ? 12 : 15;
-  const FALLBACK_TRIPLE = isAgent ? 20 : 25;
-
-  const priceFor = (cat: 1 | 2 | 3, fallback: number): number => {
-    const raw = info?.ticketPrices?.[String(cat)];
-    const n = Number(raw);
-    return Number.isFinite(n) && n > 0 ? n : fallback;
+  // Regular (non-agent) per-ticket prices — the fixed in-game prices.
+  // Single source of truth; also used as the struck-through "before" price
+  // shown to agents.
+  const REGULAR_PRICE: Record<1 | 2 | 3, number> = {
+    1: 12,
+    2: 15,
+    3: 25,
   };
 
-  const SINGLE_PRICE = priceFor(1, FALLBACK_SINGLE);
-  const DOUBLE_PRICE = priceFor(2, FALLBACK_DOUBLE);
-  const TRIPLE_PRICE = priceFor(3, FALLBACK_TRIPLE);
+  // Default agent prices — used for an agent only when the backend didn't
+  // send explicit ticketPrices, so an agent always sees a discounted price.
+  const DEFAULT_AGENT_PRICE: Record<1 | 2 | 3, number> = {
+    1: 10,
+    2: 12,
+    3: 20,
+  };
 
-  // Fixed regular (non-agent) prices. For agents we show these struck-through
-  // next to their discounted price; only shown when it's actually higher.
-  const REGULAR_SINGLE = 12;
-  const REGULAR_DOUBLE = 15;
-  const REGULAR_TRIPLE = 25;
+  // Resolve the per-ticket price for a category.
+  //  - Regular user: always the fixed REGULAR_PRICE.
+  //  - Agent: the backend-provided dynamic price (admin-set), falling back
+  //    to DEFAULT_AGENT_PRICE if none was sent.
+  const priceFor = (cat: 1 | 2 | 3): number => {
+    const raw = info?.ticketPrices?.[String(cat)];
+    const n = Number(raw);
+    if (Number.isFinite(n) && n > 0) return n;
+    return isAgent ? DEFAULT_AGENT_PRICE[cat] : REGULAR_PRICE[cat];
+  };
 
-  const ORIGINAL_SINGLE = isAgent ? REGULAR_SINGLE : undefined;
-  const ORIGINAL_DOUBLE = isAgent ? REGULAR_DOUBLE : undefined;
-  const ORIGINAL_TRIPLE = isAgent ? REGULAR_TRIPLE : undefined;
+  const SINGLE_PRICE = priceFor(1);
+  const DOUBLE_PRICE = priceFor(2);
+  const TRIPLE_PRICE = priceFor(3);
+
+  // For agents, show the regular price struck-through next to their price —
+  // whenever the two differ, regardless of which is higher.
+  const originalFor = (cat: 1 | 2 | 3, agentPrice: number): number | undefined =>
+    isAgent && REGULAR_PRICE[cat] !== agentPrice ? REGULAR_PRICE[cat] : undefined;
+
+  const ORIGINAL_SINGLE = originalFor(1, SINGLE_PRICE);
+  const ORIGINAL_DOUBLE = originalFor(2, DOUBLE_PRICE);
+  const ORIGINAL_TRIPLE = originalFor(3, TRIPLE_PRICE);
 
   const BET_OPTIONS: BetOption[] = [
     {

@@ -51,7 +51,7 @@
   font-size: 12px;
   letter-spacing: 0.01em;
 
-  color: #7b3ff2;
+  color: #b45309;
 
   position: relative;
 
@@ -71,12 +71,7 @@
 
   border-radius: 999px;
 
-  background: linear-gradient(
-    90deg,
-    rgba(123, 63, 242, 0.1),
-    rgba(123, 63, 242, 0.9),
-    rgba(123, 63, 242, 0.1)
-  );
+  background: linear-gradient(135deg, #ffc107, #ffd24d);
 }
 
 .sectionPrice {
