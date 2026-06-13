@@ -6,6 +6,7 @@ import {
   socketDisconnected,
   setInfo,
   setLobbies,
+  setLobbyHistory,
   updateLobby,
   addLobby,
   setLobbyResult,
@@ -84,6 +85,9 @@ export const initSocketListeners = (
       // panel refresh as soon as the socket delivers them.
       // ---------------------------------------------------------------------
       case "lobby_history":
+        // Store in Redux so the lobby strip can render resulted chips...
+        dispatch(setLobbyHistory(data));
+        // ...and keep the window event so the Game History tab still works.
         window.dispatchEvent(
           new CustomEvent("lobbyHistory", { detail: data })
         );

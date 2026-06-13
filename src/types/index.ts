@@ -13,6 +13,8 @@ export interface CartItem {
 export interface LobbyHistoryItem {
   lobby_uuid: string;
   result_at: string;
+  // present on the `lobby_history` socket payload (e.g. "resulted")
+  status?: string;
   result: {
     a: number;
     b: number;
@@ -77,6 +79,9 @@ export interface SocketState {
   isRulesModalOpen: boolean;
   lobbies: Lobby[],
  selectedLobby: string | null;
+  // Today's resulted lobbies pushed by the backend `lobby_history` event.
+  // Rendered as resulted chips in the lobby strip.
+  lobbyHistory: LobbyHistoryItem[];
   latestResult: LobbyResult | null;
   selectedResult: SelectedResult | null;
   // A just-resulted lobby is kept selected for a short window so the user

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import type { RootState } from "../../store";
@@ -16,6 +16,11 @@ const LobbySelector: React.FC = () => {
 
   const lobbies = useSelector(
     (state: RootState) => state.socketSlice.lobbies
+  );
+
+  // today's resulted lobbies pushed via the `lobby_history` socket event
+  const lobbyHistory = useSelector(
+    (state: RootState) => state.socketSlice.lobbyHistory
   );
 
   const selectedLobby = useSelector(
@@ -112,13 +117,35 @@ const LobbySelector: React.FC = () => {
   // tabs on the strip. A closed tab is NOT removed once the draw is
   // declared — it stays so the user can tap it to re-view the drawn
   // number inside the InfoCard. Only "cancelled" lobbies are hidden.
+  //
+  // We ALSO fold in the resulted lobbies delivered by the backend's
+  // `lobby_history` event. Any history lobby not already present in the
+  // live list becomes a "resulted" chip the user can tap to view its
+  // result. We intentionally do NOT embed its result on the synthetic
+  // lobby, so a tap goes through `viewLobbyResult` and calls the
+  // lobby-history API (the cached result is used as a safe fallback).
   // ----------------------------------------------------------------
-  const filteredLobbies = (lobbies || [])
-    .filter((lobby) => !["cancelled"].includes(lobby.status))
-    .sort(
-      (a, b) =>
-        new Date(a.result_at).getTime() - new Date(b.result_at).getTime()
-    );
+  const filteredLobbies = useMemo(() => {
+    const liveIds = new Set((lobbies || []).map((l) => l.lobby_uuid));
+
+    const historyChips: Lobby[] = (lobbyHistory || [])
+      .filter((h) => h?.lobby_uuid && !liveIds.has(h.lobby_uuid))
+      .map((h) => ({
+        lobby_uuid: h.lobby_uuid,
+        result_at: h.result_at,
+        bet_close_at: h.result_at,
+        status: "resulted",
+        // keep null so a tap triggers the lobby-history API call
+        result: null,
+      }));
+
+    return [...(lobbies || []), ...historyChips]
+      .filter((lobby) => !["cancelled"].includes(lobby.status))
+      .sort(
+        (a, b) =>
+          new Date(a.result_at).getTime() - new Date(b.result_at).getTime()
+      );
+  }, [lobbies, lobbyHistory]);
 
   const handleSelectLobby = (lobbyUuid: string) => {
     localStorage.setItem("selectedLobby", lobbyUuid);
@@ -180,6 +207,11 @@ const LobbySelector: React.FC = () => {
 
     if (!info.user_id || !info.operator_id) return;
 
+    // cached result for this lobby from the `lobby_history` socket payload
+    const cached = lobbyHistory.find(
+      (h) => h.lobby_uuid === lobby.lobby_uuid
+    )?.result ?? null;
+
     try {
       setFetchingLobby(lobby.lobby_uuid);
 
@@ -192,12 +224,14 @@ const LobbySelector: React.FC = () => {
         (item) => item.lobby_uuid === lobby.lobby_uuid
       );
 
+      const result = match?.result ?? cached;
+
       dispatch(
         setSelectedResult({
           lobby_uuid: lobby.lobby_uuid,
-          result: match?.result ?? null,
+          result,
           result_at: match?.result_at ?? lobby.result_at,
-          pending: !match?.result,
+          pending: !result,
         })
       );
     } catch (err) {
@@ -205,15 +239,24 @@ const LobbySelector: React.FC = () => {
       dispatch(
         setSelectedResult({
           lobby_uuid: lobby.lobby_uuid,
-          result: null,
+          result: cached,
           result_at: lobby.result_at,
-          pending: true,
+          pending: !cached,
         })
       );
     } finally {
       setFetchingLobby(null);
     }
   };
+
+  // True while the user is viewing a RESULTED chip's result. In that case
+  // the open/selected lobby chip should drop its active highlight so only
+  // the tapped resulted chip looks active.
+  const viewingResulted = useMemo(() => {
+    if (!viewingLobby) return false;
+    const l = filteredLobbies.find((x) => x.lobby_uuid === viewingLobby);
+    return l?.status === "resulted";
+  }, [viewingLobby, filteredLobbies]);
 
   return (
     <section className={styles.section}>
@@ -247,12 +290,14 @@ const LobbySelector: React.FC = () => {
                 ${styles.chip}
                 ${
                   isResulted
-                    ? styles.chipResulted
-                    : isActive
+                    ? isViewing
+                      ? styles.chipResulted
+                      : styles.chipActive
+                    : isActive && !viewingResulted
                     ? styles.chipSelected
                     : styles.chipActive
                 }
-                ${isViewing ? styles.chipViewing : ""}
+                ${isViewing && isClosed ? styles.chipViewing : ""}
               `}
             >
               <span >{formatTime(lobby.result_at)}</span>

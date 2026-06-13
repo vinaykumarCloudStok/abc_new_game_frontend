@@ -24,16 +24,15 @@ const InfoCard: React.FC = () => {
   );
 
   // -------------------------------------------------------------------
-  // RESULT TO DISPLAY for the selected lobby.
-  // Priority: a tapped resulted tab → the live result → the result the
-  // backend persisted on the lobby itself. Shown while a lobby is
-  // resulted (e.g. the 5-minute sticky window after a draw).
+  // RESULT TO DISPLAY.
+  // Priority: a tapped closed/resulted/history chip (selectedResult) →
+  // the live result for the selected lobby → the result persisted on the
+  // selected lobby itself. A tapped result is shown regardless of which
+  // lobby is the current betting target, so viewing an old draw never
+  // depends on changing the selected lobby.
   // -------------------------------------------------------------------
   const displayResult = useMemo<{ a: number; b: number; c: number } | null>(() => {
-    if (
-      selectedResult?.lobby_uuid === selectedLobby &&
-      selectedResult?.result
-    ) {
+    if (selectedResult?.result) {
       return selectedResult.result;
     }
     if (latestResult?.lobby_uuid === selectedLobby && latestResult?.result) {
@@ -45,6 +44,15 @@ const InfoCard: React.FC = () => {
     }
     return null;
   }, [selectedResult, latestResult, selectedLobby, selectedLobbyData]);
+
+  // A chip was tapped and we are still fetching its result from the
+  // lobby-history API (no number to show yet).
+  const viewingPending =
+    !!selectedResult && !selectedResult.result && !!selectedResult.pending;
+
+  // Are we showing a result that the user explicitly opened (vs the
+  // current selected lobby's own result)?
+  const showingSelected = !!selectedResult?.result;
 
   const showResult = !!displayResult;
   const resultBalls = displayResult
@@ -138,10 +146,16 @@ const InfoCard: React.FC = () => {
   // Add urgency class when under 60s
   const isUrgent = timeLeft > 0 && timeLeft <= 60_000;
 
-  // Full lobby ids (no truncation)
-  // const resultLobbyId = latestResult?.lobby_uuid || null;
+  // When the user has opened a specific draw, the "Drawn" time and the
+  // lobby id should reflect THAT draw, not the current betting target.
+  const drawnAt = showingSelected
+    ? selectedResult?.result_at
+    : selectedLobbyData?.result_at;
+
   const bottomLobbyId = showResult
-    ? selectedLobbyData?.lobby_uuid || null
+    ? (showingSelected
+        ? selectedResult?.lobby_uuid
+        : selectedLobbyData?.lobby_uuid) || null
     : nextDrawLobby?.lobby_uuid || null;
 
   // -------------------------------------------------------------------
@@ -183,6 +197,13 @@ const InfoCard: React.FC = () => {
                   {digit}
                 </div>
               ))
+            ) : viewingPending ? (
+              <div className={styles.loadingRow}>
+                <span className={styles.spinner} />
+                <span className={styles.awaitingResult}>
+                  Fetching result…
+                </span>
+              </div>
             ) : (
               <span className={styles.awaitingResult}>
                 Awaiting result…
@@ -196,10 +217,20 @@ const InfoCard: React.FC = () => {
           <div className={styles.rightCol}>
             <span className={styles.timeLabel}>Drawn</span>
             <span className={styles.resultTime} style={{textTransform:"uppercase"}}>
-              {formatResultTime(selectedLobbyData?.result_at)}
+              {formatResultTime(drawnAt)}
             </span>
+              {bottomLobbyId && (
+        <p
+          className={styles.nextLobbyId}
+          title="Click to copy"
+          onClick={() => copyId(bottomLobbyId, "next")}
+        >
+          <span>Lobby Id:</span>
+          <span>      {copiedKey === "next" ? "Copied!" : bottomLobbyId}</span>
+        </p>
+      )}
           </div>
-        ) : (
+        ) : viewingPending ? null : (
           nextDrawLobby && (
             <div className={styles.rightCol}>
               <span className={styles.timeLabel}>Next Draw</span>
@@ -222,11 +253,7 @@ const InfoCard: React.FC = () => {
                     )
                   )}
               </div>
-            </div>
-          )
-        )}
-      </div>
-      {bottomLobbyId && (
+                {bottomLobbyId && (
         <p
           className={styles.nextLobbyId}
           title="Click to copy"
@@ -236,6 +263,11 @@ const InfoCard: React.FC = () => {
           <span>      {copiedKey === "next" ? "Copied!" : bottomLobbyId}</span>
         </p>
       )}
+            </div>
+          )
+        )}
+      </div>
+    
     </section>
   );
 };

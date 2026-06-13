@@ -108,6 +108,28 @@
   letter-spacing: 0.3px;
 }
 
+/* loading state shown while a tapped resulted/closed chip's result is
+   being fetched from the lobby-history API */
+.loadingRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  border: 3px solid rgba(109, 79, 160, 0.2);
+  border-top-color: #6d4fa0;
+  border-radius: 50%;
+  animation: infoSpin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes infoSpin {
+  to { transform: rotate(360deg); }
+}
+
 .resultTime {
   font-family: var(--font-montserrat);
   font-size: 18px;
@@ -250,7 +272,7 @@
   display: flex;
   gap: 4px;
   align-items: center;
-  margin-top: .8rem;
+  margin-top: .2rem;
   user-select: all;
   transition: color 150ms ease;
 }

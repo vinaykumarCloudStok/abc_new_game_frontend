@@ -6,6 +6,7 @@ import {
 import type {
   InfoData,
   Lobby,
+  LobbyHistoryItem,
   LobbyResult,
   SelectedResult,
   SocketState,
@@ -25,6 +26,9 @@ const initialState: SocketState = {
   isRulesModalOpen: false,
 
   lobbies: [],
+
+  // today's resulted lobbies (from the `lobby_history` socket event)
+  lobbyHistory: [],
 
   selectedLobby: null,
 
@@ -165,6 +169,33 @@ const socketSlice = createSlice({
           firstOpenLobby.lobby_uuid
         );
       }
+    },
+
+    // ------------------------------------------------------------
+    // LOBBY HISTORY (today's resulted lobbies, pushed on connect via
+    // the `lobby_history` socket event). Stored so the lobby strip can
+    // render them as resulted chips and so a tap can show their result.
+    // ------------------------------------------------------------
+    setLobbyHistory: (
+      state,
+      action: PayloadAction<LobbyHistoryItem[]>
+    ) => {
+      const incoming = Array.isArray(action.payload)
+        ? action.payload
+        : [];
+
+      // de-dupe by lobby_uuid (keep the latest entry for a uuid)
+      const map = new Map<string, LobbyHistoryItem>();
+      for (const item of incoming) {
+        if (item?.lobby_uuid) map.set(item.lobby_uuid, item);
+      }
+
+      // newest first
+      state.lobbyHistory = Array.from(map.values()).sort(
+        (a, b) =>
+          new Date(b.result_at).getTime() -
+          new Date(a.result_at).getTime()
+      );
     },
 
     // ------------------------------------------------------------
@@ -483,6 +514,7 @@ export const {
   toggleRulesModal,
 
   setLobbies,
+  setLobbyHistory,
   updateLobby,
   addLobby,
   removeLobby,
