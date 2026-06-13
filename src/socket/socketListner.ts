@@ -78,6 +78,16 @@ export const initSocketListeners = (
       case "lobby":
         dispatch(setLobbies(data));
         break;
+      // ---------------------------------------------------------------------
+      // PREVIOUS RESULTS (today only) — pushed on connect by the backend.
+      // The Game History tab fetches these over REST too, but this lets the
+      // panel refresh as soon as the socket delivers them.
+      // ---------------------------------------------------------------------
+      case "lobby_history":
+        window.dispatchEvent(
+          new CustomEvent("lobbyHistory", { detail: data })
+        );
+        break;
       case "settlement":
         dispatch(
           showPopup({

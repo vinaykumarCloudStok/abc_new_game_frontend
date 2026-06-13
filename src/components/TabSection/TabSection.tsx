@@ -123,6 +123,32 @@ useEffect(() => {
   };
 }, [activeTab, myOrderSubTab, info.user_id, info.operator_id]);
 
+// PREVIOUS RESULTS (today only) — the backend pushes the day's resulted
+// lobbies on connect via the `lobby_history` socket event. Seed the Game
+// History panel from it immediately, and re-fetch from REST when viewing
+// that tab so it stays in sync.
+useEffect(() => {
+  const handleLobbyHistory = (e: Event) => {
+    const detail = (e as CustomEvent).detail;
+    if (!Array.isArray(detail)) return;
+
+    const sorted = [...detail].sort((a: LobbyHistoryItem, b: LobbyHistoryItem) => {
+      if (a.result && !b.result) return -1;
+      if (!a.result && b.result) return 1;
+      return (
+        new Date(b.result_at).getTime() - new Date(a.result_at).getTime()
+      );
+    });
+    setGameHistoryData(sorted);
+  };
+
+  window.addEventListener("lobbyHistory", handleLobbyHistory);
+
+  return () => {
+    window.removeEventListener("lobbyHistory", handleLobbyHistory);
+  };
+}, []);
+
   const myOrderData = useMemo(() => {
     if (myOrderSubTab === "settlement") {
       return [...settlementData].sort((a, b) => {
