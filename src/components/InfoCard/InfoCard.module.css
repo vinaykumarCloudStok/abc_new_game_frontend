@@ -263,8 +263,8 @@
 /* next-draw lobby id under timer */
 .nextLobbyId {
   font-family: var(--font-montserrat), monospace;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--color-on-surface-variant);
  
   line-height: 1.3;
