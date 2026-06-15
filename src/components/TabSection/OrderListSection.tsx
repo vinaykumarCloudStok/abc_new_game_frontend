@@ -117,7 +117,7 @@ const OrderListSection: React.FC<OrderListProp> = ({
               </div>
 
               <div className={styles.gameResultCol}>
-                <span className={styles.gameFieldLabel}>Result</span>
+                {/* <span className={styles.gameFieldLabel}>Result</span> */}
                 {result ? (
                   <div className={styles.gameBalls}>
                     {(["a", "b", "c"] as const).map((key) => (
