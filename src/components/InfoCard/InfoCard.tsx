@@ -79,10 +79,19 @@ const InfoCard: React.FC = () => {
     if (!lobbies || lobbies.length === 0) return null;
 
     const selected = lobbies.find((l) => l.lobby_uuid === selectedLobby);
+
+    // A selected bet_closed lobby keeps its countdown on screen (it falls
+    // to 00:00 and holds there) the entire time the draw is pending, i.e.
+    // until the lobby actually becomes "resulted". This is what keeps the
+    // timer visible after re-selecting a closed tab.
+    if (selected && selected.status === "bet_closed") {
+      return selected;
+    }
+
     if (
       selected &&
       new Date(selected.result_at).getTime() > Date.now() &&
-      (selected.status === "betting_open" || selected.status === "bet_closed")
+      selected.status === "betting_open"
     ) {
       return selected;
     }

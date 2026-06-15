@@ -273,11 +273,24 @@ const LobbySelector: React.FC = () => {
             <button
               key={lobby.lobby_uuid}
               onClick={() => {
-                // CLOSED or RESULTED → fetch + show the drawn number
-                // inside the InfoCard (does not change betting target).
-                if (isResulted || isClosed) {
+                // RESULTED → fetch + show the drawn number inside the
+                // InfoCard (does not change betting target).
+                if (isResulted) {
                   viewLobbyResult(lobby);
-                  if (isClosed) handleSelectLobby(lobby.lobby_uuid);
+                  return;
+                }
+
+                // CLOSED (result not declared yet) → just select it so the
+                // countdown timer keeps showing until the result is
+                // declared. We deliberately do NOT enter the pending
+                // result-fetch state here, because that would hide the
+                // timer. Re-selecting a closed tab (even after viewing
+                // another tab) therefore always brings the live countdown
+                // back.
+                if (isClosed) {
+                  dispatch(clearSelectedResult());
+                  setViewingLobby(null);
+                  handleSelectLobby(lobby.lobby_uuid);
                   return;
                 }
 
@@ -290,7 +303,7 @@ const LobbySelector: React.FC = () => {
                 ${styles.chip}
                 ${
                   isResulted
-                    ? isViewing
+                    ? isViewing || isActive
                       ? styles.chipResulted
                       : styles.chipActive
                     : isActive && !viewingResulted

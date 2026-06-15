@@ -90,13 +90,12 @@ const BetRow: React.FC<BetRowProps> = ({
   }, [digits, inputValue]);
 
   // ----------------------------------------------------------------
-  // CHECK DUPLICATE
+  // RE-BUY SAME NUMBER
+  // A number already added to the bet slip can be bought AGAIN (as long
+  // as betting is still open). Adding the same chip simply tops up the
+  // existing slip entry's quantity/amount (see betSlipSlice.addBet),
+  // so the row is intentionally NOT locked for duplicates.
   // ----------------------------------------------------------------
-  const alreadyExists = useMemo(() => {
-    return bets.some(
-      (bet) => bet.cat === cat && bet.chip === chipValue
-    );
-  }, [bets, cat, chipValue]);
 
   // ----------------------------------------------------------------
   // DISABLE CONDITION
@@ -120,7 +119,7 @@ const BetRow: React.FC<BetRowProps> = ({
   // COMMON DISABLE FLAG (stepper + inputs)
   // ----------------------------------------------------------------
   const isRowLocked =
-    isBetDisabled || alreadyExists || !hasEnteredNumber;
+    isBetDisabled || !hasEnteredNumber;
 
   // can't afford even 1 ticket
   const insufficientBalance = maxQty === 0;
@@ -266,9 +265,9 @@ const BetRow: React.FC<BetRowProps> = ({
               value={inputValue[index] || ""}
               placeholder="-"
               className={styles.guessInput}
-              disabled={isBetDisabled || alreadyExists}
+              disabled={isBetDisabled}
               onChange={(e) => {
-                if (isBetDisabled || alreadyExists) return;
+                if (isBetDisabled) return;
 
                 // allow only 0-9
                 const value = e.target.value.replace(
@@ -403,8 +402,6 @@ const BetRow: React.FC<BetRowProps> = ({
         >
           {isBetDisabled ? (
             "ADD"
-          ) : alreadyExists ? (
-            "ADDED"
           ) : insufficientBalance ? (
             "LOW BALANCE"
           ) : qty > 0 ? (
