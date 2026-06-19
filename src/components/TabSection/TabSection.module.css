@@ -659,7 +659,7 @@ gap: 4px;
   white-space: nowrap;
 }
 
-.rtAmtWin    { color: #c8920a; }
+.rtAmtWin    { color: green; }
 .rtAmtRefund { color: #2563eb; }
 
 /* =========================================================
