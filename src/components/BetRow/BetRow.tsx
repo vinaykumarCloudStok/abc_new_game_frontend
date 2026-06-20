@@ -42,7 +42,7 @@ const BetRow: React.FC<BetRowProps> = ({
   // ----------------------------------------------------------------
   // GET SELECTED LOBBY + USER INFO (balance)
   // ----------------------------------------------------------------
-  const { lobbies, selectedLobby, info } = useSelector(
+  const { lobbies, selectedLobby, info, selectedResult } = useSelector(
     (state: RootState) => state.socketSlice
   );
 
@@ -104,7 +104,12 @@ const BetRow: React.FC<BetRowProps> = ({
     !currentLobby ||
     currentLobby?.status === "bet_closed" ||
     currentLobby?.status === "cancelled" ||
-    currentLobby?.status === "resulted";
+    currentLobby?.status === "resulted" ||
+    // Viewing a RESULTED lobby opened from the lobby strip / lobby_history.
+    // selectedResult is only ever set for a resulted lobby, so a tapped
+    // resulted chip locks the bet rows even though the betting target
+    // (selectedLobby) may still be an open lobby.
+    !!selectedResult;
 
   // ----------------------------------------------------------------
   // CHECK IF ALL REQUIRED DIGITS ENTERED

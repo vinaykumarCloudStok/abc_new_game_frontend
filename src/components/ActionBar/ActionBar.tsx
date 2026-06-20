@@ -46,6 +46,27 @@ const MAX_BET_AMOUNT = 200000; // ₹2L cap
     (lobby) => lobby.lobby_uuid === selectedLobby
   );
 
+  // ----------------------------------------------------------------
+  // LOBBY STATUS → controls the Place Bet button.
+  //   betting_open → "Place Bet" (active)
+  //   bet_closed   → "Closed"    (disabled, no bet placed)
+  //   resulted     → "Result"    (disabled, no bet placed)
+  //   cancelled    → disabled    (no bet placed)
+  // Matches the badge wording used in the lobby strip.
+  // ----------------------------------------------------------------
+  const lobbyStatus = activeLobby?.status;
+  const isBetClosed = lobbyStatus === "bet_closed";
+  const isResulted = lobbyStatus === "resulted";
+  const isCancelled = lobbyStatus === "cancelled";
+  const isBettingClosed =
+    !activeLobby || isBetClosed || isResulted || isCancelled;
+
+  const placeBtnLabel = isResulted
+    ? "Result"
+    : isBetClosed
+    ? "Closed"
+    : "Place Bet";
+
   const totalBets = bets.length;
 
   const totalAmount = bets.reduce(
@@ -55,6 +76,9 @@ const MAX_BET_AMOUNT = 200000; // ₹2L cap
 
  const handlePlaceBet = () => {
   if (!activeLobby) return;
+
+  // Don't place a bet once the lobby is closed / resulted / cancelled.
+  if (isBettingClosed) return;
 
   const totalAmount = bets.reduce(
     (sum, item) => sum + item.amt,
@@ -242,9 +266,9 @@ const MAX_BET_AMOUNT = 200000; // ₹2L cap
           <button
             className={styles.placeBtn}
             onClick={handlePlaceBet}
-            disabled={!bets.length}
+            disabled={!bets.length || isBettingClosed}
           >
-            Place Bet
+            {placeBtnLabel}
           </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import type { RootState } from "../../store";
@@ -44,7 +44,7 @@ const LobbySelector: React.FC = () => {
   // which closed/resulted tab is currently being viewed (UI highlight only)
   const [viewingLobby, setViewingLobby] = useState<string | null>(null);
   const [fetchingLobby, setFetchingLobby] = useState<string | null>(null);
-
+const scrollRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!lobbies?.length) return;
 
@@ -111,20 +111,7 @@ const LobbySelector: React.FC = () => {
     }).format(new Date(dateString));
   };
 
-  // ----------------------------------------------------------------
-  // TAB VISIBILITY
-  // Keep "betting_open" (Open), "bet_closed" (Closed) AND "resulted"
-  // tabs on the strip. A closed tab is NOT removed once the draw is
-  // declared — it stays so the user can tap it to re-view the drawn
-  // number inside the InfoCard. Only "cancelled" lobbies are hidden.
-  //
-  // We ALSO fold in the resulted lobbies delivered by the backend's
-  // `lobby_history` event. Any history lobby not already present in the
-  // live list becomes a "resulted" chip the user can tap to view its
-  // result. We intentionally do NOT embed its result on the synthetic
-  // lobby, so a tap goes through `viewLobbyResult` and calls the
-  // lobby-history API (the cached result is used as a safe fallback).
-  // ----------------------------------------------------------------
+
   const filteredLobbies = useMemo(() => {
     const liveIds = new Set((lobbies || []).map((l) => l.lobby_uuid));
 
@@ -139,12 +126,26 @@ const LobbySelector: React.FC = () => {
         result: null,
       }));
 
-    return [...(lobbies || []), ...historyChips]
-      .filter((lobby) => !["cancelled"].includes(lobby.status))
-      .sort(
-        (a, b) =>
-          new Date(a.result_at).getTime() - new Date(b.result_at).getTime()
-      );
+  const statusOrder: Record<string, number> = {
+  resulted: 0,
+  betting_open: 1,
+  bet_closed: 2,
+};
+
+return [...(lobbies || []), ...historyChips]
+  .filter((lobby) => !["cancelled"].includes(lobby.status))
+  .sort((a, b) => {
+    const statusDiff =
+      (statusOrder[a.status] ?? 99) -
+      (statusOrder[b.status] ?? 99);
+
+    if (statusDiff !== 0) return statusDiff;
+
+    return (
+      new Date(a.result_at).getTime() -
+      new Date(b.result_at).getTime()
+    );
+  });
   }, [lobbies, lobbyHistory]);
 
   const handleSelectLobby = (lobbyUuid: string) => {
@@ -257,10 +258,36 @@ const LobbySelector: React.FC = () => {
     const l = filteredLobbies.find((x) => x.lobby_uuid === viewingLobby);
     return l?.status === "resulted";
   }, [viewingLobby, filteredLobbies]);
+useEffect(() => {
+  if (!scrollRef.current || !filteredLobbies.length) return;
 
+  const openIndex = filteredLobbies.findIndex(
+    (l) => l.status === "betting_open"
+  );
+
+  if (openIndex === -1) return;
+
+  const container = scrollRef.current;
+  const chip = container.children[openIndex] as HTMLElement;
+
+  if (!chip) return;
+
+  const scrollLeft =
+    chip.offsetLeft -
+    container.clientWidth / 2 +
+    chip.clientWidth / 2;
+
+  container.scrollTo({
+    left: Math.max(0, scrollLeft),
+    behavior: "smooth",
+  });
+}, [filteredLobbies]);
   return (
     <section className={styles.section}>
-      <div className={`${styles.scroll} no-scrollbar`}>
+     <div
+  ref={scrollRef}
+  className={`${styles.scroll} no-scrollbar`}
+>
         {filteredLobbies.map((lobby) => {
           const isOpen = lobby.status === "betting_open";
           const isClosed = lobby.status === "bet_closed";
