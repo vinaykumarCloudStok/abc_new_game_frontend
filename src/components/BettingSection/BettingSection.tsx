@@ -28,7 +28,9 @@ const SectionHeader: React.FC<{
       <div className={styles.sectionTitleWrap}>
         <div className={styles.titleLine}>
           <h2 className={styles.sectionTitle}>{title}</h2>
-          <span className={styles.winPill}>Win {formatINR(win)}</span>
+          <span className={styles.winPill}>
+            <span className={styles.winLabel}>Win {formatINR(win)}</span>
+          </span>
         </div>
 
         <p className={styles.sectionPrice}>
