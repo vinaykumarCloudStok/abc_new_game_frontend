@@ -406,7 +406,7 @@ const BetRow: React.FC<BetRowProps> = ({
           disabled={isRowLocked || qty <= 0 || insufficientBalance}
         >
           {isBetDisabled ? (
-            "ADD"
+            "CLOSED"
           ) : insufficientBalance ? (
             "LOW BALANCE"
           ) : qty > 0 ? (

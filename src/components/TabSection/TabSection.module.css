@@ -452,7 +452,7 @@ gap: 4px;
 }
 
 .amountWin {
-  color: #c8920a;
+  color: #32CD32;
 }
 
 .amountRefund {
@@ -620,9 +620,9 @@ gap: 4px;
 }
 
 .rtBadgeWin {
-  background: rgba(255, 184, 0, 0.16);
-  color: #b8800a;
-  border: 1px solid rgba(255, 184, 0, 0.45);
+  background: white;
+  color: #32CD32;
+  border: 1px solid #7CFC00;
 }
 
 .rtBadgeLoss {
@@ -659,7 +659,7 @@ gap: 4px;
   white-space: nowrap;
 }
 
-.rtAmtWin    { color: green; }
+.rtAmtWin    { color: #32CD32; }
 .rtAmtRefund { color: #2563eb; }
 
 /* =========================================================
