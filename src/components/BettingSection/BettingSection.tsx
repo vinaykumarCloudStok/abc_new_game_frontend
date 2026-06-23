@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 
@@ -18,11 +18,23 @@ const SectionHeader: React.FC<{
   originalPrice?: number;
   onQuickGuess: () => void;
 }> = ({ title, win, price, originalPrice, onQuickGuess }) => {
-  // Show the struck-through regular price for agents whenever it differs
-  // from what they pay — whether their price is lower OR higher.
+   const { lobbies, selectedLobby, selectedResult } = useSelector(
+     (state: RootState) => state.socketSlice
+   );
+ 
+   const currentLobby = useMemo(() => {
+     return lobbies.find(
+       (item) => item.lobby_uuid === selectedLobby
+     );
+   }, [lobbies, selectedLobby]);
   const showOriginal =
     originalPrice != null && originalPrice !== price;
-
+  const isBetDisabled =
+    !currentLobby ||
+    currentLobby?.status === "bet_closed" ||
+    currentLobby?.status === "cancelled" ||
+    currentLobby?.status === "resulted" ||
+    !!selectedResult;
   return (
     <div className={styles.sectionHeader}>
       <div className={styles.sectionTitleWrap}>
@@ -50,6 +62,11 @@ const SectionHeader: React.FC<{
         type="button"
         className={styles.quickGuess}
         onClick={onQuickGuess}
+          style={{
+              pointerEvents: isBetDisabled ? "none" : "auto",
+              opacity: isBetDisabled ? ".5" : "",
+            }}
+        disabled={isBetDisabled}
       >
         Quick Guess
       </button>

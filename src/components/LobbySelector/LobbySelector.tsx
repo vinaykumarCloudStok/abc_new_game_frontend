@@ -126,10 +126,13 @@ const scrollRef = useRef<HTMLDivElement>(null);
         result: null,
       }));
 
+  // Display sequence: resulted → closed → open.
+  // (closed must sit between resulted and open, NOT be pushed to the end,
+  //  so e.g. 5pm resulted, 6pm closed, 7pm open shows 5,6,7 — not 5,7,6.)
   const statusOrder: Record<string, number> = {
   resulted: 0,
-  betting_open: 1,
-  bet_closed: 2,
+  bet_closed: 1,
+  betting_open: 2,
 };
 
 return [...(lobbies || []), ...historyChips]

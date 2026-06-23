@@ -52,12 +52,7 @@ const BetRow: React.FC<BetRowProps> = ({
     );
   }, [lobbies, selectedLobby]);
 
-  // ----------------------------------------------------------------
-  // MAX BET → limited by ₹2L cap AND user's balance
-  // (info.balance comes from the socket as a STRING e.g. "300.00")
-  // Amount already sitting in the bet slip is subtracted, so the
-  // user can never build a slip bigger than their balance.
-  // ----------------------------------------------------------------
+
   const HARD_CAP = 200000;
 
   const balance = Number(info?.balance) || 0;
@@ -90,14 +85,6 @@ const BetRow: React.FC<BetRowProps> = ({
   }, [digits, inputValue]);
 
   // ----------------------------------------------------------------
-  // RE-BUY SAME NUMBER
-  // A number already added to the bet slip can be bought AGAIN (as long
-  // as betting is still open). Adding the same chip simply tops up the
-  // existing slip entry's quantity/amount (see betSlipSlice.addBet),
-  // so the row is intentionally NOT locked for duplicates.
-  // ----------------------------------------------------------------
-
-  // ----------------------------------------------------------------
   // DISABLE CONDITION
   // ----------------------------------------------------------------
   const isBetDisabled =
@@ -105,10 +92,6 @@ const BetRow: React.FC<BetRowProps> = ({
     currentLobby?.status === "bet_closed" ||
     currentLobby?.status === "cancelled" ||
     currentLobby?.status === "resulted" ||
-    // Viewing a RESULTED lobby opened from the lobby strip / lobby_history.
-    // selectedResult is only ever set for a resulted lobby, so a tapped
-    // resulted chip locks the bet rows even though the betting target
-    // (selectedLobby) may still be an open lobby.
     !!selectedResult;
 
   // ----------------------------------------------------------------
@@ -408,7 +391,7 @@ const BetRow: React.FC<BetRowProps> = ({
           {isBetDisabled ? (
             "CLOSED"
           ) : insufficientBalance ? (
-            "LOW BALANCE"
+            "ADD"
           ) : qty > 0 ? (
             <span className={styles.addBtnContent}>
               <span>ADD</span>
