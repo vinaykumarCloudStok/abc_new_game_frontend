@@ -70,12 +70,12 @@
 .openBadge {
   background: #16a34a;
   color: white;
-  font-size: 10px;
+  font-size: 9px;
   position: absolute;
   font-weight: 800;
   top: 0;
-  right: 0;
-  padding: 3px 8px;
+  right: 2px;
+  padding: 1px 8px;
   z-index: 1;
   border-radius: 999px;
   letter-spacing: 0.5px;

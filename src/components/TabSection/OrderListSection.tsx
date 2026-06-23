@@ -292,8 +292,6 @@ const OrderListSection: React.FC<OrderListProp> = ({
               </div>
             </div>
 
-
-
             {betResults?.length > 0 && (
               <div className={styles.chipSection}>
                 <div className={styles.sectionLabel}>
