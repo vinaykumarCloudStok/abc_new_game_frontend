@@ -27,6 +27,13 @@ const TabSection: React.FC = () => {
     (state: RootState) => state.socketSlice.lobbies
   );
 
+  // A result the user opened by tapping a resulted/history chip in the strip.
+  // When this is set the user is looking at a RESULTED lobby (not the active
+  // betting target), so Open Bets should show nothing for it.
+  const selectedResult = useSelector(
+    (state: RootState) => state.socketSlice.selectedResult
+  );
+
   // Lobbies that are still accepting bets. Open Bets should only ever show
   // bets that belong to one of these — once a lobby closes its bets move on.
   const openLobbyIds = useMemo(
@@ -84,6 +91,20 @@ const TabSection: React.FC = () => {
     }
   };
 
+  // Silent rollback refresh — updates the rollback list in the background
+  // without flipping the shared loading spinner, so it won't disrupt
+  // whichever tab the user is currently viewing.
+  const fetchRollbackSilently = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_SOCKET_URL}/bet-history?user_id=${info.user_id}&operator_id=${info.operator_id}&type=rollback`
+      );
+      setRollbackData(res?.data?.data || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // MAIN TAB EFFECT
   useEffect(() => {
     if (!info.user_id || !info.operator_id) return;
@@ -122,6 +143,22 @@ useEffect(() => {
     window.removeEventListener("refreshBetHistory", handleRefresh);
   };
 }, [activeTab, myOrderSubTab, info.user_id, info.operator_id]);
+
+// A cancelled lobby triggers a rollback on the backend. The socket layer
+// fires `refreshRollbackHistory` ~5s after the cancellation so the refunded
+// bets are ready; pull the latest rollback list silently here.
+useEffect(() => {
+  const handleRollbackRefresh = () => {
+    if (!info.user_id || !info.operator_id) return;
+    fetchRollbackSilently();
+  };
+
+  window.addEventListener("refreshRollbackHistory", handleRollbackRefresh);
+
+  return () => {
+    window.removeEventListener("refreshRollbackHistory", handleRollbackRefresh);
+  };
+}, [info.user_id, info.operator_id]);
 
 // PREVIOUS RESULTS (today only) — the backend pushes the day's resulted
 // lobbies on connect via the `lobby_history` socket event. Seed the Game
@@ -217,13 +254,18 @@ useEffect(() => {
   // other lobbies are still counted so they are never silently hidden.
   // -------------------------------------------------------------------
   const openBetsForSelectedLobby = useMemo(() => {
+    // While viewing a RESULTED lobby (tapped from the strip / history), the
+    // on-screen lobby has no open bets — don't show the pending bets that
+    // belong to the actual (still-open) betting target.
+    if (selectedResult) return [];
+
     // Only bets in lobbies that are still OPEN qualify as "open bets".
     const stillOpen = myOrderData.filter(
       (b) => b.lobby_id && openLobbyIds.has(b.lobby_id)
     );
     if (!selectedLobby) return stillOpen;
     return stillOpen.filter((b) => b.lobby_id === selectedLobby);
-  }, [myOrderData, selectedLobby, openLobbyIds]);
+  }, [myOrderData, selectedLobby, openLobbyIds, selectedResult]);
 
   const otherLobbyOpenBetCount = useMemo(() => {
     if (myOrderSubTab !== "bet") return 0;

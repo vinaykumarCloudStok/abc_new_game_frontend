@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
 import {
@@ -28,6 +28,9 @@ const rsFormatter = new Intl.NumberFormat("en-IN", {
 });
 const formatRs = (val: number | string | undefined | null) =>
   `₹${rsFormatter.format(Number(val ?? 0))}`;
+
+/* How many cards to show per page in Open Bets / Settlement / Rollback */
+const PAGE_SIZE = 10;
 
 /* ---------------------------------------------------------------
    TICKET QUANTITY HELPERS
@@ -60,6 +63,13 @@ const OrderListSection: React.FC<OrderListProp> = ({
     (s: RootState) => Number(s.socketSlice.info?.isAgent) === 1
   );
   const isOpenBetsTab = activeTab === "myorder" && myOrderSubTab === "bet";
+
+  // Pagination for Open Bets / Settlement / Rollback (10 cards per page).
+  // Reset to the first page whenever the active view changes.
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab, myOrderSubTab]);
 
   if (loading) {
     return (
@@ -150,19 +160,49 @@ const OrderListSection: React.FC<OrderListProp> = ({
 
   // Which optional columns the results table renders.
   //   Open Bets   -> Bet | Qty | Amount
-  //   Settlement  -> Bet | Qty | Status | Amount
+  //   Settlement  -> Bet | Qty | Status | Amount | Win
   //   Rollback    -> Bet | Status | Refund
   const showQtyCol = isPendingBet || isSettlement;
   const showStatusCol = !isPendingBet; // settlement + rollback
+  const showWinCol = isSettlement;     // per-bet win amount column
+
+  // Pagination (10 per page).
+  //   Open Bets   -> every bet lives in a single lobby card, so paginate the
+  //                  individual bet ROWS inside that card.
+  //   Settlement  -> paginate the settlement CARDS.
+  //   Rollback    -> paginate the rollback CARDS.
+  // Clamp the page so a shrinking list never strands us on an empty page.
+  const openBetRows: BetResult[] = isPendingBet
+    ? safeParse(bets[0]?.userBets || bets[0]?.bets)
+    : [];
+
+  const totalPages = isPendingBet
+    ? Math.max(1, Math.ceil((openBetRows.length || 0) / PAGE_SIZE))
+    : Math.max(1, Math.ceil(bets.length / PAGE_SIZE));
+
+  const safePage = Math.min(page, totalPages);
+  const pageStart = (safePage - 1) * PAGE_SIZE;
+
+  // Open Bets keeps its single card (rows are sliced below); Settlement and
+  // Rollback slice the cards themselves.
+  const pagedBets = isPendingBet
+    ? bets
+    : bets.slice(pageStart, pageStart + PAGE_SIZE);
 
   return (
     <div className={styles.orderList}>
-      {bets.map((item) => {
+      {pagedBets.map((item) => {
         const result = safeParse(item.result);
 
         const betResults: BetResult[] = isSettlement
           ? safeParse(item.bet_results)
           : safeParse(item.userBets || item.bets);
+
+        // Open Bets shows only the current page of rows (10 per page); the
+        // totals below still reflect the full set of bets.
+        const visibleResults: BetResult[] = isPendingBet
+          ? betResults.slice(pageStart, pageStart + PAGE_SIZE)
+          : betResults;
 
         const totalQty =
           betResults?.reduce((sum, b) => sum + qtyOf(b, isAgent), 0) || 0;
@@ -312,9 +352,10 @@ const OrderListSection: React.FC<OrderListProp> = ({
                     {showQtyCol && <span>Qty</span>}
                     {showStatusCol && <span>Status</span>}
                     <span>{isRollback ? "Refund" : "Amount"}</span>
+                    {showWinCol && <span>Win</span>}
                   </div>
 
-                  {betResults.map((bet: BetResult, i: number) => {
+                  {visibleResults.map((bet: BetResult, i: number) => {
                     const chipParts = parseChip(bet.chip || "");
                     const isWin = bet.status === "win";
                     const isLoss = bet.status === "loss";
@@ -380,13 +421,24 @@ const OrderListSection: React.FC<OrderListProp> = ({
                           </div>
                         )}
 
-                        {/* AMOUNT */}
+                        {/* AMOUNT -- the stake (kept neutral; Win column
+                            carries the green winnings for settlement) */}
                         <div
-                          className={`${styles.rtAmt} ${isWin ? styles.rtAmtWin : ""
-                            } ${isRollback ? styles.rtAmtRefund : ""}`}
+                          className={`${styles.rtAmt} ${isRollback ? styles.rtAmtRefund : ""
+                            }`}
                         >
                           {formatRs(betAmt)}
                         </div>
+
+                        {/* WIN -- per-bet winnings, green on a win */}
+                        {showWinCol && (
+                          <div
+                            className={`${styles.rtWin} ${isWin ? styles.rtWinHit : styles.rtWinZero
+                              }`}
+                          >
+                            {formatRs(bet.winAmt ?? 0)}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -396,6 +448,29 @@ const OrderListSection: React.FC<OrderListProp> = ({
           </div>
         );
       })}
+
+      {/* PAGINATION — Open Bets / Settlement / Rollback (10 per page) */}
+      {totalPages > 1 && (
+        <div className={styles.pagination}>
+          <button
+            className={styles.pageBtn}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={safePage <= 1}
+          >
+            Prev
+          </button>
+          <span className={styles.pageInfo}>
+            Page {safePage} of {totalPages}
+          </span>
+          <button
+            className={styles.pageBtn}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={safePage >= totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {isPendingBet && otherLobbyCount > 0 && (
         <div className={styles.otherLobbyNote}>

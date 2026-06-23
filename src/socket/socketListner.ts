@@ -118,6 +118,13 @@ export const initSocketListeners = (
               message: "Lobby cancelled. Your bets have been rolled back.",
             })
           );
+
+          // The backend needs a moment to process the rollback for the
+          // cancelled lobby. Refresh the Rollback list after 5s so the
+          // refunded bets show up without the user having to reload.
+          setTimeout(() => {
+            window.dispatchEvent(new Event("refreshRollbackHistory"));
+          }, 5000);
         }
 
         break;

@@ -79,8 +79,27 @@ const BettingSection: React.FC = () => {
     (state: RootState) => state.socketSlice.selectedLobby
   );
 
+  const lobbies = useSelector(
+    (state: RootState) => state.socketSlice.lobbies
+  );
+
+  // Set when the user taps a resulted/history chip to view its draw. While
+  // this is active they are looking at a RESULTED lobby, so the betting
+  // section is hidden even though the betting target is still open.
+  const selectedResult = useSelector(
+    (state: RootState) => state.socketSlice.selectedResult
+  );
+
   const info = useSelector(
     (state: RootState) => state.socketSlice.info
+  );
+
+  // The lobby currently targeted for betting. Once it has resulted there is
+  // nothing left to bet on, so the whole section is hidden (see early return
+  // below, placed after all hooks to respect the rules of hooks).
+  const currentLobby = useMemo(
+    () => lobbies.find((l) => l.lobby_uuid === selectedLobby) || null,
+    [lobbies, selectedLobby]
   );
 
   const isAgent = Number(info?.isAgent) === 1;
@@ -201,6 +220,11 @@ const BettingSection: React.FC = () => {
   const [singleTick, setSingleTick] = useState(0);
   const [doubleTick, setDoubleTick] = useState(0);
   const [tripleTick, setTripleTick] = useState(0);
+
+  // Hide the entire betting section when there's nothing to bet on:
+  //  - the selected lobby itself has resulted, or
+  //  - the user is viewing a resulted lobby opened from the strip/history.
+  if (currentLobby?.status === "resulted" || !!selectedResult) return null;
 
   return (
     <section className={styles.section}>
