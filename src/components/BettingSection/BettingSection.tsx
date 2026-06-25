@@ -126,7 +126,7 @@ const BettingSection: React.FC = () => {
   //  - Agent: the backend-provided dynamic price (admin-set), falling back
   //    to DEFAULT_AGENT_PRICE if none was sent.
   const priceFor = (cat: 1 | 2 | 3): number => {
-    const raw = info?.ticketPrices?.[String(cat)];
+    const raw = info?.priceTable?.[String(cat)];
     const n = Number(raw);
     if (Number.isFinite(n) && n > 0) return n;
     return isAgent ? DEFAULT_AGENT_PRICE[cat] : REGULAR_PRICE[cat];

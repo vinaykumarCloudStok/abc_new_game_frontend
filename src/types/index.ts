@@ -48,7 +48,7 @@ export interface InfoData {
   //   { "1": 12, "2": 15, "3": 25 }  (regular users — fixed in-game prices)
   //   { "1": 10, "2": 12, "3": 20 }  (agents — admin-set per-agent/per-game)
   // Always prefer these over any hardcoded values.
-  ticketPrices?: Record<string, number>;
+  priceTable?: Record<string, number>;
 }
 export interface LobbyResult {
   lobby_uuid: string;
